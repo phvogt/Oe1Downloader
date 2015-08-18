@@ -1,15 +1,25 @@
 // (c) 2015 by Philipp Vogt
 package at.or.vogt.oe1downloader;
 
-import java.io.FileWriter;
+import java.io.File;
+import java.io.FileOutputStream;
 
-import org.apache.commons.io.IOUtils;
+import org.apache.log4j.PropertyConfigurator;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Test for downloading MP3.
  */
 public class DownloadMP3Test {
+
+    static {
+        PropertyConfigurator.configure("conf/log4j.properties");
+    }
+
+    /** Logger. */
+    private final Logger logger = LoggerFactory.getLogger(DownloadMP3Test.class);
 
     /**
      * Test to download MP3.
@@ -32,6 +42,12 @@ public class DownloadMP3Test {
         final String url = "http://loopstream01.apa.at/?channel=oe1&shoutcast=0&ua=flash&id=20150813_0500_1_2_nachrichten_XXX_w_";
         final DownloadMp3 dut = new DownloadMp3();
         final byte[] mp3 = dut.downloadMp3(url);
-        IOUtils.write(mp3, new FileWriter("data/test.mp3"));
+        final String methodname = "testDownloadUrl(): ";
+        logger.info(methodname + "mp3.length = {}", mp3.length);
+
+        final FileOutputStream fos = new FileOutputStream(new File("data/test.mp3"));
+        fos.write(mp3, 0, mp3.length);
+        fos.close();
     }
+
 }
