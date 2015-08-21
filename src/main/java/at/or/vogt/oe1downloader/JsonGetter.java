@@ -3,6 +3,8 @@ package at.or.vogt.oe1downloader;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
@@ -26,11 +28,28 @@ public class JsonGetter {
     private final Logger logger = LoggerFactory.getLogger(JsonGetter.class);
 
     /**
+     * Gets the Tage from the list of URLs.
+     * @param urls urls to load JSON from
+     * @return Tage
+     */
+    public List<Tag> getTage(final List<String> urls) {
+
+        final List<Tag> result = new ArrayList<>();
+
+        for (final String url : urls) {
+            final Tag tag = getTag(url);
+            result.add(tag);
+        }
+
+        return result;
+    }
+
+    /**
      * Get Tag from URL.
      * @param url url to load JSON from
      * @return Tag
      */
-    public Tag getTag(final String url) {
+    Tag getTag(final String url) {
 
         final String json = downloadContentFromUrl(url);
         return parseJson(json);

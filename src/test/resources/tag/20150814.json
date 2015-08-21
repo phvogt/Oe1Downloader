@@ -1,0 +1,143 @@
+{
+   "day_label" : "Fr., 14.08.2015",
+   "url_playlist" : "/programm/411190/playlist",
+   "url_stream" : "http://loopstream01.apa.at/?channel=oe1&id=20150814_2300_1_8_nachrichten_XXX_w_",
+   "nav" : [
+      {
+         "short_label" : "Fr",
+         "url" : "/programm/konsole/tag/20150814",
+         "active" : 1,
+         "day_label" : "Fr., 14.08.2015"
+      },
+      {
+         "day_label" : "Sa., 15.08.2015",
+         "active" : 0,
+         "url" : "/programm/konsole/tag/20150815",
+         "short_label" : "Sa"
+      },
+      {
+         "short_label" : "So",
+         "url" : "/programm/konsole/tag/20150816",
+         "active" : 0,
+         "day_label" : "So., 16.08.2015"
+      },
+      {
+         "day_label" : "Mo., 17.08.2015",
+         "active" : 0,
+         "short_label" : "Mo",
+         "url" : "/programm/konsole/tag/20150817"
+      },
+      {
+         "url" : "/programm/konsole/tag/20150818",
+         "short_label" : "Di",
+         "day_label" : "Di., 18.08.2015",
+         "active" : 0
+      },
+      {
+         "active" : 0,
+         "day_label" : "Mi., 19.08.2015",
+         "short_label" : "Mi",
+         "url" : "/programm/konsole/tag/20150819"
+      },
+      {
+         "url" : "/programm/konsole/tag/20150820",
+         "short_label" : "Do",
+         "active" : 0,
+         "day_label" : "Do., 20.08.2015"
+      },
+      {
+         "day_label" : "Fr., 21.08.2015",
+         "active" : 0,
+         "short_label" : "Fr",
+         "url" : "/programm/konsole/tag/20150821"
+      }
+   ],
+   "list" : [
+      {
+         "url_stream" : "http://loopstream01.apa.at/?channel=oe1&id=20150814_2300_1_8_nachrichten_XXX_w_",
+         "day_label" : "14.08.2015",
+         "url_json" : "/programm/411190/konsole",
+         "short_title" : "Nachrichten",
+         "id" : "411190",
+         "title" : "Nachrichten",
+         "url_detail" : "",
+         "time" : "23:00",
+         "url_playlist" : "/programm/411190/playlist",
+         "tag" : "",
+         "parts" : [],
+         "info" : ""
+      },
+      {
+         "url_detail" : "/programm/411191",
+         "time" : "23:03",
+         "parts" : [],
+         "info" : "Radio Lab beim musikprotokoll 2014 revisited. Eine Reise durch das Frequenzspektrum mit Pi-node. Gestaltung: Susanna Niedermayr und Elisabeth Zimmermann",
+         "tag" : "",
+         "url_playlist" : "/programm/411191/playlist",
+         "url_stream" : "http://loopstream01.apa.at/?channel=oe1&id=20150814_2303_243_1_zeittonextended_ZTT_m_",
+         "short_title" : "Zeit-Ton extended",
+         "title" : "Zeit-Ton extended",
+         "id" : "411191",
+         "day_label" : "14.08.2015",
+         "url_json" : "/programm/411191/konsole"
+      },
+      {
+         "url_detail" : "/programm/411192",
+         "time" : "00:00",
+         "url_playlist" : "/programm/411192/playlist",
+         "tag" : "",
+         "parts" : [],
+         "info" : "",
+         "url_stream" : "http://loopstream01.apa.at/?channel=oe1&id=20150815_0000_6_1_journal_XXX_w_",
+         "url_json" : "/programm/411192/konsole",
+         "day_label" : "15.08.2015",
+         "id" : "411192",
+         "title" : "Mitternachtsjournal",
+         "short_title" : "Mitternachtsjournal"
+      },
+      {
+         "time" : "00:08",
+         "url_detail" : "/programm/411193",
+         "url_playlist" : "/programm/411193/playlist",
+         "tag" : "",
+         "info" : "(Fortsetzung) Radio Lab beim musikprotokoll 2015 revisited. Eine Reise durch das Frequenzspektrum mit Pi-node. Gestaltung: Susanna Niedermayr und Elisabeth Zimmermann",
+         "parts" : [],
+         "url_stream" : "http://loopstream01.apa.at/?channel=oe1&id=20150815_0008_243_1_zeittonextended_ZTT_m_",
+         "day_label" : "15.08.2015",
+         "url_json" : "/programm/411193/konsole",
+         "short_title" : "Zeit-Ton extended",
+         "id" : "411193",
+         "title" : "Zeit-Ton extended"
+      },
+      {
+         "short_title" : "Nachrichten",
+         "id" : "411194",
+         "title" : "Nachrichten",
+         "day_label" : "15.08.2015",
+         "url_json" : "/programm/411194/konsole",
+         "url_stream" : "http://loopstream01.apa.at/?channel=oe1&id=20150815_0200_1_1_nachrichten_XXX_w_",
+         "parts" : [],
+         "info" : "",
+         "url_playlist" : "/programm/411194/playlist",
+         "tag" : "",
+         "url_detail" : "",
+         "time" : "02:00"
+      },
+      {
+         "url_detail" : "/programm/411195",
+         "time" : "02:03",
+         "tag" : "",
+         "url_playlist" : "/programm/411195/playlist",
+         "parts" : [],
+         "info" : "Mozart-Zeitgenossen und Romantisches.\nPr\u00e4sentation: Gerhard Hafner\nMusikauswahl: Gerald Kolbe \n\n03:00 und 05:00 Uhr Nachrichten",
+         "url_stream" : "http://loopstream01.apa.at/?channel=oe1&id=20150815_0203_3_1_klassiknacht_KNA_m_",
+         "url_json" : "/programm/411195/konsole",
+         "day_label" : "15.08.2015",
+         "id" : "411195",
+         "title" : "Die \u00d61 Klassiknacht",
+         "short_title" : "Die \u00d61 Klassiknacht"
+      }
+   ],
+   "link_wma" : "",
+   "link_mp3" : ""
+}

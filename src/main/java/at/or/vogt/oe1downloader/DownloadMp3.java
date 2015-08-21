@@ -1,6 +1,8 @@
 // (c) 2015 by Philipp Vogt
 package at.or.vogt.oe1downloader;
 
+import java.io.InputStream;
+
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -22,11 +24,8 @@ public class DownloadMp3 {
     /**
      * Downloads the MP3 from the URL.
      * @param url the url to download from
-     * @return the MP3
      */
-    public byte[] downloadMp3(final String url) {
-
-        byte[] result = null;
+    public void downloadMp3(final String url, final IDownloadHandler handler) {
 
         final String methodname = "downloadFromUrl(): ";
 
@@ -35,24 +34,24 @@ public class DownloadMp3 {
         httpGet.addHeader("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:40.0) Gecko/20100101 Firefox/40.0 Iceweasel/40.0");
 
         try (final CloseableHttpResponse response1 = httpclient.execute(httpGet)) {
-            logger.info(methodname + "url = {} statuscode = {}", url, response1.getStatusLine());
+            logger.debug(methodname + "url = {} statuscode = {}", url, response1.getStatusLine());
             final HttpEntity entity1 = response1.getEntity();
             final Header[] headers = response1.getAllHeaders();
             for (final Header header : headers) {
-                logger.info(methodname + "  header = {}: {}", header.getName(), header.getValue());
+                logger.debug(methodname + "  header = {}: {}", header.getName(), header.getValue());
             }
-            logger.info(methodname + "  Content-Type = {}", entity1.getContentType());
-            logger.info(methodname + "  Content-Length = {}", entity1.getContentLength());
+            logger.debug(methodname + "  Content-Type = {}", entity1.getContentType());
+            logger.debug(methodname + "  Content-Length = {}", entity1.getContentLength());
 
-            result = EntityUtils.toByteArray(entity1);
-            logger.info(methodname + "  result.length = {}", result.length);
+            try (final InputStream in = entity1.getContent()) {
+                handler.processFile(in);
+            }
+            // result = EntityUtils.toByteArray(entity1);
+            // logger.info(methodname + " result.length = {}", result.length);
             EntityUtils.consume(entity1);
         } catch (final Exception e) {
             logger.error(methodname, e);
-            result = null;
         }
-
-        return result;
 
     }
 

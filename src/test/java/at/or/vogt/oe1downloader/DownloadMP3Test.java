@@ -3,7 +3,10 @@ package at.or.vogt.oe1downloader;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.PropertyConfigurator;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -28,6 +31,8 @@ public class DownloadMP3Test {
     @Test
     public void testDownloadUrl() throws Exception {
 
+        final String methodname = "testDownloadUrl(): ";
+
         // curl
         // 'http://loopstream01.apa.at/?channel=oe1&shoutcast=0&ua=flash&id=20150813_0500_1_2_nachrichten_XXX_w_'
         // -H 'Host: loopstream01.apa.at' -H 'User-Agent: Mozilla/5.0 (X11;
@@ -41,13 +46,20 @@ public class DownloadMP3Test {
 
         final String url = "http://loopstream01.apa.at/?channel=oe1&shoutcast=0&ua=flash&id=20150813_0500_1_2_nachrichten_XXX_w_";
         final DownloadMp3 dut = new DownloadMp3();
-        final byte[] mp3 = dut.downloadMp3(url);
-        final String methodname = "testDownloadUrl(): ";
-        logger.info(methodname + "mp3.length = {}", mp3.length);
+        dut.downloadMp3(url, new IDownloadHandler() {
 
-        final FileOutputStream fos = new FileOutputStream(new File("data/test.mp3"));
-        fos.write(mp3, 0, mp3.length);
-        fos.close();
+            @Override
+            public void processFile(final InputStream input) {
+                try (final FileOutputStream fos = new FileOutputStream(new File("data/test.mp3"))) {
+                    IOUtils.copy(input, fos);
+
+                } catch (final IOException e) {
+                    logger.error(methodname, e);
+                }
+            }
+        });
+        logger.info(methodname + "done");
+
     }
 
 }
