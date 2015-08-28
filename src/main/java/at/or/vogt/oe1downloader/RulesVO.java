@@ -94,8 +94,8 @@ public class RulesVO {
     /**
      * Checks the tag for matching Sendungen and returns them as a list of
      * RecordVO.
+     * @param tage Tag to check
      * @param indexCounter filename index counter
-     * @param tag Tag to check
      * @return list of RecordVO
      */
     public List<RecordVO> checkForRecords(final List<Tag> tage, final RuleIndexCounter indexCounter) {
