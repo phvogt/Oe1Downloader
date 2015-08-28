@@ -1,28 +1,24 @@
 // (c) 2015 by Philipp Vogt
 package at.or.vogt.oe1downloader;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
-import org.apache.commons.io.IOUtils;
 import org.apache.log4j.PropertyConfigurator;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import at.or.vogt.oe1downloader.json.Sendung;
+
 /**
  * Test for downloading MP3.
  */
-public class DownloadMP3Test {
+public class DownloadServiceTest {
 
     static {
         PropertyConfigurator.configure("conf/log4j.properties");
     }
 
     /** Logger. */
-    private final Logger logger = LoggerFactory.getLogger(DownloadMP3Test.class);
+    private final Logger logger = LoggerFactory.getLogger(DownloadServiceTest.class);
 
     /**
      * Test to download MP3.
@@ -45,19 +41,14 @@ public class DownloadMP3Test {
         // keep-alive'
 
         final String url = "http://loopstream01.apa.at/?channel=oe1&shoutcast=0&ua=flash&id=20150813_0500_1_2_nachrichten_XXX_w_";
-        final DownloadMp3 dut = new DownloadMp3();
-        dut.downloadMp3(url, new IDownloadHandler() {
+        final DownloadService dut = new DownloadService("data/test");
 
-            @Override
-            public void processFile(final InputStream input) {
-                try (final FileOutputStream fos = new FileOutputStream(new File("data/test.mp3"))) {
-                    IOUtils.copy(input, fos);
-
-                } catch (final IOException e) {
-                    logger.error(methodname, e);
-                }
-            }
-        });
+        final Sendung sendung = new Sendung("a", 1, "title", "today", "x", url, "", "");
+        final RuleVO rule = new RuleVO("1", "a", null, 60, "test");
+        final RuleIndexCounter indexCounter = new RuleIndexCounter();
+        final RecordVO record = new RecordVO(sendung, rule, indexCounter);
+        record.setTargetFilename("data/test/test.mp3");
+        dut.download(record);
         logger.info(methodname + "done");
 
     }

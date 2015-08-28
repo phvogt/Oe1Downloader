@@ -13,6 +13,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.apache.log4j.Level;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,9 @@ import at.or.vogt.oe1downloader.json.Tag;
  * Gets the JSONs.
  */
 public class JsonGetter {
+
+    /** event logger. */
+    private static final EventLogger eventLogger = new EventLogger();
 
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(JsonGetter.class);
@@ -73,6 +77,8 @@ public class JsonGetter {
     String downloadContentFromUrl(final String url) {
 
         final String methodname = "downloadFromUrl(): ";
+
+        eventLogger.log(Level.INFO, "downloading JSON from URL " + url + ".");
 
         final CloseableHttpClient httpclient = HttpClients.createDefault();
         final HttpGet httpGet = new HttpGet(url);

@@ -1,18 +1,13 @@
 // (c) 2015 by Philipp Vogt
 package at.or.vogt.oe1downloader;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.apache.log4j.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,10 +19,8 @@ import at.or.vogt.oe1downloader.json.Tag;
  */
 public class RulesVO {
 
-    /** file name for config properties. */
-    private static final String CONFIG_FILENAME = "conf/config.properties";
-    /** prefix for rules in config. */
-    private static final String CONFIG_RULES_PREFIX = "rules.";
+    /** event logger. */
+    private static final EventLogger eventLogger = new EventLogger();
 
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(RulesVO.class);
@@ -39,52 +32,18 @@ public class RulesVO {
      * loads the rules.
      */
     public void loadRules() {
-        final Properties configFileProps = loadProperties();
 
-        final Map<String, String> parsedRules = parseRules(configFileProps);
+        final Configuration config = new Configuration();
+
+        eventLogger.log(Level.INFO, "loading rules.");
+
+        final Map<String, String> parsedRules = config.getPropertyMap(ConfigurationParameter.RULES);
 
         final Map<String, Map<String, String>> rulesMap = parseMap(parsedRules);
 
         final List<RuleVO> rulesList = convert(rulesMap);
         rules.clear();
         rules.addAll(rulesList);
-    }
-
-    /**
-     * Loads the Properties.
-     * @return the loaded properties
-     */
-    Properties loadProperties() {
-        final Properties configFileProps = new Properties();
-        try (final FileInputStream in = new FileInputStream(new File(CONFIG_FILENAME))) {
-            configFileProps.load(in);
-        } catch (final IOException e) {
-            throw new RuntimeException("error loading " + CONFIG_FILENAME, e);
-        }
-        return configFileProps;
-    }
-
-    /**
-     * Parses the rules in a map.
-     * @param properties the properties
-     * @return the parsed rules
-     */
-    Map<String, String> parseRules(final Properties properties) {
-
-        final Map<String, String> result = new LinkedHashMap<String, String>();
-
-        final Enumeration<Object> keyEnum = properties.keys();
-        while (keyEnum.hasMoreElements()) {
-            final String key = (String) keyEnum.nextElement();
-            if (key.startsWith(CONFIG_RULES_PREFIX)) {
-                final String mapKey = key.substring(CONFIG_RULES_PREFIX.length());
-                final String value = properties.getProperty(key);
-                result.put(mapKey, value);
-            }
-
-        }
-
-        return result;
     }
 
     /**
@@ -135,15 +94,16 @@ public class RulesVO {
     /**
      * Checks the tag for matching Sendungen and returns them as a list of
      * RecordVO.
+     * @param indexCounter filename index counter
      * @param tag Tag to check
      * @return list of RecordVO
      */
-    public List<RecordVO> checkForRecords(final List<Tag> tage) {
+    public List<RecordVO> checkForRecords(final List<Tag> tage, final RuleIndexCounter indexCounter) {
 
         final List<RecordVO> result = new ArrayList<>();
 
         for (final Tag tag : tage) {
-            final List<RecordVO> records = checkForRecords(tag);
+            final List<RecordVO> records = checkForRecords(tag, indexCounter);
             result.addAll(records);
         }
 
@@ -154,9 +114,10 @@ public class RulesVO {
      * Checks the tag for matching Sendungen and returns them as a list of
      * RecordVO.
      * @param tag Tag to check
+     * @param indexCounter filename index counter
      * @return list of RecordVO
      */
-    List<RecordVO> checkForRecords(final Tag tag) {
+    List<RecordVO> checkForRecords(final Tag tag, final RuleIndexCounter indexCounter) {
 
         final String methodname = "checkForRecords(): ";
 
@@ -169,7 +130,11 @@ public class RulesVO {
                 logger.debug(methodname + "  rule = {}", rule);
 
                 if (rule.matches(sendung)) {
-                    final RecordVO record = new RecordVO(sendung, rule);
+
+                    eventLogger.log(Level.INFO,
+                            "will get " + sendung.getDayLabel() + " " + sendung.getTime() + " " + sendung.getTitle());
+
+                    final RecordVO record = new RecordVO(sendung, rule, indexCounter);
                     result.add(record);
                 }
             }

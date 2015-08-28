@@ -1,9 +1,12 @@
 // (c) 2015 by Philipp Vogt
 package at.or.vogt.oe1downloader;
 
+import java.io.File;
 import java.io.FileReader;
+import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.PropertyConfigurator;
 import org.junit.Test;
@@ -49,18 +52,18 @@ public class DateCalcTest {
 
         final String methodname = "testRulesVO(): ";
 
-        final DateCalc dateCalc = new DateCalc();
-        final List<String> urls = dateCalc.getJsonUrls("src/test/resources/tag/");
-        for (final String url : urls) {
-            logger.info(methodname + "url = {}", url);
+        final Collection<File> jsonFiles = FileUtils.listFiles(new File("src/test/resources/tag"), new String[] { "json" }, false);
+        for (final File jsonFile : jsonFiles) {
+            logger.info(methodname + "jsonFile = {}", jsonFile);
 
             final JsonGetter jsonGetter = new JsonGetter();
-            final String jsonString = IOUtils.toString(new FileReader(url + ".json"));
+            final String jsonString = IOUtils.toString(new FileReader(jsonFile));
             final Tag tag = jsonGetter.parseJson(jsonString);
 
             final RulesVO dut = new RulesVO();
             dut.loadRules();
-            final List<RecordVO> records = dut.checkForRecords(tag);
+            final RuleIndexCounter counter = new RuleIndexCounter();
+            final List<RecordVO> records = dut.checkForRecords(tag, counter);
             for (final RecordVO recordVO : records) {
                 logger.info(methodname + "recordVO = {}", recordVO);
             }

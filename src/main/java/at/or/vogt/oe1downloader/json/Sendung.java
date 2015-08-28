@@ -31,14 +31,33 @@ public class Sendung {
      */
     public Sendung(final JSONObject jsonObj) {
 
-        shortTitle = jsonObj.getString("short_title");
-        id = jsonObj.getInt("id");
-        title = jsonObj.getString("title");
-        dayLabel = jsonObj.getString("day_label");
-        urlJson = jsonObj.getString("url_json");
-        urlStream = jsonObj.getString("url_stream");
-        info = jsonObj.getString("info");
-        time = jsonObj.getString("time");
+        this(jsonObj.getString("short_title"), jsonObj.getInt("id"), jsonObj.getString("title"), jsonObj.getString("day_label"),
+                jsonObj.getString("url_json"), jsonObj.getString("url_stream"), jsonObj.getString("info"),
+                jsonObj.getString("time"));
+    }
+
+    /**
+     * Constructor.
+     * @param shortTitle short title
+     * @param id id
+     * @param title title
+     * @param dayLabel day label
+     * @param urlJson url JSON
+     * @param urlStream url Stream
+     * @param info info
+     * @param time time
+     */
+    public Sendung(final String shortTitle, final int id, final String title, final String dayLabel, final String urlJson,
+            final String urlStream, final String info, final String time) {
+        super();
+        this.shortTitle = shortTitle;
+        this.id = id;
+        this.title = title;
+        this.dayLabel = dayLabel;
+        this.urlJson = urlJson;
+        this.urlStream = urlStream;
+        this.info = info;
+        this.time = time;
     }
 
     /**

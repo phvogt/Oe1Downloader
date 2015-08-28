@@ -55,7 +55,8 @@ public class JsonGetterTest {
         logger.info(methodname + "start");
 
         final JsonGetter dut = new JsonGetter();
-        final String result = dut.downloadContentFromUrl("http://oe1.orf.at/programm/konsole/tag/20150810");
+        final String date = getTestDateString();
+        final String result = dut.downloadContentFromUrl("http://oe1.orf.at/programm/konsole/tag/" + date);
         logger.info(methodname + "result = {}", result);
     }
 
