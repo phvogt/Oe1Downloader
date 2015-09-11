@@ -8,7 +8,7 @@ import org.apache.log4j.PropertyConfigurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import at.or.vogt.oe1downloader.json.Tag;
+import at.or.vogt.oe1downloader.json.Day;
 
 /**
  * Main class for Oe1 downloader.
@@ -20,7 +20,7 @@ public class Main {
     }
 
     /** event logger. */
-    private static final EventLogger eventLogger = new EventLogger();
+    private static final EventLogger EVENTLOGGER = new EventLogger();
 
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(Main.class);
@@ -43,30 +43,31 @@ public class Main {
             final String methodname = "run(): ";
             logger.info(methodname);
 
-            eventLogger.log(Level.INFO, "starting");
+            EVENTLOGGER.log(Level.INFO, "starting");
 
             final Configuration config = new Configuration();
 
             final RulesVO rules = new RulesVO();
             rules.loadRules();
 
-            final String jsonPathPrefix = config.getProperty(ConfigurationParameter.JSON_BASE_URL);
+            final String jsonPathPrefix = config.getProperty(ConfigurationParameter.JSON_BASE_URL,
+                    "http://oe1.orf.at/programm/konsole/tag/");
             final DateCalc dateCalc = new DateCalc();
             final List<String> jsonUrls = dateCalc.getJsonUrls(jsonPathPrefix);
 
             final JsonGetter jsonGetter = new JsonGetter();
-            final List<Tag> tage = jsonGetter.getTage(jsonUrls);
+            final List<Day> days = jsonGetter.getDays(jsonUrls);
 
             final RuleIndexCounter counter = new RuleIndexCounter();
-            final List<RecordVO> records = rules.checkForRecords(tage, counter);
+            final List<RecordVO> records = rules.checkForRecords(days, counter);
 
-            final String targetDirectory = config.getProperty(ConfigurationParameter.TARGET_DIRECTORY);
+            final String targetDirectory = config.getProperty(ConfigurationParameter.TARGET_DIRECTORY, "./mp3s");
             final DownloadService downloader = new DownloadService(targetDirectory);
             downloader.downloadRecords(records);
 
-            eventLogger.log(Level.INFO, "end");
+            EVENTLOGGER.log(Level.INFO, "end");
         } catch (final Exception e) {
-            eventLogger.log(Level.ERROR, "error", e);
+            EVENTLOGGER.log(Level.ERROR, "error", e);
         }
 
     }

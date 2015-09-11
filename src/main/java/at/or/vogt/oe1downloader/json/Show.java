@@ -4,9 +4,9 @@ package at.or.vogt.oe1downloader.json;
 import org.json.JSONObject;
 
 /**
- * Represents a Sendung.
+ * Represents a Show.
  */
-public class Sendung {
+public class Show {
 
     /** short title. */
     private final String shortTitle;
@@ -29,7 +29,7 @@ public class Sendung {
      * Constructor.
      * @param jsonObj JSON object
      */
-    public Sendung(final JSONObject jsonObj) {
+    public Show(final JSONObject jsonObj) {
 
         this(jsonObj.getString("short_title"), jsonObj.getInt("id"), jsonObj.getString("title"), jsonObj.getString("day_label"),
                 jsonObj.getString("url_json"), jsonObj.getString("url_stream"), jsonObj.getString("info"),
@@ -47,7 +47,7 @@ public class Sendung {
      * @param info info
      * @param time time
      */
-    public Sendung(final String shortTitle, final int id, final String title, final String dayLabel, final String urlJson,
+    public Show(final String shortTitle, final int id, final String title, final String dayLabel, final String urlJson,
             final String urlStream, final String info, final String time) {
         super();
         this.shortTitle = shortTitle;
@@ -130,7 +130,7 @@ public class Sendung {
     @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder();
-        builder.append("Sendung [super = ");
+        builder.append("Show [super = ");
         builder.append(super.toString());
         builder.append(" shortTitle=");
         builder.append(shortTitle);

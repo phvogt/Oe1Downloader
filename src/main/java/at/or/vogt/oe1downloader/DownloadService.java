@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -26,7 +27,7 @@ import org.apache.log4j.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import at.or.vogt.oe1downloader.json.Sendung;
+import at.or.vogt.oe1downloader.json.Show;
 
 /**
  * Download service for MP3.
@@ -34,7 +35,7 @@ import at.or.vogt.oe1downloader.json.Sendung;
 public class DownloadService {
 
     /** event logger. */
-    private static final EventLogger eventLogger = new EventLogger();
+    private static final EventLogger EVENTLOGGER = new EventLogger();
 
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(DownloadService.class);
@@ -62,7 +63,11 @@ public class DownloadService {
 
         final String methodname = "downloadRecords(): ";
 
-        final ExecutorService executors = Executors.newFixedThreadPool(3);
+        final Configuration config = new Configuration();
+        final int parallelDownloads = NumberUtils
+                .toInt(config.getProperty(ConfigurationParameter.NUMBER_OF_PARALLEL_DOWNLOADS, "3"), 3);
+
+        final ExecutorService executors = Executors.newFixedThreadPool(parallelDownloads);
         final List<Future<?>> futures = new ArrayList<>();
 
         for (final RecordVO record : records) {
@@ -74,7 +79,7 @@ public class DownloadService {
 
             // check if the file already exists
             if (record.checkTargetFileExists()) {
-                eventLogger.log(Level.WARN, "will not download " + record.getTargetFilename() + ", because file already exists.");
+                EVENTLOGGER.log(Level.WARN, "will not download " + record.getTargetFilename() + ", because file already exists.");
 
                 logger.info(methodname + "  not downlading, record already exists. record = {}", record);
                 continue;
@@ -100,7 +105,7 @@ public class DownloadService {
             logger.info(methodname + "waiting 60s");
             executors.awaitTermination(60, TimeUnit.SECONDS);
         } catch (final InterruptedException | ExecutionException e) {
-            eventLogger.log(Level.ERROR, "error downloading", e);
+            EVENTLOGGER.log(Level.ERROR, "error downloading", e);
         }
 
     }
@@ -116,9 +121,9 @@ public class DownloadService {
         logger.info(methodname + "record = {}", record);
 
         final long start = System.currentTimeMillis();
-        final Sendung sendung = record.getSendung();
-        eventLogger.log(Level.INFO, "start downloading " + sendung.getDayLabel() + " " + sendung.getTime() + " "
-                + sendung.getTitle() + " to " + record.getTargetFilename());
+        final Show show = record.getShow();
+        EVENTLOGGER.log(Level.INFO, "start downloading " + show.getDayLabel() + " " + show.getTime() + " " + show.getTitle()
+        + " to " + record.getTargetFilename());
 
         // download to file
         final CloseableHttpClient httpclient = HttpClients.createDefault();
@@ -126,7 +131,10 @@ public class DownloadService {
         final String url = record.getDownloadUrl();
         final HttpGet httpGet = new HttpGet(url);
 
-        httpGet.addHeader("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:40.0) Gecko/20100101 Firefox/40.0 Iceweasel/40.0");
+        final Configuration config = new Configuration();
+        final String useragent = config.getProperty(ConfigurationParameter.USER_AGENT_STRING,
+                "Mozilla/5.0 (X11; Linux x86_64; rv:40.0) Gecko/20100101 Firefox/40.0 Iceweasel/40.0");
+        httpGet.addHeader("User-Agent", useragent);
 
         try (final CloseableHttpResponse response1 = httpclient.execute(httpGet)) {
             logger.debug(methodname + "url = {} statuscode = {}", url, response1.getStatusLine());
@@ -150,17 +158,16 @@ public class DownloadService {
                 try (final FileOutputStream fos = new FileOutputStream(tempFilename)) {
                     IOUtils.copy(input, fos);
                 } catch (final IOException e) {
-                    eventLogger.log(Level.ERROR, "error downloading url " + url, e);
+                    EVENTLOGGER.log(Level.ERROR, "error downloading url " + url, e);
                 }
             }
             EntityUtils.consume(entity1);
             FileUtils.moveFile(new File(tempFilename), new File(record.getTargetFilename()));
-            eventLogger.log(Level.INFO,
-                    "done downloading " + sendung.getDayLabel() + " " + sendung.getTime() + " " + sendung.getTitle() + " to "
-                            + record.getTargetFilename() + " took " + (System.currentTimeMillis() - start) + " ms");
+            EVENTLOGGER.log(Level.INFO, "done downloading " + show.getDayLabel() + " " + show.getTime() + " " + show.getTitle()
+            + " to " + record.getTargetFilename() + " took " + (System.currentTimeMillis() - start) + " ms");
 
         } catch (final Exception e) {
-            eventLogger.log(Level.ERROR, "error downloading url " + url, e);
+            EVENTLOGGER.log(Level.ERROR, "error downloading url " + url, e);
         }
 
     }

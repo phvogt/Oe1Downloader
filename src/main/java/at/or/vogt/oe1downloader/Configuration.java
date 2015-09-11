@@ -22,7 +22,7 @@ public class Configuration {
     private static final String CONFIG_FILENAME = "conf/config.properties";
 
     /** event logger. */
-    private static final EventLogger eventLogger = new EventLogger();
+    private static final EventLogger EVENTLOGGER = new EventLogger();
 
     /** contains the properties. */
     private final Properties configFileProps;
@@ -40,7 +40,7 @@ public class Configuration {
      */
     private Properties loadProperties() {
 
-        eventLogger.log(Level.INFO, "loading properties from " + CONFIG_FILENAME + ".");
+        EVENTLOGGER.log(Level.INFO, "loading properties from " + CONFIG_FILENAME + ".");
 
         final Properties result = new Properties();
 
@@ -48,7 +48,7 @@ public class Configuration {
             result.load(in);
         } catch (final IOException e) {
             final String message = "could not load " + CONFIG_FILENAME;
-            eventLogger.log(Level.ERROR, message, e);
+            EVENTLOGGER.log(Level.ERROR, message, e);
             throw new RuntimeException(message, e);
         }
 
@@ -90,10 +90,18 @@ public class Configuration {
     /**
      * Gets the property for the configuration parameter.
      * @param parameter to get
+     * @param defaultValue default value to return if parameter is null
      * @return the configuration value
      */
-    String getProperty(final ConfigurationParameter parameter) {
-        return configFileProps.getProperty(parameter.getName());
+    String getProperty(final ConfigurationParameter parameter, final String defaultValue) {
+
+        final String result = configFileProps.getProperty(parameter.getName());
+
+        if (result != null) {
+            return result;
+        } else {
+            return defaultValue;
+        }
     }
 
 }

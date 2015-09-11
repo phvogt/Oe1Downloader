@@ -9,20 +9,24 @@
 
   <packaging>jar</packaging>
 
-  <parent>
-    <groupId>at.or.vogt.general</groupId>
-    <artifactId>GENERAL_MASTER</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-  </parent>
+  <!-- <parent> -->
+  <!-- <groupId>at.or.vogt.general</groupId> -->
+  <!-- <artifactId>GENERAL_MASTER</artifactId> -->
+  <!-- <version>0.0.1-SNAPSHOT</version> -->
+  <!-- </parent> -->
 
   <name>Einkaufsliste</name>
   <description>Einkaufsliste</description>
 
-  <scm>
-    <connection>scm:svn:http://localhost/svn/trunk/${project.artifactId}</connection>
-    <developerConnection>scm:svn:http://localhost/svn/trunk/${project.artifactId}</developerConnection>
-    <url>http://localhost/svn/trunk/${project.artifactId}</url>
-  </scm>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <!-- <scm> -->
+  <!-- <connection>scm:svn:http://localhost/svn/trunk/${project.artifactId}</connection> -->
+  <!-- <developerConnection>scm:svn:http://localhost/svn/trunk/${project.artifactId}</developerConnection> -->
+  <!-- <url>http://localhost/svn/trunk/${project.artifactId}</url> -->
+  <!-- </scm> -->
 
   <build>
     <!-- <sourceDirectory>src</sourceDirectory> -->
@@ -56,10 +60,51 @@
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.16</version>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.4</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.10.3</version>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>3.4</version>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <version>3.0.2</version>
         <configuration>
-          <skipTests>true</skipTests>
+          <excludeFilterFile>src/findbugs/findbugs-exclude.xml</excludeFilterFile>
+        </configuration>
+      </plugin>
+
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.18.1</version>
+        <configuration>
+<!--           <skipTests>true</skipTests> -->
         </configuration>
       </plugin>
       <plugin>
@@ -117,7 +162,127 @@
     </pluginManagement>
   </build>
 
-
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <version>2.5</version>
+        <reportSets>
+          <reportSet>
+            <id>src-xref</id>
+            <reports>
+              <report>jxr</report>
+            </reports>
+          </reportSet>
+          <reportSet>
+            <id>test-xref</id>
+            <reports>
+              <report>test-jxr</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+        <configuration>
+          <aggregate>true</aggregate>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <version>3.0.2</version>
+        <configuration>
+          <excludeFilterFile>src/findbugs/findbugs-exclude.xml</excludeFilterFile>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>2.16</version>
+        <configuration>
+          <configLocation>src/checkstyle/checkstyle.xml</configLocation>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>taglist-maven-plugin</artifactId>
+        <version>2.4</version>
+        <configuration>
+          <tagListOptions>
+            <tagClasses>
+              <tagClass>
+                <displayName>Todo / work</displayName>
+                <tags>
+                  <tag>
+                    <matchString>todo</matchString>
+                    <matchType>ignoreCase</matchType>
+                  </tag>
+                  <tag>
+                    <matchString>fixme</matchString>
+                    <matchType>ignoreCase</matchType>
+                  </tag>
+                </tags>
+              </tagClass>
+            </tagClasses>
+          </tagListOptions>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.10.3</version>
+        <reportSets>
+          <reportSet>
+            <id>html</id>
+            <configuration>
+              <doctitle>API for ${project.name} ${project.version}</doctitle>
+              <windowtitle>API for ${project.name} ${project.version}</windowtitle>
+            </configuration>
+            <reports>
+              <report>javadoc</report>
+            </reports>
+          </reportSet>
+          <reportSet>
+            <id>test-html</id>
+            <configuration>
+              <testDoctitle>Test API for ${project.name} ${project.version}</testDoctitle>
+              <testWindowtitle>Test API for ${project.name}
+                ${project.version}</testWindowtitle>
+            </configuration>
+            <reports>
+              <report>test-javadoc</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>3.5</version>
+        <configuration>
+          <targetJdk>1.8</targetJdk>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>2.8.1</version>
+        <configuration>
+          <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>cobertura-maven-plugin</artifactId>
+        <version>2.7</version>
+        <configuration>
+          <formats>
+            <format>html</format>
+            <format>xml</format>
+          </formats>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
 
   <dependencies>
     <dependency>

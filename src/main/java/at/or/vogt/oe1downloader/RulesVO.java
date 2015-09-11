@@ -11,8 +11,8 @@ import org.apache.log4j.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import at.or.vogt.oe1downloader.json.Sendung;
-import at.or.vogt.oe1downloader.json.Tag;
+import at.or.vogt.oe1downloader.json.Day;
+import at.or.vogt.oe1downloader.json.Show;
 
 /**
  * Contains the rules.
@@ -20,7 +20,7 @@ import at.or.vogt.oe1downloader.json.Tag;
 public class RulesVO {
 
     /** event logger. */
-    private static final EventLogger eventLogger = new EventLogger();
+    private static final EventLogger EVENTLOGGER = new EventLogger();
 
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(RulesVO.class);
@@ -35,7 +35,7 @@ public class RulesVO {
 
         final Configuration config = new Configuration();
 
-        eventLogger.log(Level.INFO, "loading rules.");
+        EVENTLOGGER.log(Level.INFO, "loading rules.");
 
         final Map<String, String> parsedRules = config.getPropertyMap(ConfigurationParameter.RULES);
 
@@ -72,8 +72,8 @@ public class RulesVO {
     }
 
     /**
-     * Converts the map to a list of RuleVO
-     * @param rules to convert
+     * Converts the map to a list of RuleVO.
+     * @param rulesMap rules to convert
      * @return list of rules
      */
     List<RuleVO> convert(final Map<String, Map<String, String>> rulesMap) {
@@ -92,18 +92,17 @@ public class RulesVO {
     }
 
     /**
-     * Checks the tag for matching Sendungen and returns them as a list of
-     * RecordVO.
-     * @param tage Tag to check
+     * Checks the day for matching Shows and returns them as a list of RecordVO.
+     * @param days Day to check
      * @param indexCounter filename index counter
      * @return list of RecordVO
      */
-    public List<RecordVO> checkForRecords(final List<Tag> tage, final RuleIndexCounter indexCounter) {
+    public List<RecordVO> checkForRecords(final List<Day> days, final RuleIndexCounter indexCounter) {
 
         final List<RecordVO> result = new ArrayList<>();
 
-        for (final Tag tag : tage) {
-            final List<RecordVO> records = checkForRecords(tag, indexCounter);
+        for (final Day day : days) {
+            final List<RecordVO> records = checkForRecords(day, indexCounter);
             result.addAll(records);
         }
 
@@ -111,30 +110,28 @@ public class RulesVO {
     }
 
     /**
-     * Checks the tag for matching Sendungen and returns them as a list of
-     * RecordVO.
-     * @param tag Tag to check
+     * Checks the day for matching Shows and returns them as a list of RecordVO.
+     * @param day Day to check
      * @param indexCounter filename index counter
      * @return list of RecordVO
      */
-    List<RecordVO> checkForRecords(final Tag tag, final RuleIndexCounter indexCounter) {
+    List<RecordVO> checkForRecords(final Day day, final RuleIndexCounter indexCounter) {
 
         final String methodname = "checkForRecords(): ";
 
         final List<RecordVO> result = new ArrayList<RecordVO>();
 
-        final List<Sendung> sendungen = tag.getSendungen();
-        for (final Sendung sendung : sendungen) {
-            logger.debug(methodname + "sendung = {}", sendung);
+        final List<Show> shows = day.getShows();
+        for (final Show show : shows) {
+            logger.debug(methodname + "show = {}", show);
             for (final RuleVO rule : rules) {
                 logger.debug(methodname + "  rule = {}", rule);
 
-                if (rule.matches(sendung)) {
+                if (rule.matches(show)) {
 
-                    eventLogger.log(Level.INFO,
-                            "will get " + sendung.getDayLabel() + " " + sendung.getTime() + " " + sendung.getTitle());
+                    EVENTLOGGER.log(Level.INFO, "will get " + show.getDayLabel() + " " + show.getTime() + " " + show.getTitle());
 
-                    final RecordVO record = new RecordVO(sendung, rule, indexCounter);
+                    final RecordVO record = new RecordVO(show, rule, indexCounter);
                     result.add(record);
                 }
             }

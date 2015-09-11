@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import at.or.vogt.oe1downloader.json.Tag;
+import at.or.vogt.oe1downloader.json.Day;
 
 /**
  * Test for {@link at.or.vogt.oe1downloader.JsonGetter}.
@@ -39,7 +39,7 @@ public class JsonGetterTest {
         final JsonGetter dut = new JsonGetter();
 
         final String jsonString = IOUtils.toString(new FileReader("src/test/resources/tag/20150810.json"));
-        final Tag result = dut.parseJson(jsonString);
+        final Day result = dut.parseJson(jsonString);
         Assert.assertNotNull(result);
         logger.info(methodname + "result = {}", result.toStringShort());
     }
@@ -48,7 +48,7 @@ public class JsonGetterTest {
      * Test to download from URL.
      * @throws Exception if an error occurs.
      */
-    @Test
+    // @Test
     public void testDownloadContentFromUrl() throws Exception {
 
         final String methodname = "testDownloadContentFromUrl(): ";
@@ -61,18 +61,18 @@ public class JsonGetterTest {
     }
 
     /**
-     * Gets the Tag.
+     * Gets the Day.
      * @throws Exception if an error occurs
      */
-    @Test
-    public void testGetTag() throws Exception {
+    // @Test
+    public void testGetDay() throws Exception {
 
-        final String methodname = "testGetTag(): ";
+        final String methodname = "testGetDay(): ";
         logger.info(methodname + "start");
 
         final JsonGetter dut = new JsonGetter();
         final String date = getTestDateString();
-        final Tag result = dut.getTag("http://oe1.orf.at/programm/konsole/tag/" + date);
+        final Day result = dut.getDay("http://oe1.orf.at/programm/konsole/tag/" + date);
         logger.info(methodname + "result = {}", result.toStringShort());
     }
 

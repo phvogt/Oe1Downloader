@@ -13,7 +13,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import at.or.vogt.oe1downloader.json.Tag;
+import at.or.vogt.oe1downloader.json.Day;
 
 /**
  * Test for {@link DateCalc}
@@ -58,12 +58,12 @@ public class DateCalcTest {
 
             final JsonGetter jsonGetter = new JsonGetter();
             final String jsonString = IOUtils.toString(new FileReader(jsonFile));
-            final Tag tag = jsonGetter.parseJson(jsonString);
+            final Day day = jsonGetter.parseJson(jsonString);
 
             final RulesVO dut = new RulesVO();
             dut.loadRules();
             final RuleIndexCounter counter = new RuleIndexCounter();
-            final List<RecordVO> records = dut.checkForRecords(tag, counter);
+            final List<RecordVO> records = dut.checkForRecords(day, counter);
             for (final RecordVO recordVO : records) {
                 logger.info(methodname + "recordVO = {}", recordVO);
             }

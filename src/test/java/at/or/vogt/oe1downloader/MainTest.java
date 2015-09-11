@@ -2,7 +2,6 @@
 package at.or.vogt.oe1downloader;
 
 import org.apache.log4j.PropertyConfigurator;
-import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +21,7 @@ public class MainTest {
      * Tests for main.
      * @throws Exception if an error occurs
      */
-    @Test
+    // @Test
     public void testMain() throws Exception {
 
         final String methodname = "testMain(): ";

@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,11 +30,14 @@ public class DateCalc {
         final List<String> result = new ArrayList<>();
 
         final DateTime today = new DateTime();
-        final DateTime saturdayLastWeek = today.minusDays(today.getDayOfWeek() + 1);
-        logger.info(methodname + "saturdayLastWeek = {}", saturdayLastWeek);
+        final Configuration config = new Configuration();
+        final int daysback = NumberUtils.toInt(config.getProperty(ConfigurationParameter.DAYSBACK, "7"), 7);
+
+        final DateTime startDay = today.minusDays(daysback);
+        logger.info(methodname + "startDay = {}", startDay);
 
         final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-        DateTime jsonDay = saturdayLastWeek;
+        DateTime jsonDay = startDay;
         final DateTime jsonEndDay = today.plusDays(1);
         while (jsonDay.isBefore(jsonEndDay)) {
             final String url = pathPrefix + sdf.format(jsonDay.toDate());

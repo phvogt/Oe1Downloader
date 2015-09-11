@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import at.or.vogt.oe1downloader.json.Tag;
+import at.or.vogt.oe1downloader.json.Day;
 
 /**
  * Tests the {@link RulesVO}.
@@ -56,7 +56,7 @@ public class RulesVOTest {
 
     /**
      * Tests the Matching
-     * @throws Exception
+     * @throws Exception if an error occurs
      */
     @Test
     public void testMatching() throws Exception {
@@ -65,12 +65,12 @@ public class RulesVOTest {
 
         final JsonGetter jsonGetter = new JsonGetter();
         final String jsonString = IOUtils.toString(new FileReader("src/test/resources/tag/20150811.json"));
-        final Tag tag = jsonGetter.parseJson(jsonString);
+        final Day day = jsonGetter.parseJson(jsonString);
 
         final RulesVO dut = new RulesVO();
         dut.loadRules();
         final RuleIndexCounter counter = new RuleIndexCounter();
-        final List<RecordVO> records = dut.checkForRecords(tag, counter);
+        final List<RecordVO> records = dut.checkForRecords(day, counter);
         for (final RecordVO recordVO : records) {
             logger.info(methodname + "recordVO = {}", recordVO);
         }

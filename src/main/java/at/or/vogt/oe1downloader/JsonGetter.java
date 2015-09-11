@@ -18,7 +18,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import at.or.vogt.oe1downloader.json.Tag;
+import at.or.vogt.oe1downloader.json.Day;
 
 /**
  * Gets the JSONs.
@@ -26,34 +26,34 @@ import at.or.vogt.oe1downloader.json.Tag;
 public class JsonGetter {
 
     /** event logger. */
-    private static final EventLogger eventLogger = new EventLogger();
+    private static final EventLogger EVENTLOGGER = new EventLogger();
 
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(JsonGetter.class);
 
     /**
-     * Gets the Tage from the list of URLs.
+     * Gets the days from the list of URLs.
      * @param urls urls to load JSON from
-     * @return Tage
+     * @return days
      */
-    public List<Tag> getTage(final List<String> urls) {
+    public List<Day> getDays(final List<String> urls) {
 
-        final List<Tag> result = new ArrayList<>();
+        final List<Day> result = new ArrayList<>();
 
         for (final String url : urls) {
-            final Tag tag = getTag(url);
-            result.add(tag);
+            final Day day = getDay(url);
+            result.add(day);
         }
 
         return result;
     }
 
     /**
-     * Get Tag from URL.
+     * Get Day from URL.
      * @param url url to load JSON from
-     * @return Tag
+     * @return Day
      */
-    Tag getTag(final String url) {
+    Day getDay(final String url) {
 
         final String json = downloadContentFromUrl(url);
         return parseJson(json);
@@ -64,9 +64,9 @@ public class JsonGetter {
      * @param json json to parse
      * @return JSON
      */
-    Tag parseJson(final String json) {
+    Day parseJson(final String json) {
         final JSONObject obj = new JSONObject(json);
-        return new Tag(obj);
+        return new Day(obj);
     }
 
     /**
@@ -78,7 +78,7 @@ public class JsonGetter {
 
         final String methodname = "downloadFromUrl(): ";
 
-        eventLogger.log(Level.INFO, "downloading JSON from URL " + url + ".");
+        EVENTLOGGER.log(Level.INFO, "downloading JSON from URL " + url + ".");
 
         final CloseableHttpClient httpclient = HttpClients.createDefault();
         final HttpGet httpGet = new HttpGet(url);

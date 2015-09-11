@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>OE1 Downloader</title>
+</head>
+<body>
+
+  <h1>OE1 Downloader</h1>
+
+  <p>Allows downloading of shows from the radio station OE1 via the 7 day archive.</p>
+
+  <h2>Configuration</h2>
+  <p>
+    The program is a standalone application that is configured with the file
+    <tt>conf/config.properties</tt>
+    (see documentation of in the file).
+  </p>
+
+  <p>The configuration file specifies the download folder and rules for every show that should be downloaded.</p>
+
+  <h2>Process of downloading</h2>
+
+  <p>The program works as follows:</p>
+  <ol>
+    <li>First all JSON data files are downloaded that contain all shows of the day (or starting from the current time 7 days
+      ago).</li>
+    <li>The JSON data are parsed and compared to the rules in <tt>conf/config.properties</tt>. A list of all shows to download
+      generated.
+    </li>
+    <li>The file name for the MP3 for each show is determined by the rules in the config file.</li>
+    <li>If there is not already a downloaded file for the show in the download directory, it is downloaded and stored there.</li>
+  </ol>
+
+</body>
+</html>

@@ -8,28 +8,28 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
- * Represents a Tag.
+ * Represents a Day.
  */
-public class Tag {
+public class Day {
 
     /** label for day. */
     private final String dayLabel;
 
-    /** all Sendungen of the Tag. */
-    private final List<Sendung> sendungen = new ArrayList<Sendung>();
+    /** all Shows of the Day. */
+    private final List<Show> shows = new ArrayList<Show>();
 
     /**
      * Constructor.
      * @param jsonObj JSON object
      */
-    public Tag(final JSONObject jsonObj) {
+    public Day(final JSONObject jsonObj) {
 
         dayLabel = jsonObj.getString("day_label");
         final JSONArray arr = jsonObj.getJSONArray("list");
         for (int i = 0; i < arr.length(); i++) {
-            final JSONObject sendungObj = arr.getJSONObject(i);
-            final Sendung sendung = new Sendung(sendungObj);
-            sendungen.add(sendung);
+            final JSONObject showObj = arr.getJSONObject(i);
+            final Show show = new Show(showObj);
+            shows.add(show);
         }
 
     }
@@ -43,11 +43,11 @@ public class Tag {
     }
 
     /**
-     * Get the sendungen.
-     * @return the sendungen
+     * Get the shows.
+     * @return the shows
      */
-    public List<Sendung> getSendungen() {
-        return sendungen;
+    public List<Show> getShows() {
+        return shows;
     }
 
     /**
@@ -56,12 +56,12 @@ public class Tag {
     @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder();
-        builder.append("Tag [super = ");
+        builder.append("Day [super = ");
         builder.append(super.toString());
         builder.append(" dayLabel=");
         builder.append(dayLabel);
-        builder.append(", sendungen=");
-        builder.append(sendungen);
+        builder.append(", shows=");
+        builder.append(shows);
         builder.append("]");
         return builder.toString();
     }
@@ -76,11 +76,11 @@ public class Tag {
         builder.append("result.dayLabel = ");
         builder.append(dayLabel);
         builder.append("\n");
-        for (final Sendung sendung : sendungen) {
-            builder.append("  sendung: time = ");
-            builder.append(sendung.getTime());
+        for (final Show show : shows) {
+            builder.append("  show: time = ");
+            builder.append(show.getTime());
             builder.append(" title = ");
-            builder.append(sendung.getTitle());
+            builder.append(show.getTitle());
             builder.append("\n");
         }
         return builder.toString();

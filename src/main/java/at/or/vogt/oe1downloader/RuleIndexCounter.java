@@ -9,7 +9,8 @@ import java.util.Map;
  */
 public class RuleIndexCounter {
 
-    final Map<RuleVO, Integer> _counters = new HashMap<>();
+    /** internal map with a counter for each index. */
+    private final Map<RuleVO, Integer> counters = new HashMap<>();
 
     /**
      * Gets the next index for a rule.
@@ -19,10 +20,10 @@ public class RuleIndexCounter {
     public int getNextIndex(final RuleVO rule) {
 
         int result = rule.getMp3StartIndex();
-        if (_counters.containsKey(rule)) {
-            result = _counters.get(rule) + 1;
+        if (counters.containsKey(rule)) {
+            result = counters.get(rule) + 1;
         }
-        _counters.put(rule, result);
+        counters.put(rule, result);
 
         return result;
 

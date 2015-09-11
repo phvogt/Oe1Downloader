@@ -3,16 +3,16 @@ package at.or.vogt.oe1downloader;
 
 import java.io.File;
 
-import at.or.vogt.oe1downloader.json.Sendung;
+import at.or.vogt.oe1downloader.json.Show;
 
 /**
  * What to record.
  */
 public class RecordVO {
 
-    /** the sendung to record. */
-    private final Sendung sendung;
-    /** the rule that matched the sendung. */
+    /** the show to record. */
+    private final Show show;
+    /** the rule that matched the show. */
     private final RuleVO rule;
     /** download URL. */
     private final String downloadUrl;
@@ -24,50 +24,17 @@ public class RecordVO {
 
     /**
      * Constructor.
-     * @param sendung sendung
+     * @param show Show
      * @param rule rule
      * @param indexCounter counter for file index
      */
-    public RecordVO(final Sendung sendung, final RuleVO rule, final RuleIndexCounter indexCounter) {
+    public RecordVO(final Show show, final RuleVO rule, final RuleIndexCounter indexCounter) {
         super();
-        this.sendung = sendung;
+        this.show = show;
         this.rule = rule;
-        this.downloadUrl = sendung.getUrlStream() + "&shoutcast=0&ua=flash";
+        this.downloadUrl = show.getUrlStream() + "&shoutcast=0&ua=flash";
         final int index = indexCounter.getNextIndex(rule);
-        filename = String.format("%02d", index) + "_" + rule.getMp3postfix() + ".mp3";
-
-    }
-
-    /**
-     * Get the sendung.
-     * @return the sendung
-     */
-    public Sendung getSendung() {
-        return sendung;
-    }
-
-    /**
-     * Get the rule.
-     * @return the rule
-     */
-    public RuleVO getRule() {
-        return rule;
-    }
-
-    /**
-     * Get the filename.
-     * @return the filename
-     */
-    public String getFilename() {
-        return filename;
-    }
-
-    /**
-     * Get the downloadUrl.
-     * @return the downloadUrl
-     */
-    public String getDownloadUrl() {
-        return downloadUrl;
+        filename = String.format("%02d", index) + "_" + rule.getMp3postfix() + "_" + show.getDayLabel() + ".mp3";
     }
 
     /**
@@ -87,6 +54,38 @@ public class RecordVO {
     }
 
     /**
+     * Get the show.
+     * @return the show
+     */
+    public Show getShow() {
+        return show;
+    }
+
+    /**
+     * Get the rule.
+     * @return the rule
+     */
+    public RuleVO getRule() {
+        return rule;
+    }
+
+    /**
+     * Get the downloadUrl.
+     * @return the downloadUrl
+     */
+    public String getDownloadUrl() {
+        return downloadUrl;
+    }
+
+    /**
+     * Get the filename.
+     * @return the filename
+     */
+    public String getFilename() {
+        return filename;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -94,8 +93,8 @@ public class RecordVO {
         final StringBuilder builder = new StringBuilder();
         builder.append("RecordVO [super = ");
         builder.append(super.toString());
-        builder.append(" sendung=");
-        builder.append(sendung);
+        builder.append(" show=");
+        builder.append(show);
         builder.append(", rule=");
         builder.append(rule);
         builder.append(", downloadUrl=");

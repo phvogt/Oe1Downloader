@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 public class EventLogger {
 
     /** Logger. */
-    final Logger logger = Logger.getLogger("eventlogger");
+    private final Logger logger = Logger.getLogger("eventlogger");
 
     /**
      * Log the message.

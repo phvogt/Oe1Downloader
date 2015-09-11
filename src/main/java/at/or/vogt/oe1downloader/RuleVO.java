@@ -3,7 +3,7 @@ package at.or.vogt.oe1downloader;
 
 import org.apache.commons.lang3.StringUtils;
 
-import at.or.vogt.oe1downloader.json.Sendung;
+import at.or.vogt.oe1downloader.json.Show;
 
 /**
  * Rule.
@@ -14,7 +14,7 @@ public class RuleVO {
     private final String name;
     /** short title. */
     private final String shortTitle;
-    /** time the Sendung starts. */
+    /** time the Show starts. */
     private final String time;
     /** mp3 file name start index number. */
     private final int mp3StartIndex;
@@ -25,7 +25,7 @@ public class RuleVO {
      * Constructor.
      * @param name name
      * @param shortTitle short title
-     * @param time time the Sendung starts
+     * @param time time the Show starts
      * @param mp3StartIndex mp3 file name start index number
      * @param mp3postfix mp3 file name postfix
      */
@@ -101,20 +101,17 @@ public class RuleVO {
     }
 
     /**
-     * @param sendung
-     * @return
+     * Checks if the rule matches.
+     * @param show the Show to match
+     * @return true if it matched, otherwise false
      */
-    public boolean matches(final Sendung sendung) {
+    public boolean matches(final Show show) {
 
-        if (StringUtils.isNotEmpty(shortTitle)) {
-            if (!sendung.getShortTitle().contains(shortTitle)) {
-                return false;
-            }
+        if (StringUtils.isNotEmpty(shortTitle) && !show.getShortTitle().contains(shortTitle)) {
+            return false;
         }
-        if (StringUtils.isNotEmpty(time)) {
-            if (!sendung.getTime().equals(time)) {
-                return false;
-            }
+        if (StringUtils.isNotEmpty(time) && !show.getTime().equals(time)) {
+            return false;
         }
 
         return true;
