@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -15,6 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -26,6 +28,13 @@ import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.mpatric.mp3agic.ID3v1;
+import com.mpatric.mp3agic.ID3v1Tag;
+import com.mpatric.mp3agic.InvalidDataException;
+import com.mpatric.mp3agic.Mp3File;
+import com.mpatric.mp3agic.NotSupportedException;
+import com.mpatric.mp3agic.UnsupportedTagException;
 
 import at.or.vogt.oe1downloader.json.Show;
 
@@ -90,6 +99,7 @@ public class DownloadService {
                 @Override
                 public void run() {
                     download(record);
+                    setMp3Tag(record);
                 }
             }));
         }
@@ -170,6 +180,42 @@ public class DownloadService {
             EVENTLOGGER.log(Level.ERROR, "error downloading url " + url, e);
         }
 
+    }
+
+    /**
+     * Sets the mp3 tag in the file.
+     * @param record record to set the id3 tag for
+     */
+    public void setMp3Tag(final RecordVO record) {
+
+        try {
+            final String mp3filename = record.getTargetFilename();
+            final Mp3File mp3file = new Mp3File(mp3filename);
+
+            final ID3v1 id3v1Tag;
+            if (mp3file.hasId3v1Tag()) {
+                id3v1Tag = mp3file.getId3v1Tag();
+            } else {
+                id3v1Tag = new ID3v1Tag();
+                mp3file.setId3v1Tag(id3v1Tag);
+            }
+            id3v1Tag.setArtist("OE1");
+            final Show show = record.getShow();
+            id3v1Tag.setTitle(show.getDayLabel() + " " + StringUtils.replace(show.getTime(), ":", ""));
+            id3v1Tag.setAlbum(show.getShortTitle());
+            id3v1Tag.setTrack(record.getIndex());
+            id3v1Tag.setGenre(12);
+            id3v1Tag.setYear("" + Calendar.getInstance().get(Calendar.YEAR));
+            final String tempFilename = mp3filename + ".tmp";
+            mp3file.save(tempFilename);
+            final File destFile = new File(mp3filename);
+            if (destFile.exists()) {
+                destFile.delete();
+            }
+            FileUtils.moveFile(new File(tempFilename), destFile);
+        } catch (UnsupportedTagException | InvalidDataException | IOException | NotSupportedException e) {
+            EVENTLOGGER.log(Level.ERROR, "error setting mp3 tag", e);
+        }
     }
 
 }

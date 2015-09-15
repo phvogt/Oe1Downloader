@@ -48,6 +48,7 @@ public class DownloadServiceTest {
         final RecordVO record = new RecordVO(show, rule, indexCounter);
         record.setTargetFilename("data/test/test.mp3");
         dut.download(record);
+        dut.setMp3Tag(record);
         logger.info(methodname + "done");
 
     }

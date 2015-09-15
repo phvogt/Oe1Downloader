@@ -16,6 +16,8 @@ public class RecordVO {
     private final RuleVO rule;
     /** download URL. */
     private final String downloadUrl;
+    /** index number of record. */
+    private final String index;
     /** file name. */
     private final String filename;
 
@@ -33,8 +35,8 @@ public class RecordVO {
         this.show = show;
         this.rule = rule;
         this.downloadUrl = show.getUrlStream() + "&shoutcast=0&ua=flash";
-        final int index = indexCounter.getNextIndex(rule);
-        filename = String.format("%02d", index) + "_" + rule.getMp3postfix() + "_" + show.getDayLabel() + ".mp3";
+        this.index = String.format("%02d", indexCounter.getNextIndex(rule));
+        filename = this.index + "_" + rule.getMp3postfix() + "_" + show.getDayLabel() + ".mp3";
     }
 
     /**
@@ -78,6 +80,14 @@ public class RecordVO {
     }
 
     /**
+     * Get the index.
+     * @return the index
+     */
+    public String getIndex() {
+        return index;
+    }
+
+    /**
      * Get the filename.
      * @return the filename
      */
@@ -99,6 +109,8 @@ public class RecordVO {
         builder.append(rule);
         builder.append(", downloadUrl=");
         builder.append(downloadUrl);
+        builder.append(", index=");
+        builder.append(index);
         builder.append(", filename=");
         builder.append(filename);
         builder.append(", targetFilename=");
