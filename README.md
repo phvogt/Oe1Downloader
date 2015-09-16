@@ -1,6 +1,7 @@
 # OE1 Downloader
 
-[![Build Status](https://circleci.com/gh/phvogt/Oe1Downloader.svg?style=shield&circle-token=4a2fb7ee40d094c07a404d18ff2d97cd840b95bf)](https://circleci.com/gh/phvogt/Oe1Downloader)
+[![Build Status](https://travis-ci.org/phvogt/Oe1Downloader.svg?branch=master)](https://travis-ci.org/phvogt/Oe1Downloader)
+[![Coverage Status](https://coveralls.io/repos/phvogt/Oe1Downloader/badge.svg?branch=master&service=github)](https://coveralls.io/github/phvogt/Oe1Downloader?branch=master)
 
 This project provides an application to download shows from the [7 day archive](http://oe1.orf.at/konsole?show=ondemand) from the austrian radio station [Ö1](http://oe1.orf.at).
 
