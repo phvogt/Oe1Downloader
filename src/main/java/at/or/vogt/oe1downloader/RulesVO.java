@@ -7,10 +7,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.apache.log4j.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import at.or.vogt.oe1downloader.config.Configuration;
+import at.or.vogt.oe1downloader.config.ConfigurationParameter;
 import at.or.vogt.oe1downloader.json.Day;
 import at.or.vogt.oe1downloader.json.Show;
 
@@ -20,7 +21,7 @@ import at.or.vogt.oe1downloader.json.Show;
 public class RulesVO {
 
     /** event logger. */
-    private static final EventLogger EVENTLOGGER = new EventLogger();
+    private static final Logger EVENTLOGGER = EventLogger.getLogger();
 
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(RulesVO.class);
@@ -29,13 +30,23 @@ public class RulesVO {
     private final List<RuleVO> rules = new ArrayList<RuleVO>();
 
     /**
+     * Gets the rules.
+     * @return rules
+     */
+    public static RulesVO getRulesVO() {
+        final RulesVO result = new RulesVO();
+        result.loadRules();
+        return result;
+    }
+
+    /**
      * loads the rules.
      */
     public void loadRules() {
 
-        final Configuration config = new Configuration();
+        final Configuration config = Configuration.getConfiguration();
 
-        EVENTLOGGER.log(Level.INFO, "loading rules.");
+        EVENTLOGGER.info("loading rules.");
 
         final Map<String, String> parsedRules = config.getPropertyMap(ConfigurationParameter.RULES);
 
@@ -129,7 +140,7 @@ public class RulesVO {
 
                 if (rule.matches(show)) {
 
-                    EVENTLOGGER.log(Level.INFO, "will get " + show.getDayLabel() + " " + show.getTime() + " " + show.getTitle());
+                    EVENTLOGGER.info("will get {} {} {}", show.getDayLabel(), show.getTime(), show.getTitle());
 
                     final RecordVO record = new RecordVO(show, rule, indexCounter);
                     result.add(record);

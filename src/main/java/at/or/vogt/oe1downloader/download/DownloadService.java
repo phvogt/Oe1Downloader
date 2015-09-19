@@ -1,5 +1,5 @@
 // (c) 2015 by Philipp Vogt
-package at.or.vogt.oe1downloader;
+package at.or.vogt.oe1downloader.download;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -23,9 +23,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.apache.log4j.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +34,10 @@ import com.mpatric.mp3agic.Mp3File;
 import com.mpatric.mp3agic.NotSupportedException;
 import com.mpatric.mp3agic.UnsupportedTagException;
 
+import at.or.vogt.oe1downloader.EventLogger;
+import at.or.vogt.oe1downloader.RecordVO;
+import at.or.vogt.oe1downloader.config.Configuration;
+import at.or.vogt.oe1downloader.config.ConfigurationParameter;
 import at.or.vogt.oe1downloader.json.Show;
 
 /**
@@ -44,37 +46,77 @@ import at.or.vogt.oe1downloader.json.Show;
 public class DownloadService {
 
     /** event logger. */
-    private static final EventLogger EVENTLOGGER = new EventLogger();
+    private static final Logger EVENTLOGGER = EventLogger.getLogger();
 
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(DownloadService.class);
 
-    /** target directory. */
-    private final String targetDirectory;
+    /** factory for http clients for downloading */
+    private final HttpClientFactory httpClientFactory;
 
     /**
      * Constructor.
-     * @param targetDirectory name of target directory
-     * @throws IOException if directory can not be created
+     * @param httpClientFactory factory for http clients for downloading
      */
-    public DownloadService(final String targetDirectory) throws IOException {
+    public DownloadService(final HttpClientFactory httpClientFactory) {
+        this.httpClientFactory = httpClientFactory;
+    }
 
-        this.targetDirectory = targetDirectory;
-        final File targetDirFile = new File(targetDirectory);
-        FileUtils.forceMkdir(targetDirFile);
+    /**
+     * Handle the download.
+     * @param url URL
+     * @param handler handler to process content
+     */
+    public void download(final String url, final DownloadHandler handler) {
+
+        final String methodname = "downloadFromUrl(): ";
+
+        EVENTLOGGER.info("downloading from URL {}.", url);
+        final CloseableHttpClient httpclient = httpClientFactory.getHttpClient();
+        final HttpGet httpGet = new HttpGet(url);
+
+        final Configuration config = Configuration.getConfiguration();
+        final String useragent = config.getProperty(ConfigurationParameter.USER_AGENT_STRING);
+        httpGet.addHeader("User-Agent", useragent);
+
+        try (final CloseableHttpResponse response = httpclient.execute(httpGet)) {
+            logger.info(methodname + "url = {} statuscode = {}", url, response.getStatusLine());
+            final HttpEntity entity = response.getEntity();
+            if (logger.isDebugEnabled()) {
+                final Header[] headers = response.getAllHeaders();
+                for (final Header header : headers) {
+                    logger.debug(methodname + "  header = {}: {}", header.getName(), header.getValue());
+                }
+                logger.debug(methodname + "  Content-Type = {}", entity.getContentType());
+                logger.debug(methodname + "  Content-Length = {}", entity.getContentLength());
+            }
+
+            try (final InputStream in = entity.getContent()) {
+                handler.handleDownload(in);
+            }
+            EntityUtils.consume(entity);
+        } catch (final IOException e) {
+            final String message = "error downloading from url = " + url;
+            logger.error(message, e);
+            EVENTLOGGER.error(message);
+        }
     }
 
     /**
      * Downloads the records.
+     * @param targetDirectory target directory
      * @param records records to download
+     * @throws IOException if an error occcurs
      */
-    public void downloadRecords(final List<RecordVO> records) {
+    public void downloadRecords(final String targetDirectory, final List<RecordVO> records) throws IOException {
 
         final String methodname = "downloadRecords(): ";
 
-        final Configuration config = new Configuration();
-        final int parallelDownloads = NumberUtils
-                .toInt(config.getProperty(ConfigurationParameter.NUMBER_OF_PARALLEL_DOWNLOADS, "3"), 3);
+        final File targetDirFile = new File(targetDirectory);
+        FileUtils.forceMkdir(targetDirFile);
+
+        final Configuration config = Configuration.getConfiguration();
+        final int parallelDownloads = NumberUtils.toInt(config.getProperty(ConfigurationParameter.NUMBER_OF_PARALLEL_DOWNLOADS), 3);
 
         final ExecutorService executors = Executors.newFixedThreadPool(parallelDownloads);
         final List<Future<?>> futures = new ArrayList<>();
@@ -88,7 +130,7 @@ public class DownloadService {
 
             // check if the file already exists
             if (record.checkTargetFileExists()) {
-                EVENTLOGGER.log(Level.WARN, "will not download " + record.getTargetFilename() + ", because file already exists.");
+                EVENTLOGGER.warn("will not download {}, because file already exists.", record.getTargetFilename());
 
                 logger.info(methodname + "  not downlading, record already exists. record = {}", record);
                 continue;
@@ -115,7 +157,7 @@ public class DownloadService {
             logger.info(methodname + "waiting 60s");
             executors.awaitTermination(60, TimeUnit.SECONDS);
         } catch (final InterruptedException | ExecutionException e) {
-            EVENTLOGGER.log(Level.ERROR, "error downloading", e);
+            EVENTLOGGER.error("error downloading", e);
         }
 
     }
@@ -124,60 +166,46 @@ public class DownloadService {
      * Downloads the MP3 from the URL.
      * @param record record to download
      */
-    public void download(final RecordVO record) {
+    void download(final RecordVO record) {
 
         final String methodname = "download(): ";
 
         logger.info(methodname + "record = {}", record);
 
-        final long start = System.currentTimeMillis();
-        final Show show = record.getShow();
-        EVENTLOGGER.log(Level.INFO, "start downloading " + show.getDayLabel() + " " + show.getTime() + " " + show.getTitle()
-        + " to " + record.getTargetFilename());
-
-        // download to file
-        final CloseableHttpClient httpclient = HttpClients.createDefault();
-
         final String url = record.getDownloadUrl();
-        final HttpGet httpGet = new HttpGet(url);
+        try {
+            // remember time for later duration calculation
+            final long start = System.currentTimeMillis();
+            final Show show = record.getShow();
+            EVENTLOGGER.info("start downloading {} {} {} to {}", show.getDayLabel(), show.getTime(), show.getTitle(),
+                    record.getTargetFilename());
 
-        final Configuration config = new Configuration();
-        final String useragent = config.getProperty(ConfigurationParameter.USER_AGENT_STRING,
-                "Mozilla/5.0 (X11; Linux x86_64; rv:40.0) Gecko/20100101 Firefox/40.0 Iceweasel/40.0");
-        httpGet.addHeader("User-Agent", useragent);
-
-        try (final CloseableHttpResponse response1 = httpclient.execute(httpGet)) {
-            logger.debug(methodname + "url = {} statuscode = {}", url, response1.getStatusLine());
-            final HttpEntity entity1 = response1.getEntity();
-            final Header[] headers = response1.getAllHeaders();
-            if (logger.isDebugEnabled()) {
-                for (final Header header : headers) {
-                    logger.debug(methodname + "  header = {}: {}", header.getName(), header.getValue());
-                }
-                logger.debug(methodname + "  Content-Type = {}", entity1.getContentType());
-                logger.debug(methodname + "  Content-Length = {}", entity1.getContentLength());
-            }
-
+            // remove old temporary files
             final String tempFilename = record.getTargetFilename() + ".tmp";
             final File tempFile = new File(tempFilename);
             if (tempFile.exists()) {
                 tempFile.delete();
             }
-            try (final InputStream input = entity1.getContent()) {
 
-                try (final FileOutputStream fos = new FileOutputStream(tempFilename)) {
-                    IOUtils.copy(input, fos);
-                } catch (final IOException e) {
-                    EVENTLOGGER.log(Level.ERROR, "error downloading url " + url, e);
+            // download to file
+            download(url, new DownloadHandler() {
+
+                @Override
+                public void handleDownload(final InputStream input) {
+                    try (final FileOutputStream fos = new FileOutputStream(tempFilename)) {
+                        IOUtils.copy(input, fos);
+                    } catch (final IOException e) {
+                        EVENTLOGGER.error("error downloading url {}", url, e);
+                    }
+
                 }
-            }
-            EntityUtils.consume(entity1);
-            FileUtils.moveFile(new File(tempFilename), new File(record.getTargetFilename()));
-            EVENTLOGGER.log(Level.INFO, "done downloading " + show.getDayLabel() + " " + show.getTime() + " " + show.getTitle()
-            + " to " + record.getTargetFilename() + " took " + (System.currentTimeMillis() - start) + " ms");
+            });
 
+            FileUtils.moveFile(new File(tempFilename), new File(record.getTargetFilename()));
+            EVENTLOGGER.info("done downloading {} {} {} to {} took {} ms", show.getDayLabel(), show.getTime(), show.getTitle(),
+                    record.getTargetFilename(), (System.currentTimeMillis() - start));
         } catch (final Exception e) {
-            EVENTLOGGER.log(Level.ERROR, "error downloading url " + url, e);
+            EVENTLOGGER.error("error downloading url {}", url, e);
         }
 
     }
@@ -186,7 +214,7 @@ public class DownloadService {
      * Sets the mp3 tag in the file.
      * @param record record to set the id3 tag for
      */
-    public void setMp3Tag(final RecordVO record) {
+    void setMp3Tag(final RecordVO record) {
 
         try {
             final String mp3filename = record.getTargetFilename();
@@ -214,7 +242,7 @@ public class DownloadService {
             }
             FileUtils.moveFile(new File(tempFilename), destFile);
         } catch (UnsupportedTagException | InvalidDataException | IOException | NotSupportedException e) {
-            EVENTLOGGER.log(Level.ERROR, "error setting mp3 tag", e);
+            EVENTLOGGER.error("error setting mp3 tag", e);
         }
     }
 

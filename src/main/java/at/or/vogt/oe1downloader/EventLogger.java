@@ -1,8 +1,8 @@
 // (c) 2015 by Philipp Vogt
 package at.or.vogt.oe1downloader;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Logs events.
@@ -10,25 +10,21 @@ import org.apache.log4j.Logger;
 public class EventLogger {
 
     /** Logger. */
-    private final Logger logger = Logger.getLogger("eventlogger");
+    private static final Logger EVENTLOGGER = LoggerFactory.getLogger("eventlogger");
 
     /**
-     * Log the message.
-     * @param level level
-     * @param message message
+     * Hide constructor.
      */
-    public void log(final Level level, final String message) {
-        log(level, message, null);
+    private EventLogger() {
+        // intentionally blank
     }
 
     /**
-     * Log the message and throwable.
-     * @param level level
-     * @param message message
-     * @param e throwable
+     * Get the event EVENTLOGGER.
+     * @return the event EVENTLOGGER
      */
-    public void log(final Level level, final String message, final Throwable e) {
-        logger.log(level, message, e);
+    public static Logger getLogger() {
+        return EVENTLOGGER;
     }
 
 }

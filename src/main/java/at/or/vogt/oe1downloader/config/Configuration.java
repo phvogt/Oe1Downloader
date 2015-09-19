@@ -1,5 +1,5 @@
 // (c) 2015 by Philipp Vogt
-package at.or.vogt.oe1downloader;
+package at.or.vogt.oe1downloader.config;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,7 +11,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.log4j.Level;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import at.or.vogt.oe1downloader.EventLogger;
 
 /**
  * Helper class for the configuration.
@@ -19,40 +22,48 @@ import org.apache.log4j.Level;
 public class Configuration {
 
     /** file name for config properties. */
-    private static final String CONFIG_FILENAME = "conf/config.properties";
+    static final String CONFIG_FILENAME = "conf/config.properties";
 
     /** event logger. */
-    private static final EventLogger EVENTLOGGER = new EventLogger();
+    private static final Logger EVENTLOGGER = EventLogger.getLogger();
+
+    /** Logger. */
+    private final Logger logger = LoggerFactory.getLogger(Configuration.class);
 
     /** contains the properties. */
-    private final Properties configFileProps;
+    private Properties configFileProps = new Properties();
 
     /**
-     * Constructor.
+     * Gets the configuration.
+     * @return configuration.
      */
-    public Configuration() {
-        configFileProps = loadProperties();
+    public static Configuration getConfiguration() {
+
+        final Configuration result = new Configuration();
+        result.loadProperties(CONFIG_FILENAME);
+
+        return result;
     }
 
     /**
      * Loads the Properties.
+     * @param configFilename file name of configuration file
      * @return the loaded properties
      */
-    private Properties loadProperties() {
+    Properties loadProperties(final String configFilename) {
 
-        EVENTLOGGER.log(Level.INFO, "loading properties from " + CONFIG_FILENAME + ".");
+        logger.info("loading properties from " + configFilename + ".");
 
-        final Properties result = new Properties();
-
-        try (final FileInputStream in = new FileInputStream(new File(CONFIG_FILENAME))) {
-            result.load(in);
+        try (final FileInputStream in = new FileInputStream(new File(configFilename))) {
+            configFileProps.load(in);
         } catch (final IOException e) {
-            final String message = "could not load " + CONFIG_FILENAME;
-            EVENTLOGGER.log(Level.ERROR, message, e);
+            final String message = "could not load " + configFilename;
+            logger.error(message, e);
+            EVENTLOGGER.error(message);
             throw new RuntimeException(message, e);
         }
 
-        return result;
+        return configFileProps;
     }
 
     /**
@@ -60,7 +71,7 @@ public class Configuration {
      * @param parameter parameter for the properties
      * @return the properties as a map
      */
-    Map<String, String> getPropertyMap(final ConfigurationParameter parameter) {
+    public Map<String, String> getPropertyMap(final ConfigurationParameter parameter) {
 
         final String propertyPrefix = parameter.getName();
         final Map<String, String> result = new LinkedHashMap<String, String>();
@@ -93,14 +104,14 @@ public class Configuration {
      * @param defaultValue default value to return if parameter is null
      * @return the configuration value
      */
-    String getProperty(final ConfigurationParameter parameter, final String defaultValue) {
+    public String getProperty(final ConfigurationParameter parameter) {
 
         final String result = configFileProps.getProperty(parameter.getName());
 
         if (result != null) {
             return result;
         } else {
-            return defaultValue;
+            return parameter.getDefaultValue();
         }
     }
 

@@ -1,0 +1,23 @@
+{
+   "url_playlist" : "/programm/411275/playlist",
+   "day_label" : "Mo., 17.08.2015",
+   "url_stream" : "http://loopstream01.apa.at/?channel=oe1&id=20150817_0500_1_2_nachrichten_XXX_w_",
+   "list" : [
+      {
+         "parts" : [],
+         "info" : "Trauma, Bevormundung und Aufbegehren (1). Gestaltung: Christian Lerch",
+         "tag" : "",
+         "url_playlist" : "/programm/411287/playlist",
+         "url_detail" : "/programm/411287",
+         "time" : "09:05",
+         "title" : "Radiokolleg - Die Indianer - Amerikas 1 Prozent",
+         "id" : "411287",
+         "short_title" : "Radiokolleg - Die Indianer - Amerikas 1 ...",
+         "url_json" : "/programm/411287/konsole",
+         "day_label" : "17.08.2015",
+         "url_stream" : "http://loopstream01.apa.at/?channel=oe1&id=20150817_0905_11_1_radiokolleg_R1K_w_"
+      }
+   ],
+   "link_mp3" : "",
+   "link_wma" : ""
+}

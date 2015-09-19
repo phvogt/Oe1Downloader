@@ -2,18 +2,21 @@
 package at.or.vogt.oe1downloader;
 
 import java.io.File;
-import java.io.FileReader;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.log4j.PropertyConfigurator;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import at.or.vogt.oe1downloader.download.DownloadService;
+import at.or.vogt.oe1downloader.download.FileDownloadService;
+import at.or.vogt.oe1downloader.download.HttpClientFactory;
 import at.or.vogt.oe1downloader.json.Day;
+import at.or.vogt.oe1downloader.json.JsonGetter;
 
 /**
  * Test for {@link DateCalc}
@@ -21,7 +24,7 @@ import at.or.vogt.oe1downloader.json.Day;
 public class DateCalcTest {
 
     static {
-        PropertyConfigurator.configure("conf/log4j.properties");
+        PropertyConfigurator.configure("src/test/resources/log4j.properties");
     }
 
     /** Logger. */
@@ -29,10 +32,9 @@ public class DateCalcTest {
 
     /**
      * Test the RulesVO.
-     * @throws Exception if an error occurs
      */
     @Test
-    public void testGetJsonUrls() throws Exception {
+    public void testGetJsonUrls() {
 
         final String methodname = "testRulesVO(): ";
 
@@ -45,10 +47,9 @@ public class DateCalcTest {
 
     /**
      * Test the RulesVO.
-     * @throws Exception if an error occurs
      */
     @Test
-    public void testRules() throws Exception {
+    public void testRules() {
 
         final String methodname = "testRulesVO(): ";
 
@@ -56,9 +57,10 @@ public class DateCalcTest {
         for (final File jsonFile : jsonFiles) {
             logger.info(methodname + "jsonFile = {}", jsonFile);
 
-            final JsonGetter jsonGetter = new JsonGetter();
-            final String jsonString = IOUtils.toString(new FileReader(jsonFile));
-            final Day day = jsonGetter.parseJson(jsonString);
+            final DownloadService downloadService = new FileDownloadService(new HttpClientFactory());
+            final JsonGetter jsonGetter = new JsonGetter(downloadService);
+            final List<Day> days = jsonGetter.getDays(Arrays.asList(jsonFile.getAbsolutePath()));
+            final Day day = days.get(0);
 
             final RulesVO dut = new RulesVO();
             dut.loadRules();

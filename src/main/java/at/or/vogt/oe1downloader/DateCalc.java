@@ -10,6 +10,9 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import at.or.vogt.oe1downloader.config.Configuration;
+import at.or.vogt.oe1downloader.config.ConfigurationParameter;
+
 /**
  * Calculates dates.
  */
@@ -30,8 +33,8 @@ public class DateCalc {
         final List<String> result = new ArrayList<>();
 
         final DateTime today = new DateTime();
-        final Configuration config = new Configuration();
-        final int daysback = NumberUtils.toInt(config.getProperty(ConfigurationParameter.DAYSBACK, "7"), 7);
+        final Configuration config = Configuration.getConfiguration();
+        final int daysback = NumberUtils.toInt(config.getProperty(ConfigurationParameter.DAYSBACK), 7);
 
         final DateTime startDay = today.minusDays(daysback);
         logger.info(methodname + "startDay = {}", startDay);

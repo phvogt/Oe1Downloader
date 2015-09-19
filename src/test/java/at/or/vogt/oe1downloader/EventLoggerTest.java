@@ -1,9 +1,9 @@
 // (c) 2015 by Philipp Vogt
 package at.or.vogt.oe1downloader;
 
-import org.apache.log4j.Level;
 import org.apache.log4j.PropertyConfigurator;
 import org.junit.Test;
+import org.slf4j.Logger;
 
 /**
  * Tests for {@link EventLogger}.
@@ -11,20 +11,18 @@ import org.junit.Test;
 public class EventLoggerTest {
 
     static {
-        PropertyConfigurator.configure("conf/log4j.properties");
+        PropertyConfigurator.configure("src/test/resources/log4j.properties");
     }
 
     /**
      * Test logging.
-     * @throws Exception if an error occurs
      */
     @Test
-    public void testLog() throws Exception {
+    public void testLog() {
 
-        final EventLogger dut = new EventLogger();
-        dut.log(Level.ERROR, "error message");
-        dut.log(Level.WARN, "warn message", new Exception("test"));
-
+        final Logger dut = EventLogger.getLogger();
+        dut.error("error message");
+        dut.warn("warn message", new Exception("test"));
     }
 
 }
