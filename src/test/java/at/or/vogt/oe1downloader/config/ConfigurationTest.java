@@ -44,7 +44,7 @@ public class ConfigurationTest {
     }
 
     /**
-     * Tests {@link Configuration#getProperty(ConfigurationParameter, String)}.
+     * Tests {@link Configuration#getProperty(ConfigurationParameter)}.
      */
     @Test
     public void testGetProperty() {
@@ -56,8 +56,8 @@ public class ConfigurationTest {
     }
 
     /**
-     * Tests {@link Configuration#getProperty(ConfigurationParameter, String)}
-     * with empty property.
+     * Tests {@link Configuration#getProperty(ConfigurationParameter)} with
+     * empty property.
      * @throws Exception if an error occurs
      */
     @Test

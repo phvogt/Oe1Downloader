@@ -82,8 +82,7 @@ public class JsonGetterTest {
     }
 
     /**
-     * Gets the Days ({@link at.or.vogt.oe1downloader.JsonGetter.getDays(List
-     * <String>)}).
+     * Gets the Days ({@link JsonGetter#getDays(List)}).
      */
     @Test
     public void testGetDays() {

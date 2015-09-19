@@ -101,7 +101,6 @@ public class Configuration {
     /**
      * Gets the property for the configuration parameter.
      * @param parameter to get
-     * @param defaultValue default value to return if parameter is null
      * @return the configuration value
      */
     public String getProperty(final ConfigurationParameter parameter) {
