@@ -72,31 +72,36 @@ public class DownloadService {
         final String methodname = "downloadFromUrl(): ";
 
         EVENTLOGGER.info("downloading from URL {}.", url);
-        final CloseableHttpClient httpclient = httpClientFactory.getHttpClient();
-        final HttpGet httpGet = new HttpGet(url);
+        try (final CloseableHttpClient httpclient = httpClientFactory.getHttpClient()) {
+            final HttpGet httpGet = new HttpGet(url);
 
-        final Configuration config = Configuration.getConfiguration();
-        final String useragent = config.getProperty(ConfigurationParameter.USER_AGENT_STRING);
-        httpGet.addHeader("User-Agent", useragent);
+            final Configuration config = Configuration.getConfiguration();
+            final String useragent = config.getProperty(ConfigurationParameter.USER_AGENT_STRING);
+            httpGet.addHeader("User-Agent", useragent);
 
-        try (final CloseableHttpResponse response = httpclient.execute(httpGet)) {
-            logger.info(methodname + "url = {} statuscode = {}", url, response.getStatusLine());
-            final HttpEntity entity = response.getEntity();
-            if (logger.isDebugEnabled()) {
-                final Header[] headers = response.getAllHeaders();
-                for (final Header header : headers) {
-                    logger.debug(methodname + "  header = {}: {}", header.getName(), header.getValue());
+            try (final CloseableHttpResponse response = httpclient.execute(httpGet)) {
+                logger.info(methodname + "url = {} statuscode = {}", url, response.getStatusLine());
+                final HttpEntity entity = response.getEntity();
+                if (logger.isDebugEnabled()) {
+                    final Header[] headers = response.getAllHeaders();
+                    for (final Header header : headers) {
+                        logger.debug(methodname + "  header = {}: {}", header.getName(), header.getValue());
+                    }
+                    logger.debug(methodname + "  Content-Type = {}", entity.getContentType());
+                    logger.debug(methodname + "  Content-Length = {}", entity.getContentLength());
                 }
-                logger.debug(methodname + "  Content-Type = {}", entity.getContentType());
-                logger.debug(methodname + "  Content-Length = {}", entity.getContentLength());
-            }
 
-            try (final InputStream in = entity.getContent()) {
-                handler.handleDownload(in);
+                try (final InputStream in = entity.getContent()) {
+                    handler.handleDownload(in);
+                }
+                EntityUtils.consume(entity);
+            } catch (final IOException e) {
+                final String message = "error downloading from url = " + url;
+                logger.error(message, e);
+                EVENTLOGGER.error(message);
             }
-            EntityUtils.consume(entity);
         } catch (final IOException e) {
-            final String message = "error downloading from url = " + url;
+            final String message = "error instantiating downloader for url = " + url;
             logger.error(message, e);
             EVENTLOGGER.error(message);
         }
