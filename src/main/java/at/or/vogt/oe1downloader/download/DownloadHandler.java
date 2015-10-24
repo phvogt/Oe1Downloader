@@ -1,4 +1,3 @@
-// (c) 2015 by Philipp Vogt
 package at.or.vogt.oe1downloader.download;
 
 import java.io.InputStream;
