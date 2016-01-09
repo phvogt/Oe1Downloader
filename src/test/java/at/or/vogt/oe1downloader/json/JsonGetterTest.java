@@ -21,7 +21,7 @@ import at.or.vogt.oe1downloader.download.HttpClientFactory;
 public class JsonGetterTest {
 
     static {
-        PropertyConfigurator.configure("src/test/resources/log4j.properties");
+	PropertyConfigurator.configure("src/test/resources/log4j.properties");
     }
 
     /** Logger. */
@@ -29,30 +29,38 @@ public class JsonGetterTest {
 
     /**
      * Parses the JSON.
-     * @throws Exception if an error occurs
+     * 
+     * @throws Exception
+     *             if an error occurs
      */
     @Test
     public void testParseJson() throws Exception {
 
-        final String methodname = "testParseJson(): ";
-        logger.info(methodname + "start");
+	final String methodname = "testParseJson(): ";
+	logger.info(methodname + "start");
 
-        final DownloadService downloadService = new DownloadService(new HttpClientFactory());
+	final DownloadService downloadService = new DownloadService(new HttpClientFactory());
 
-        final JsonGetter dut = new JsonGetter(downloadService);
+	final JsonGetter dut = new JsonGetter(downloadService);
 
-        final String jsonString = IOUtils.toString(new FileReader("src/test/resources/tag/20150810.json"));
-        final Day result = dut.parseJson(jsonString);
-        Assert.assertNotNull(result);
-        logger.info(methodname + "result = {}", result.toStringShort());
+	final String jsonString = IOUtils.toString(new FileReader("src/test/resources/tag/20150810.json"));
+	final Day result = dut.parseJson(jsonString);
+	Assert.assertNotNull(result);
+	logger.info(methodname + "result short = {}", result.toStringShort());
+	logger.info(methodname + "result long = {}", result.toString());
+	Assert.assertEquals("Mo., 10.08.2015", result.getDayLabel());
 
-        Assert.assertNotNull(result.getShows());
-        Assert.assertEquals(9, result.getShows().size());
+	Assert.assertNotNull(result.getShows());
+	Assert.assertEquals(9, result.getShows().size());
 
-        final Show show = result.getShows().get(2);
-        logger.info(methodname + "show = {}", show);
-        Assert.assertEquals("Radiokolleg", show.getShortTitle());
-
+	final Show show = result.getShows().get(2);
+	logger.info(methodname + "show = {}", show.toString());
+	Assert.assertEquals(411033, show.getId());
+	Assert.assertEquals("Radiokolleg", show.getShortTitle());
+	Assert.assertEquals("/programm/411033/konsole", show.getUrlJson());
+	Assert.assertEquals(
+		"(22:15 Uhr) Die autonome Frauenbewegung. Solidarit\u00e4t, Sexualit\u00e4t und Subjektivi\u00e4t (1). Gestaltung: Christa Nebenf\u00fchr\n(22:40 Uhr) Magier mit B\u00fcgelfalte. Der Gro\u00dfb\u00fcrger und literarische Selbstdarsteller Thomas Mann (1). Gestaltung: Sabrina Adlbrecht",
+		show.getInfo());
     }
 
     /**
@@ -61,23 +69,23 @@ public class JsonGetterTest {
     @Test
     public void testGetDay() {
 
-        final String methodname = "testGetDay(): ";
-        logger.info(methodname + "start");
+	final String methodname = "testGetDay(): ";
+	logger.info(methodname + "start");
 
-        final DownloadService testDownloadService = new FileDownloadService(new HttpClientFactory());
-        final JsonGetter dut = new JsonGetter(testDownloadService);
-        final Day result = dut.getDay("src/test/resources/tag/20150810.json");
-        logger.info(methodname + "result = {}", result.toStringShort());
+	final DownloadService testDownloadService = new FileDownloadService(new HttpClientFactory());
+	final JsonGetter dut = new JsonGetter(testDownloadService);
+	final Day result = dut.getDay("src/test/resources/tag/20150810.json");
+	logger.info(methodname + "result = {}", result.toStringShort());
 
-        Assert.assertNotNull(result);
-        logger.info(methodname + "result = {}", result.toStringShort());
+	Assert.assertNotNull(result);
+	logger.info(methodname + "result = {}", result.toStringShort());
 
-        Assert.assertNotNull(result.getShows());
-        Assert.assertEquals(9, result.getShows().size());
+	Assert.assertNotNull(result.getShows());
+	Assert.assertEquals(9, result.getShows().size());
 
-        final Show show = result.getShows().get(2);
-        logger.info(methodname + "show = {}", show);
-        Assert.assertEquals("Radiokolleg", show.getShortTitle());
+	final Show show = result.getShows().get(2);
+	logger.info(methodname + "show = {}", show);
+	Assert.assertEquals("Radiokolleg", show.getShortTitle());
     }
 
     /**
@@ -86,17 +94,17 @@ public class JsonGetterTest {
     @Test
     public void testGetDays() {
 
-        final String methodname = "testGetDays(): ";
-        logger.info(methodname + "start");
+	final String methodname = "testGetDays(): ";
+	logger.info(methodname + "start");
 
-        final DownloadService testDownloadService = new FileDownloadService(new HttpClientFactory());
-        final JsonGetter dut = new JsonGetter(testDownloadService);
+	final DownloadService testDownloadService = new FileDownloadService(new HttpClientFactory());
+	final JsonGetter dut = new JsonGetter(testDownloadService);
 
-        final List<Day> result = dut.getDays(
-                Arrays.asList(new String[] { "src/test/resources/tag/20150810.json", "src/test/resources/tag_error/error.json" }));
-        Assert.assertNotNull(result);
-        logger.info(methodname + "result = {}", result);
-        Assert.assertEquals(1, result.size());
+	final List<Day> result = dut.getDays(Arrays.asList(
+		new String[] { "src/test/resources/tag/20150810.json", "src/test/resources/tag_error/error.json" }));
+	Assert.assertNotNull(result);
+	logger.info(methodname + "result = {}", result);
+	Assert.assertEquals(1, result.size());
 
     }
 }
