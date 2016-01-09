@@ -14,7 +14,8 @@ public class SystemExitException extends Exception {
     /**
      * Constructor.
      * 
-     * @param message
+     * @param exitCode exit code
+     * @param message message for the exception
      */
     public SystemExitException(final int exitCode, final String message) {
 	super(message);
