@@ -8,8 +8,8 @@
 
   <packaging>jar</packaging>
 
-  <name>Einkaufsliste</name>
-  <description>Einkaufsliste</description>
+  <name>Oe1Downloader</name>
+  <description>Downloader for Oe1</description>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
