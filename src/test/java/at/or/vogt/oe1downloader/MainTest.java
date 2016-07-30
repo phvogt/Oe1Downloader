@@ -30,7 +30,9 @@ public class MainTest {
     private final Logger logger = LoggerFactory.getLogger(MainTest.class);
 
     /**
-     * Tests {@link Main#doDownloads(DownloadService, String, String)}.
+     * Tests
+     * {@link at.or.vogt.oe1downloader.Main#doDownloads(DownloadService, String, String)}
+     * .
      */
     @Test
     public void testDoDownloads() {
@@ -75,7 +77,7 @@ public class MainTest {
     }
 
     /**
-     * Tests {@link Main#getDownloadService()}.
+     * Tests {@link at.or.vogt.oe1downloader.Main#getDownloadService()}.
      */
     @Test
     public void testGetDownloadService() {
@@ -91,7 +93,7 @@ public class MainTest {
     }
 
     /**
-     * Tests {@link Main#getJsonPathPrefix()}.
+     * Tests {@link at.or.vogt.oe1downloader.Main#getJsonPathPrefix()}.
      */
     @Test
     public void testGetJsonPathPrefix() {
@@ -108,7 +110,7 @@ public class MainTest {
     }
 
     /**
-     * Tests {@link Main#getTargetDirectory(String)}.
+     * Tests {@link at.or.vogt.oe1downloader.Main#getTargetDirectory(String)}.
      */
     @Test
     public void testGetTargetDirectory() {
@@ -131,7 +133,7 @@ public class MainTest {
     }
 
     /**
-     * Tests {@link Main#showUsage()}.
+     * Tests {@link at.or.vogt.oe1downloader.Main#showUsage(String)}.
      */
     @Test
     public void testShowUsage() {
@@ -146,7 +148,7 @@ public class MainTest {
     }
 
     /**
-     * Tests {@link Main#processCommandline(String[])}.
+     * Tests {@link at.or.vogt.oe1downloader.Main#processCommandline(String[])}.
      */
     @Test
     public void testProcessCommandline() {

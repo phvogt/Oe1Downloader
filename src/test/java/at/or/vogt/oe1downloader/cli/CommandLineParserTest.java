@@ -42,6 +42,7 @@ public class CommandLineParserTest {
      * Tests {@link CommandLineParser#parseCommandLine(String[])}.
      * 
      * @throws ParseException
+     *             if an error occurs
      */
     @Test
     public void testParseCommandLine() throws ParseException {
