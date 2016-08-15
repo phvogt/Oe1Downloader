@@ -37,8 +37,26 @@ public class DownloadServiceTest {
 
         final DownloadService dut = new DownloadService(new FileHttpClientFactory("src/test/resources/tag/20150810.json"));
         final StringDownloadHandler handler = new StringDownloadHandler();
-        dut.download("src/test/resources/tag/20150810.json", handler);
+        final boolean result = dut.download("src/test/resources/tag/20150810.json", handler);
+        Assert.assertTrue(result);
         Assert.assertNotNull(handler.getResult());
+        logger.info(methodname + "result = {}", handler.getResult());
+    }
+
+    /**
+     * Test of {@link DownloadService#download(String, DownloadHandler)}.
+     */
+    @Test
+    public void testDownloadWithHandlerConnectionReset() {
+
+        final String methodname = "testDownloadWithHandlerConnectionReset(): ";
+
+        final DownloadService dut = new DownloadService(
+                new FileHttpClientFactoryConnectionReset("src/test/resources/tag/20150810.json"));
+        final StringDownloadHandler handler = new StringDownloadHandler();
+        final boolean result = dut.download("src/test/resources/tag/20150810.json", handler);
+        Assert.assertFalse(result);
+        Assert.assertEquals("", handler.getResult());
         logger.info(methodname + "result = {}", handler.getResult());
     }
 

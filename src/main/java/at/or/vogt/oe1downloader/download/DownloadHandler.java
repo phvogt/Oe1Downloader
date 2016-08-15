@@ -13,4 +13,10 @@ public interface DownloadHandler {
      */
     void handleDownload(final InputStream input);
 
+    /**
+     * Check if download was successful.
+     * @return true if successful otherwise false
+     */
+    boolean successful();
+
 }

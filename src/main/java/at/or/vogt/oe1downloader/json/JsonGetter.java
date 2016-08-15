@@ -46,7 +46,9 @@ public class JsonGetter {
         for (final String url : urls) {
             try {
                 final Day day = getDay(url);
-                result.add(day);
+                if (day != null) {
+                    result.add(day);
+                }
             } catch (final JSONException e) {
                 final String message = "error parsing " + url + " ignoring!";
                 logger.error(message, e);
@@ -65,7 +67,11 @@ public class JsonGetter {
     Day getDay(final String url) {
 
         final StringDownloadHandler handler = new StringDownloadHandler();
-        downloadService.download(url, handler);
+        final boolean successfulDownload = downloadService.download(url, handler);
+        if (!successfulDownload) {
+            EVENTLOGGER.error("could not download the url " + url);
+            return null;
+        }
         final String json = handler.getResult();
         return parseJson(json);
     }

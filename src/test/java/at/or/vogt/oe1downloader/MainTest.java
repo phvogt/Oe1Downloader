@@ -23,7 +23,7 @@ import at.or.vogt.oe1downloader.download.HttpClientFactory;
 public class MainTest {
 
     static {
-	PropertyConfigurator.configure("src/test/resources/log4j.properties");
+        PropertyConfigurator.configure("src/test/resources/log4j.properties");
     }
 
     /** Logger. */
@@ -37,43 +37,46 @@ public class MainTest {
     @Test
     public void testDoDownloads() {
 
-	final String methodname = "testDoDownloads(): ";
-	logger.info(methodname + "start");
+        final String methodname = "testDoDownloads(): ";
+        logger.info(methodname + "start");
 
-	final Main dut = new Main();
-	final DownloadService downloadService = new DownloadService(new HttpClientFactory()) {
+        final Main dut = new Main();
+        final DownloadService downloadService = new DownloadService(new HttpClientFactory()) {
 
-	    /**
-	     * {@inheritDoc}
-	     */
-	    @Override
-	    public void download(final String url, final DownloadHandler handler) {
+            /**
+             * {@inheritDoc}
+             */
+            @Override
+            public boolean download(final String url, final DownloadHandler handler) {
 
-		try {
-		    if (url.startsWith("src/test/resources")) {
-			handler.handleDownload(new FileInputStream("src/test/resources/tag_special/20150817.json"));
-		    } else {
-			handler.handleDownload(new FileInputStream("src/test/resources/test.mp3"));
-		    }
-		} catch (final FileNotFoundException e) {
-		    throw new RuntimeException(e);
-		}
-	    }
+                boolean result = false;
+                try {
+                    if (url.startsWith("src/test/resources")) {
+                        handler.handleDownload(new FileInputStream("src/test/resources/tag_special/20150817.json"));
+                    } else {
+                        handler.handleDownload(new FileInputStream("src/test/resources/test.mp3"));
+                    }
+                    result = handler.successful();
+                } catch (final FileNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
 
-	};
+                return result;
+            }
 
-	// delete old files
-	final Collection<File> oldFiles = FileUtils.listFiles(FileUtils.getTempDirectory(), new String[] { "mp3" },
-		false);
-	logger.info(methodname + "oldFiles = {}", oldFiles);
-	for (final File file : oldFiles) {
-	    if (file.getName().contains("kolleg_17.08.2015")) {
-		file.delete();
-	    }
-	}
+        };
 
-	dut.doDownloads(downloadService, "src/test/resources/tag/", FileUtils.getTempDirectoryPath());
-	Assert.assertTrue(new File(FileUtils.getTempDirectoryPath() + "/60_kolleg_17.08.2015.mp3").exists());
+        // delete old files
+        final Collection<File> oldFiles = FileUtils.listFiles(FileUtils.getTempDirectory(), new String[] { "mp3" }, false);
+        logger.info(methodname + "oldFiles = {}", oldFiles);
+        for (final File file : oldFiles) {
+            if (file.getName().contains("kolleg_17.08.2015")) {
+                file.delete();
+            }
+        }
+
+        dut.doDownloads(downloadService, "src/test/resources/tag/", FileUtils.getTempDirectoryPath());
+        Assert.assertTrue(new File(FileUtils.getTempDirectoryPath() + "/60_kolleg_17.08.2015.mp3").exists());
     }
 
     /**
@@ -82,14 +85,14 @@ public class MainTest {
     @Test
     public void testGetDownloadService() {
 
-	final String methodname = "testGetDownloadService(): ";
-	logger.info(methodname + "start");
+        final String methodname = "testGetDownloadService(): ";
+        logger.info(methodname + "start");
 
-	final Main dut = new Main();
+        final Main dut = new Main();
 
-	final DownloadService downloadService = dut.getDownloadService();
-	Assert.assertNotNull(downloadService);
-	logger.info(methodname + "downloadService = {}", downloadService);
+        final DownloadService downloadService = dut.getDownloadService();
+        Assert.assertNotNull(downloadService);
+        logger.info(methodname + "downloadService = {}", downloadService);
     }
 
     /**
@@ -98,14 +101,14 @@ public class MainTest {
     @Test
     public void testGetJsonPathPrefix() {
 
-	final String methodname = "testGetter(): ";
-	logger.info(methodname + "start");
+        final String methodname = "testGetter(): ";
+        logger.info(methodname + "start");
 
-	final Main dut = new Main();
+        final Main dut = new Main();
 
-	final String jsonPathPrefix = dut.getJsonPathPrefix();
-	Assert.assertNotNull(jsonPathPrefix);
-	logger.info(methodname + "jsonPathPrefix = {}", jsonPathPrefix);
+        final String jsonPathPrefix = dut.getJsonPathPrefix();
+        Assert.assertNotNull(jsonPathPrefix);
+        logger.info(methodname + "jsonPathPrefix = {}", jsonPathPrefix);
 
     }
 
@@ -115,20 +118,20 @@ public class MainTest {
     @Test
     public void testGetTargetDirectory() {
 
-	final String methodname = "testGetter(): ";
-	logger.info(methodname + "start");
+        final String methodname = "testGetter(): ";
+        logger.info(methodname + "start");
 
-	final Main dut = new Main();
+        final Main dut = new Main();
 
-	final String targetDirectory = dut.getTargetDirectory(null);
-	Assert.assertNotNull(targetDirectory);
-	logger.info(methodname + "targetDirectory = {}", targetDirectory);
-	Assert.assertEquals("./150826", targetDirectory);
+        final String targetDirectory = dut.getTargetDirectory(null);
+        Assert.assertNotNull(targetDirectory);
+        logger.info(methodname + "targetDirectory = {}", targetDirectory);
+        Assert.assertEquals("./150826", targetDirectory);
 
-	final String targetDirectory2 = dut.getTargetDirectory("testdir");
-	Assert.assertNotNull(targetDirectory2);
-	logger.info(methodname + "targetDirectory2 = {}", targetDirectory2);
-	Assert.assertEquals("testdir", targetDirectory2);
+        final String targetDirectory2 = dut.getTargetDirectory("testdir");
+        Assert.assertNotNull(targetDirectory2);
+        logger.info(methodname + "targetDirectory2 = {}", targetDirectory2);
+        Assert.assertEquals("testdir", targetDirectory2);
 
     }
 
@@ -138,13 +141,13 @@ public class MainTest {
     @Test
     public void testShowUsage() {
 
-	final String methodname = "testShowUsage(): ";
-	logger.info(methodname + "start");
+        final String methodname = "testShowUsage(): ";
+        logger.info(methodname + "start");
 
-	final Main dut = new Main();
-	dut.showUsage(null);
+        final Main dut = new Main();
+        dut.showUsage(null);
 
-	dut.showUsage("error x");
+        dut.showUsage("error x");
     }
 
     /**
@@ -153,34 +156,34 @@ public class MainTest {
     @Test
     public void testProcessCommandline() {
 
-	final String methodname = "testProcessCommandline(): ";
-	logger.info(methodname + "start");
+        final String methodname = "testProcessCommandline(): ";
+        logger.info(methodname + "start");
 
-	final Main dut = new Main();
+        final Main dut = new Main();
 
-	try {
-	    final CommandLineParser cmd = dut.processCommandline(new String[] {});
-	    Assert.assertNotNull(cmd);
-	} catch (final SystemExitException e) {
-	    logger.error("error", e);
-	    Assert.fail();
-	}
+        try {
+            final CommandLineParser cmd = dut.processCommandline(new String[] {});
+            Assert.assertNotNull(cmd);
+        } catch (final SystemExitException e) {
+            logger.error("error", e);
+            Assert.fail();
+        }
 
-	try {
-	    dut.processCommandline(new String[] { "-h" });
-	    logger.error("error");
-	    Assert.fail();
-	} catch (final SystemExitException e) {
-	    Assert.assertEquals(1, e.getExitCode());
-	}
+        try {
+            dut.processCommandline(new String[] { "-h" });
+            logger.error("error");
+            Assert.fail();
+        } catch (final SystemExitException e) {
+            Assert.assertEquals(1, e.getExitCode());
+        }
 
-	try {
-	    dut.processCommandline(new String[] { "-x" });
-	    logger.error("error");
-	    Assert.fail();
-	} catch (final SystemExitException e) {
-	    Assert.assertEquals(2, e.getExitCode());
-	}
+        try {
+            dut.processCommandline(new String[] { "-x" });
+            logger.error("error");
+            Assert.fail();
+        } catch (final SystemExitException e) {
+            Assert.assertEquals(2, e.getExitCode());
+        }
     }
 
 }
