@@ -1,4 +1,4 @@
-package at.or.vogt.oe1downloader;
+package at.or.vogt.oe1downloader.rules;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -15,7 +16,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -34,10 +34,10 @@ import com.mpatric.mp3agic.NotSupportedException;
 import com.mpatric.mp3agic.UnsupportedTagException;
 
 import at.or.vogt.oe1downloader.EventLogger;
-import at.or.vogt.oe1downloader.RecordVO;
 import at.or.vogt.oe1downloader.config.Configuration;
 import at.or.vogt.oe1downloader.config.ConfigurationParameter;
-import at.or.vogt.oe1downloader.json.Show;
+import at.or.vogt.oe1downloader.json.JsonGetter;
+import at.or.vogt.oe1downloader.json.bean.ShowInfo;
 
 /**
  * Download service for MP3.
@@ -65,45 +65,73 @@ public class DownloadService {
      * Handle the download.
      * @param url URL
      * @param handler handler to process content
+     * @return true if download was successful otherwise false
      */
-    public void download(final String url, final DownloadHandler handler) {
+    public boolean download(final String url, final DownloadHandler handler) {
 
         final String methodname = "downloadFromUrl(): ";
 
-        EVENTLOGGER.info("downloading from URL {}.", url);
-        try (final CloseableHttpClient httpclient = httpClientFactory.getHttpClient()) {
-            final HttpGet httpGet = new HttpGet(url);
+        boolean result = false;
 
-            final Configuration config = Configuration.getConfiguration();
-            final String useragent = config.getProperty(ConfigurationParameter.USER_AGENT_STRING);
-            httpGet.addHeader("User-Agent", useragent);
+        final int maxRetries = NumberUtils
+                .toInt(Configuration.getConfiguration().getProperty(ConfigurationParameter.NUMBER_OF_RETRIES), 3);
+        int retries = 1;
+        long bytesDownloaded = 0;
 
-            try (final CloseableHttpResponse response = httpclient.execute(httpGet)) {
-                logger.info(methodname + "url = {} statuscode = {}", url, response.getStatusLine());
-                final HttpEntity entity = response.getEntity();
-                if (logger.isDebugEnabled()) {
-                    final Header[] headers = response.getAllHeaders();
-                    for (final Header header : headers) {
-                        logger.debug(methodname + "  header = {}: {}", header.getName(), header.getValue());
+        while (!result && (retries <= maxRetries)) {
+
+            final long startPosition = handler.getBytesDownloaded();
+
+            EVENTLOGGER.info("try {}: downloading from URL {} on position {}", retries, url, startPosition);
+            try (final CloseableHttpClient httpclient = httpClientFactory.getHttpClient()) {
+                final HttpGet httpGet = new HttpGet(url + "&offset=" + bytesDownloaded);
+
+                final Configuration config = Configuration.getConfiguration();
+                final String useragent = config.getProperty(ConfigurationParameter.USER_AGENT_STRING);
+                httpGet.addHeader("User-Agent", useragent);
+                if (startPosition > 0) {
+                    httpGet.addHeader("Range", "bytes=" + startPosition + "-");
+                    EVENTLOGGER.info("try {}: Continuing {} on position {}", retries, url, startPosition);
+                }
+
+                try (final CloseableHttpResponse response = httpclient.execute(httpGet)) {
+                    logger.info(methodname + "try {}: url = {} statuscode = {}", retries, url, response.getStatusLine());
+                    final HttpEntity entity = response.getEntity();
+                    if (logger.isDebugEnabled()) {
+                        final Header[] headers = response.getAllHeaders();
+                        for (final Header header : headers) {
+                            logger.debug(methodname + "  header = {}: {}", header.getName(), header.getValue());
+                        }
+                        logger.debug(methodname + "  Content-Type = {}", entity.getContentType());
+                        logger.debug(methodname + "  Content-Length = {}", entity.getContentLength());
                     }
-                    logger.debug(methodname + "  Content-Type = {}", entity.getContentType());
-                    logger.debug(methodname + "  Content-Length = {}", entity.getContentLength());
-                }
 
-                try (final InputStream in = entity.getContent()) {
-                    handler.handleDownload(in);
+                    try (final InputStream in = entity.getContent()) {
+                        handler.handleDownload(in);
+                        result = handler.successful();
+                    } finally {
+                        bytesDownloaded = handler.getBytesDownloaded();
+                    }
+                    EntityUtils.consume(entity);
+                } catch (final IOException e) {
+                    final String message = "try " + retries + ": error downloading from url = " + url + " bytes downloaded = "
+                            + bytesDownloaded;
+                    logger.error(message, e);
+                    EVENTLOGGER.error(message);
                 }
-                EntityUtils.consume(entity);
             } catch (final IOException e) {
-                final String message = "error downloading from url = " + url;
+                final String message = "try " + retries + ":error instantiating downloader for url = " + url;
                 logger.error(message, e);
                 EVENTLOGGER.error(message);
             }
-        } catch (final IOException e) {
-            final String message = "error instantiating downloader for url = " + url;
-            logger.error(message, e);
-            EVENTLOGGER.error(message);
+            // only increase the retries if we could not download anything.
+            // Otherwise we try to resume
+            if (!result && (bytesDownloaded == 0)) {
+                ++retries;
+            }
         }
+
+        return result;
     }
 
     /**
@@ -169,48 +197,80 @@ public class DownloadService {
     /**
      * Downloads the MP3 from the URL.
      * @param record record to download
+     * @return true if download was successful otherwise false
      */
-    void download(final RecordVO record) {
+    boolean download(final RecordVO record) {
 
         final String methodname = "download(): ";
 
         logger.info(methodname + "record = {}", record);
+        boolean successful = false;
 
-        final String url = record.getDownloadUrl();
+        // get show info that contains the id of the stream
+        final String showInfoUrl = record.getHref();
+        final JsonGetter jsg = new JsonGetter(this);
+        final ShowInfo showInfo = jsg.getShowInfo(showInfoUrl);
+        final String loopStreamId = showInfo.getStreams().get(0).getLoopStreamId();
+
+        // create the download URL
+        final Configuration config = Configuration.getConfiguration();
+        final String mp3BaseURL = config.getProperty(ConfigurationParameter.MP3_BASE_URL);
+        final String url = mp3BaseURL + loopStreamId;
+
         try {
+
             // remember time for later duration calculation
             final long start = System.currentTimeMillis();
-            final Show show = record.getShow();
-            EVENTLOGGER.info("start downloading {} {} {} to {}", show.getDayLabel(), show.getTime(), show.getTitle(),
-                    record.getTargetFilename());
 
             // remove old temporary files
             final String tempFilename = record.getTargetFilename() + ".tmp";
             final File tempFile = new File(tempFilename);
-            if (tempFile.exists()) {
-                tempFile.delete();
-            }
+            EVENTLOGGER.info("start downloading {} {} {} to {}", record.getDay(), record.getScheduledStart(), record.getTitle(),
+                    record.getTargetFilename());
 
             // download to file
-            download(url, new DownloadHandler() {
+            final DownloadHandler handler = new DownloadHandler() {
+
+                private boolean successful = false;
+
+                private long _bytesDownloaded = 0;
 
                 @Override
                 public void handleDownload(final InputStream input) {
-                    try (final FileOutputStream fos = new FileOutputStream(tempFilename)) {
-                        IOUtils.copy(input, fos);
+
+                    try (final FileOutputStream fos = new FileOutputStream(tempFilename, true)) {
+                        _bytesDownloaded = IOUtils.copyLarge(input, fos);
+                        successful = true;
                     } catch (final IOException e) {
                         EVENTLOGGER.error("error downloading url {}", url, e);
                     }
 
                 }
-            });
+
+                @Override
+                public boolean successful() {
+                    return successful;
+                }
+
+                @Override
+                public long getBytesDownloaded() {
+                    if (tempFile.exists()) {
+                        return tempFile.length();
+                    }
+                    return _bytesDownloaded;
+                }
+            };
+            successful = download(url, handler);
 
             FileUtils.moveFile(new File(tempFilename), new File(record.getTargetFilename()));
-            EVENTLOGGER.info("done downloading {} {} {} to {} took {} ms", show.getDayLabel(), show.getTime(), show.getTitle(),
-                    record.getTargetFilename(), (System.currentTimeMillis() - start));
+            EVENTLOGGER.info("done downloading {} {} {} to {} took {} ms", record.getDay(), record.getScheduledStart(),
+                    record.getTitle(), record.getTargetFilename(), (System.currentTimeMillis() - start));
         } catch (final Exception e) {
             EVENTLOGGER.error("error downloading url {}", url, e);
+            successful = false;
         }
+
+        return successful;
 
     }
 
@@ -232,9 +292,8 @@ public class DownloadService {
                 mp3file.setId3v1Tag(id3v1Tag);
             }
             id3v1Tag.setArtist("OE1");
-            final Show show = record.getShow();
-            id3v1Tag.setTitle(show.getDayLabel() + " " + StringUtils.replace(show.getTime(), ":", ""));
-            id3v1Tag.setAlbum(show.getShortTitle());
+            id3v1Tag.setTitle(record.getScheduledStart().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+            id3v1Tag.setAlbum(record.getTitle());
             id3v1Tag.setTrack(record.getIndex());
             id3v1Tag.setGenre(12);
             id3v1Tag.setYear("" + Calendar.getInstance().get(Calendar.YEAR));

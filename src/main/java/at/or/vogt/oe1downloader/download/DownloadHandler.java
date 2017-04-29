@@ -13,4 +13,16 @@ public interface DownloadHandler {
      */
     void handleDownload(final InputStream input);
 
+    /**
+     * Returns the number of bytes downloaded.
+     * @return number of bytes downloaded
+     */
+    long getBytesDownloaded();
+
+    /**
+     * Check if download was successful.
+     * @return true if successful otherwise false
+     */
+    boolean successful();
+
 }

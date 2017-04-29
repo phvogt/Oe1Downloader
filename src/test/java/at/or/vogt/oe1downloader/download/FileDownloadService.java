@@ -21,12 +21,16 @@ public class FileDownloadService extends DownloadService {
      * {@inheritDoc}
      */
     @Override
-    public void download(final String url, final DownloadHandler handler) {
+    public boolean download(final String url, final DownloadHandler handler) {
+
+        boolean result = false;
         try {
             handler.handleDownload(new FileInputStream(new File(url)));
+            result = handler.successful();
         } catch (final IOException e) {
             throw new RuntimeException("error testing", e);
         }
+        return result;
     }
 
 }

@@ -1,20 +1,22 @@
-package at.or.vogt.oe1downloader;
+package at.or.vogt.oe1downloader.download;
 
 import java.io.File;
-
-import at.or.vogt.oe1downloader.json.Show;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * What to record.
  */
 public class RecordVO {
 
-    /** the show to record. */
-    private final Show show;
-    /** the rule that matched the show. */
-    private final RuleVO rule;
+    /** day. */
+    private final String day;
+    /** Title. */
+    private final String title;
+    /** scheduled start. */
+    private final LocalDateTime scheduledStart;
     /** download URL. */
-    private final String downloadUrl;
+    private final String href;
     /** index number of record. */
     private final String index;
     /** file name. */
@@ -25,17 +27,21 @@ public class RecordVO {
 
     /**
      * Constructor.
-     * @param show Show
-     * @param rule rule
-     * @param indexCounter counter for file index
+     * @param day day
+     * @param title title
+     * @param scheduledStart scheduled start
+     * @param index file index
+     * @param mp3postfix postfix for MP3 file
+     * @param href href URL
      */
-    public RecordVO(final Show show, final RuleVO rule, final RuleIndexCounter indexCounter) {
-        super();
-        this.show = show;
-        this.rule = rule;
-        this.downloadUrl = show.getUrlStream() + "&shoutcast=0&ua=flash";
-        this.index = String.format("%02d", indexCounter.getNextIndex(rule));
-        filename = this.index + "_" + rule.getMp3postfix() + "_" + show.getDayLabel() + ".mp3";
+    public RecordVO(final String day, final String title, final LocalDateTime scheduledStart, final String index,
+            final String mp3postfix, final String href) {
+        this.day = day;
+        this.title = title;
+        this.scheduledStart = scheduledStart;
+        this.href = href;
+        this.index = index;
+        filename = this.index + "_" + mp3postfix + "_" + scheduledStart.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")) + ".mp3";
     }
 
     /**
@@ -55,27 +61,35 @@ public class RecordVO {
     }
 
     /**
-     * Get the show.
-     * @return the show
+     * Get the day.
+     * @return the day
      */
-    public Show getShow() {
-        return show;
+    public String getDay() {
+        return day;
     }
 
     /**
-     * Get the rule.
-     * @return the rule
+     * Get the title.
+     * @return the title
      */
-    public RuleVO getRule() {
-        return rule;
+    public String getTitle() {
+        return title;
     }
 
     /**
-     * Get the downloadUrl.
-     * @return the downloadUrl
+     * Get the scheduledStart.
+     * @return the scheduledStart
      */
-    public String getDownloadUrl() {
-        return downloadUrl;
+    public LocalDateTime getScheduledStart() {
+        return scheduledStart;
+    }
+
+    /**
+     * Get the href.
+     * @return the href
+     */
+    public String getHref() {
+        return href;
     }
 
     /**
@@ -102,12 +116,14 @@ public class RecordVO {
         final StringBuilder builder = new StringBuilder();
         builder.append("RecordVO [super = ");
         builder.append(super.toString());
-        builder.append(" show=");
-        builder.append(show);
-        builder.append(", rule=");
-        builder.append(rule);
-        builder.append(", downloadUrl=");
-        builder.append(downloadUrl);
+        builder.append(" day=");
+        builder.append(day);
+        builder.append(", title=");
+        builder.append(title);
+        builder.append(", scheduledStart=");
+        builder.append(scheduledStart);
+        builder.append(", href=");
+        builder.append(href);
         builder.append(", index=");
         builder.append(index);
         builder.append(", filename=");

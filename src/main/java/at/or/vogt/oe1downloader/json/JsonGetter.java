@@ -1,16 +1,23 @@
 package at.or.vogt.oe1downloader.json;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import at.or.vogt.oe1downloader.EventLogger;
 import at.or.vogt.oe1downloader.download.DownloadService;
 import at.or.vogt.oe1downloader.download.StringDownloadHandler;
+import at.or.vogt.oe1downloader.json.bean.Day;
+import at.or.vogt.oe1downloader.json.bean.ShowInfo;
 
 /**
  * Gets the JSONs.
@@ -35,50 +42,88 @@ public class JsonGetter {
     }
 
     /**
-     * Gets the days from the list of URLs.
-     * @param urls urls to load JSON from
-     * @return days
+     * Get Days from URL.
+     * @param url url to load JSON from
+     * @param daysback number of days back
+     * @return list of days
      */
-    public List<Day> getDays(final List<String> urls) {
+    public List<Day> getDays(final String url, final long daysback) {
 
-        final List<Day> result = new ArrayList<>();
-
-        for (final String url : urls) {
-            try {
-                final Day day = getDay(url);
-                result.add(day);
-            } catch (final JSONException e) {
-                final String message = "error parsing " + url + " ignoring!";
-                logger.error(message, e);
-                EVENTLOGGER.error(message);
-            }
+        final StringDownloadHandler handler = new StringDownloadHandler();
+        final boolean successfulDownload = downloadService.download(url, handler);
+        if (!successfulDownload) {
+            EVENTLOGGER.error("could not download the url " + url);
+            return null;
         }
 
-        return result;
+        final String json = handler.getResult();
+        try {
+            final TypeReference<List<Day>> trList = new TypeReference<List<Day>>() {
+            };
+            final List<Day> allDays = parseJson(json, trList);
+
+            List<Day> result = new ArrayList<>();
+            final LocalDateTime firstDayDate = LocalDateTime.now().minusDays(daysback).truncatedTo(ChronoUnit.DAYS);
+            if (allDays != null) {
+                result = allDays.stream().filter(d -> DateParser.parseISO(d.getDateISO()).isAfter(firstDayDate))
+                        .collect(Collectors.toList());
+
+            }
+            return result;
+
+        } catch (final Oe1JsonParseException e) {
+            final String message = "error parsing " + url + " ignoring!";
+            logger.error(message, e);
+            EVENTLOGGER.error(message, e);
+            return null;
+        }
     }
 
     /**
-     * Get Day from URL.
-     * @param url url to load JSON from
-     * @return Day
+     * Get the show info.
+     * @param url the url
+     * @return the ShowInfo
      */
-    Day getDay(final String url) {
+    public ShowInfo getShowInfo(final String url) {
 
         final StringDownloadHandler handler = new StringDownloadHandler();
-        downloadService.download(url, handler);
+        final boolean successfulDownload = downloadService.download(url, handler);
+        if (!successfulDownload) {
+            EVENTLOGGER.error("could not download the url " + url);
+            return null;
+        }
+
         final String json = handler.getResult();
-        return parseJson(json);
+        try {
+            final TypeReference<ShowInfo> trList = new TypeReference<ShowInfo>() {
+            };
+            final ShowInfo result = parseJson(json, trList);
+            return result;
+
+        } catch (final Oe1JsonParseException e) {
+            final String message = "error parsing url " + url + " ignoring!";
+            logger.error(message, e);
+            EVENTLOGGER.error(message, e);
+            return null;
+        }
     }
 
     /**
      * Parses the JSON.
      * @param json json to parse
      * @return JSON
+     * @throws Exception if parsing fails
      */
-    Day parseJson(final String json) {
+    <T> T parseJson(final String json, final TypeReference<T> tr) throws Oe1JsonParseException {
 
-        final JSONObject obj = new JSONObject(json);
-        return new Day(obj);
+        final ObjectMapper om = new ObjectMapper();
+        try {
+            final T result = om.readValue(json, tr);
+            return result;
+        } catch (final IOException e) {
+            throw new Oe1JsonParseException("error parsing json", e);
+        }
+
     }
 
 }

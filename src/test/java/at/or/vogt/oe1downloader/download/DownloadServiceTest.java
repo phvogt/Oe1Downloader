@@ -1,6 +1,7 @@
 package at.or.vogt.oe1downloader.download;
 
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import org.apache.commons.io.FileUtils;
@@ -10,10 +11,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import at.or.vogt.oe1downloader.RecordVO;
-import at.or.vogt.oe1downloader.RuleIndexCounter;
-import at.or.vogt.oe1downloader.RuleVO;
-import at.or.vogt.oe1downloader.json.Show;
+import at.or.vogt.oe1downloader.json.DateParser;
 
 /**
  * Test for downloading MP3.
@@ -35,10 +33,28 @@ public class DownloadServiceTest {
 
         final String methodname = "testDownloadWithHandler(): ";
 
-        final DownloadService dut = new DownloadService(new FileHttpClientFactory("src/test/resources/tag/20150810.json"));
+        final DownloadService dut = new DownloadService(new FileHttpClientFactory("src/test/resources/tag/broadcast20170429.json"));
         final StringDownloadHandler handler = new StringDownloadHandler();
-        dut.download("src/test/resources/tag/20150810.json", handler);
+        final boolean result = dut.download("src/test/resources/tag/broadcast20170429.json", handler);
+        Assert.assertTrue(result);
         Assert.assertNotNull(handler.getResult());
+        logger.info(methodname + "result = {}", handler.getResult());
+    }
+
+    /**
+     * Test of {@link DownloadService#download(String, DownloadHandler)}.
+     */
+    @Test
+    public void testDownloadWithHandlerConnectionReset() {
+
+        final String methodname = "testDownloadWithHandlerConnectionReset(): ";
+
+        final DownloadService dut = new DownloadService(
+                new FileHttpClientFactoryConnectionReset("src/test/resources/tag/broadcast20170429.json"));
+        final StringDownloadHandler handler = new StringDownloadHandler();
+        final boolean result = dut.download("src/test/resources/tag/broadcast20170429.json", handler);
+        Assert.assertFalse(result);
+        Assert.assertEquals("", handler.getResult());
         logger.info(methodname + "result = {}", handler.getResult());
     }
 
@@ -51,10 +67,10 @@ public class DownloadServiceTest {
 
         final String methodname = "testDownloadWithRecord(): ";
 
-        final DownloadService dut = new DownloadService(new FileHttpClientFactory("src/test/resources/tag/20150810.json"));
-        final Show show = new Show("shortTitle", 15, "title", "dayLabel", "urlJson", "urlStream", "info", "time");
-        final RuleVO rule = new RuleVO("name", "shortTitle", "time", 60, "mp3postfix");
-        final RecordVO record = new RecordVO(show, rule, new RuleIndexCounter());
+        final DownloadService dut = new DownloadService(new FileHttpClientFactory("src/test/resources/showinfo/20170429.json"));
+        final LocalDateTime scheduledStartLdt = DateParser.parseISO("2017-04-29T08:15:00+02:00");
+        final RecordVO record = new RecordVO("20170429", "Pasticcio", scheduledStartLdt, "60", "mp3postfix",
+                "src/test/resources/showinfo/20170429.json");
         final File tmpFile = File.createTempFile("test", ".mp3");
         FileUtils.deleteQuietly(tmpFile);
         final String targetFilename = tmpFile.getCanonicalPath();
@@ -78,10 +94,10 @@ public class DownloadServiceTest {
 
         final String methodname = "testDownloadRecords(): ";
 
-        final DownloadService dut = new DownloadService(new FileHttpClientFactory("src/test/resources/test.mp3"));
-        final Show show = new Show("shortTitle", 15, "title", "dayLabel", "urlJson", "urlStream", "info", "time");
-        final RuleVO rule = new RuleVO("name", "shortTitle", "time", 60, "mp3postfix");
-        final RecordVO record = new RecordVO(show, rule, new RuleIndexCounter());
+        final DownloadService dut = new DownloadService(new FileHttpClientFactory("src/test/resources/showinfo/20170429.json"));
+        final LocalDateTime scheduledStartLdt = DateParser.parseISO("2017-04-29T08:15:00+02:00");
+        final RecordVO record = new RecordVO("20170429", "Pasticcio", scheduledStartLdt, "60", "mp3postfix",
+                "src/test/resources/showinfo/20170429.json");
         final File tmpFile = File.createTempFile("test", ".mp3");
         FileUtils.deleteQuietly(tmpFile);
         final String targetFilename = tmpFile.getName();
