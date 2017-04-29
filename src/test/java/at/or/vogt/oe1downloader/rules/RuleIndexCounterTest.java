@@ -1,10 +1,13 @@
-package at.or.vogt.oe1downloader;
+package at.or.vogt.oe1downloader.rules;
 
 import org.apache.log4j.PropertyConfigurator;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import at.or.vogt.oe1downloader.rules.RuleIndexCounter;
+import at.or.vogt.oe1downloader.rules.RuleVO;
 
 /**
  * Test for {@link RuleIndexCounter}.

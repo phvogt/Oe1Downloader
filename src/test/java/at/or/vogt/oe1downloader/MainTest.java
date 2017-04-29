@@ -52,7 +52,9 @@ public class MainTest {
                 boolean result = false;
                 try {
                     if (url.startsWith("src/test/resources")) {
-                        handler.handleDownload(new FileInputStream("src/test/resources/tag_special/20150817.json"));
+                        handler.handleDownload(new FileInputStream("src/test/resources/tag/broadcast20170429.json"));
+                    } else if ("https://audioapi.orf.at/oe1/api/json/current/broadcast/468460/20170423".equals(url)) {
+                        handler.handleDownload(new FileInputStream("src/test/resources/showinfo/20170429.json"));
                     } else {
                         handler.handleDownload(new FileInputStream("src/test/resources/test.mp3"));
                     }
@@ -75,8 +77,12 @@ public class MainTest {
             }
         }
 
+        final File expectedFile = new File(FileUtils.getTempDirectoryPath() + "/41_matrix_23.04.2017.mp3");
+        if (expectedFile.exists()) {
+            expectedFile.delete();
+        }
         dut.doDownloads(downloadService, "src/test/resources/tag/", FileUtils.getTempDirectoryPath());
-        Assert.assertTrue(new File(FileUtils.getTempDirectoryPath() + "/60_kolleg_17.08.2015.mp3").exists());
+        Assert.assertTrue(expectedFile.exists());
     }
 
     /**

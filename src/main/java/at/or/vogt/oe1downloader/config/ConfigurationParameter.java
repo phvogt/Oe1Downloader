@@ -8,10 +8,10 @@ public enum ConfigurationParameter {
     /** Rules. */
     RULES("rules.", null),
     /** base URL for JSON. */
-    JSON_BASE_URL("json_base_url", "http://oe1.orf.at/programm/konsole/tag/"),
-    /**
-     * target directory for downloads.
-     */
+    JSON_BASE_URL("json_base_url", "https://audioapi.orf.at/oe1/api/json/current/broadcasts?_s="),
+    /** base URL for MP3 downloads. */
+    MP3_BASE_URL("mp3_base_url", "http://loopstream01.apa.at/?channel=oe1&shoutcast=0&id="),
+    /** target directory for downloads. */
     TARGET_DIRECTORY("target_directory", "./mp3s"),
     /** days to go back. */
     DAYSBACK("daysback", "7"),

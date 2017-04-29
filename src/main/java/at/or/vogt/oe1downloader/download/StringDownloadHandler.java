@@ -46,4 +46,12 @@ public class StringDownloadHandler implements DownloadHandler {
         return successful;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public long getBytesDownloaded() {
+        return result.length();
+    }
+
 }

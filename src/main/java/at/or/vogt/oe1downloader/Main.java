@@ -16,8 +16,11 @@ import at.or.vogt.oe1downloader.config.Configuration;
 import at.or.vogt.oe1downloader.config.ConfigurationParameter;
 import at.or.vogt.oe1downloader.download.DownloadService;
 import at.or.vogt.oe1downloader.download.HttpClientFactory;
-import at.or.vogt.oe1downloader.json.Day;
+import at.or.vogt.oe1downloader.download.RecordVO;
 import at.or.vogt.oe1downloader.json.JsonGetter;
+import at.or.vogt.oe1downloader.json.bean.Day;
+import at.or.vogt.oe1downloader.rules.RuleIndexCounter;
+import at.or.vogt.oe1downloader.rules.RulesVO;
 
 /**
  * Main class for Oe1 downloader.
@@ -25,7 +28,7 @@ import at.or.vogt.oe1downloader.json.JsonGetter;
 public class Main {
 
     static {
-	PropertyConfigurator.configure("conf/log4j.properties");
+        PropertyConfigurator.configure("conf/log4j.properties");
     }
 
     /** event LOGGER. */
@@ -36,179 +39,170 @@ public class Main {
 
     /**
      * Main method.
-     * 
-     * @param args
-     *            arguments
-     * @throws Exception
-     *             if an error occurs
+     * @param args arguments
+     * @throws Exception if an error occurs
      */
     public static void main(final String[] args) throws Exception {
 
-	final Main main = new Main();
-	try {
-	    final CommandLineParser cmd = main.processCommandline(args);
-	    main.doRun(cmd);
-	} catch (final SystemExitException e) {
-	    LOGGER.error(e.getMessage(), e);
-	    System.exit(e.getExitCode());
-	}
+        final Main main = new Main();
+        try {
+            final CommandLineParser cmd = main.processCommandline(args);
+            main.doRun(cmd);
+        } catch (final SystemExitException e) {
+            LOGGER.error(e.getMessage(), e);
+            System.exit(e.getExitCode());
+        }
 
     }
 
     /**
      * Run the program.
-     * 
-     * @param cmd
-     *            command line
+     * @param cmd command line
      */
     private void doRun(final CommandLineParser cmd) {
 
-	final DownloadService downloadService = getDownloadService();
-	final String jsonPathPrefix = getJsonPathPrefix();
-	final String targetDirectory = getTargetDirectory(cmd.getTargetDirectory());
+        final DownloadService downloadService = getDownloadService();
+        final String jsonPathPrefix = getJsonPathPrefix();
+        final String targetDirectory = getTargetDirectory(cmd.getTargetDirectory());
 
-	doDownloads(downloadService, jsonPathPrefix, targetDirectory);
+        doDownloads(downloadService, jsonPathPrefix, targetDirectory);
     }
 
     /**
      * Processes the download.
-     * 
-     * @param args
-     *            command line arguments
+     * @param args command line arguments
      * @return exit code
-     * @throws SystemExitException
-     *             if an error occurs
+     * @throws SystemExitException if an error occurs
      */
     CommandLineParser processCommandline(final String[] args) throws SystemExitException {
 
-	final CommandLineParser cmd;
-	try {
-	    cmd = new CommandLineParser().parseCommandLine(args);
-	} catch (final ParseException e) {
-	    // if the command line was not parsable, show usage and exit
-	    showUsage(e.getMessage());
-	    throw new SystemExitException(2, e.getMessage());
-	}
+        final CommandLineParser cmd;
+        try {
+            cmd = new CommandLineParser().parseCommandLine(args);
+        } catch (final ParseException e) {
+            // if the command line was not parsable, show usage and exit
+            showUsage(e.getMessage());
+            throw new SystemExitException(2, e.getMessage());
+        }
 
-	if (cmd.isHelp()) {
-	    // show help
-	    showUsage(null);
-	    throw new SystemExitException(1, null);
-	}
+        if (cmd.isHelp()) {
+            // show help
+            showUsage(null);
+            throw new SystemExitException(1, null);
+        }
 
-	return cmd;
+        return cmd;
 
     }
 
     /**
      * Shows the usage.
-     * 
      * @param message the message to show, if it is not null
      */
     void showUsage(final String message) {
 
-	final HelpFormatter formatter = new HelpFormatter();
-	// set the order
-	formatter.setOptionComparator(new Comparator<Option>() {
+        final HelpFormatter formatter = new HelpFormatter();
+        // set the order
+        formatter.setOptionComparator(new Comparator<Option>() {
 
-	    private static final String OPTS_ORDER = "hd";
+            private static final String OPTS_ORDER = "hd";
 
-	    @Override
-	    public int compare(final Option o1, final Option o2) {
-		return OPTS_ORDER.indexOf(o1.getOpt()) - OPTS_ORDER.indexOf(o2.getOpt());
-	    }
-	});
+            @Override
+            public int compare(final Option o1, final Option o2) {
+                return OPTS_ORDER.indexOf(o1.getOpt()) - OPTS_ORDER.indexOf(o2.getOpt());
+            }
+        });
 
-	if (message != null) {
-	    System.out.println(message);
-	}
+        if (message != null) {
+            System.out.println(message);
+        }
 
-	formatter.printHelp("Oe1Downloader", CliOption.getOptions());
+        formatter.printHelp("Oe1Downloader", CliOption.getOptions());
     }
 
     /**
      * Does the downloads.
-     * 
-     * @param downloadService
-     *            download service to use
-     * @param jsonPathPrefix
-     *            prefix for JSON path
-     * @param targetDirectory
-     *            target directory for MP3s
+     * @param downloadService download service to use
+     * @param jsonPathPrefix prefix for JSON path
+     * @param targetDirectory target directory for MP3s
      */
-    public void doDownloads(final DownloadService downloadService, final String jsonPathPrefix,
-	    final String targetDirectory) {
+    public void doDownloads(final DownloadService downloadService, final String jsonPathPrefix, final String targetDirectory) {
 
-	final String methodname = "run(): ";
-	LOGGER.info(methodname);
+        final String methodname = "run(): ";
+        LOGGER.info(methodname);
 
-	try {
+        try {
 
-	    EVENTLOGGER.info("starting");
+            EVENTLOGGER.info("starting");
 
-	    // determine URLs with the JSON data for each day
-	    final DateCalc dateCalc = new DateCalc();
-	    final List<String> jsonUrls = dateCalc.getJsonUrls(jsonPathPrefix);
+            // download JSON data
+            final String url = jsonPathPrefix + System.currentTimeMillis();
+            final int daysback = getDaysBack();
 
-	    // download JSON data
-	    final JsonGetter jsonGetter = new JsonGetter(downloadService);
-	    final List<Day> days = jsonGetter.getDays(jsonUrls);
+            final JsonGetter jsonGetter = new JsonGetter(downloadService);
+            final List<Day> days = jsonGetter.getDays(url, daysback);
 
-	    // determine which records to download
-	    final RulesVO rules = RulesVO.getRulesVO();
-	    final RuleIndexCounter counter = new RuleIndexCounter();
-	    final List<RecordVO> records = rules.checkForRecords(days, counter);
+            // determine which records to download
+            final RulesVO rules = RulesVO.getRulesVO();
+            final RuleIndexCounter counter = new RuleIndexCounter();
+            final List<RecordVO> records = rules.checkForRecords(days, counter);
 
-	    // download the records
-	    downloadService.downloadRecords(targetDirectory, records);
+            // download the records
+            downloadService.downloadRecords(targetDirectory, records);
 
-	    EVENTLOGGER.info("end");
+            EVENTLOGGER.info("end");
 
-	} catch (final Exception e) {
-	    final String message = "error";
-	    LOGGER.error(message, e);
-	    EVENTLOGGER.error(message);
-	}
+        } catch (final Exception e) {
+            final String message = "error";
+            LOGGER.error(message, e);
+            EVENTLOGGER.error(message);
+        }
 
     }
 
     /**
      * Get the download service.
-     * 
      * @return DownloadService
      */
     DownloadService getDownloadService() {
-	final DownloadService result = new DownloadService(new HttpClientFactory());
-	return result;
+        final DownloadService result = new DownloadService(new HttpClientFactory());
+        return result;
     }
 
     /**
      * Gets the JSON path prefix to use.
-     * 
      * @return JSON path prefix
      */
     String getJsonPathPrefix() {
-	final Configuration config = Configuration.getConfiguration();
-	final String result = config.getProperty(ConfigurationParameter.JSON_BASE_URL);
-	return result;
+        final Configuration config = Configuration.getConfiguration();
+        final String result = config.getProperty(ConfigurationParameter.JSON_BASE_URL);
+        return result;
+    }
+
+    /**
+     * Gets the days back to check for shows.
+     * @return number of days back
+     */
+    int getDaysBack() {
+        final Configuration config = Configuration.getConfiguration();
+        final int result = Integer.parseInt(config.getProperty(ConfigurationParameter.DAYSBACK));
+        return result;
     }
 
     /**
      * Gets the target directory for the MP3s.
-     * 
-     * @param cliTargetDirectory
-     *            target directory from the command line
+     * @param cliTargetDirectory target directory from the command line
      * @return target directory
      */
     String getTargetDirectory(final String cliTargetDirectory) {
 
-	if (cliTargetDirectory != null) {
-	    return cliTargetDirectory;
-	}
+        if (cliTargetDirectory != null) {
+            return cliTargetDirectory;
+        }
 
-	final Configuration config = Configuration.getConfiguration();
-	final String result = config.getProperty(ConfigurationParameter.TARGET_DIRECTORY);
-	return result;
+        final Configuration config = Configuration.getConfiguration();
+        final String result = config.getProperty(ConfigurationParameter.TARGET_DIRECTORY);
+        return result;
 
     }
 

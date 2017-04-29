@@ -1,18 +1,23 @@
-package at.or.vogt.oe1downloader;
+package at.or.vogt.oe1downloader.rules;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import at.or.vogt.oe1downloader.EventLogger;
 import at.or.vogt.oe1downloader.config.Configuration;
 import at.or.vogt.oe1downloader.config.ConfigurationParameter;
-import at.or.vogt.oe1downloader.json.Day;
-import at.or.vogt.oe1downloader.json.Show;
+import at.or.vogt.oe1downloader.download.RecordVO;
+import at.or.vogt.oe1downloader.json.bean.Day;
+import at.or.vogt.oe1downloader.json.bean.Show;
 
 /**
  * Contains the rules.
@@ -131,23 +136,39 @@ public class RulesVO {
 
         final List<RecordVO> result = new ArrayList<RecordVO>();
 
-        final List<Show> shows = day.getShows();
+        final List<Show> shows = day.getBroadcasts().stream().map(b -> new Show(b)).collect(Collectors.toList());
         for (final Show show : shows) {
             logger.debug(methodname + "show = {}", show);
-            for (final RuleVO rule : rules) {
-                logger.debug(methodname + "  rule = {}", rule);
 
-                if (rule.matches(show)) {
-
-                    EVENTLOGGER.info("will get {} {} {}", show.getDayLabel(), show.getTime(), show.getTitle());
-
-                    final RecordVO record = new RecordVO(show, rule, indexCounter);
-                    result.add(record);
-                }
-            }
+            rules.stream().filter((r) -> matches(r, show)).findFirst().ifPresent(rule -> {
+                EVENTLOGGER.info("will get {} {}", show.getScheduledEnd().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
+                        show.getTitle());
+                final String index = String.format("%02d", indexCounter.getNextIndex(rule));
+                final RecordVO record = new RecordVO(show.getDay(), show.getTitle(), show.getScheduledStart(), index,
+                        rule.getMp3postfix(), show.getHref());
+                result.add(record);
+            });
         }
 
         return result;
+    }
+
+    /**
+     * Checks if the rule matches.
+     * @param show the Show to match
+     * @return true if it matched, otherwise false
+     */
+    static boolean matches(final RuleVO rule, final Show show) {
+
+        if (StringUtils.isNotEmpty(rule.getShortTitle()) && !show.getTitle().contains(rule.getShortTitle())) {
+            return false;
+        }
+        if (StringUtils.isNotEmpty(rule.getTime())
+                && !show.getScheduledStart().format(DateTimeFormatter.ofPattern("HH:mm")).equals(rule.getTime())) {
+            return false;
+        }
+
+        return true;
     }
 
 }
