@@ -12,10 +12,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({ "href", "station", "entity", "id", "broadcastDay", "programKey", "program", "title", "subtitle", "ressort",
-        "state", "isOnDemand", "isGeoProtected", "start", "startISO", "startOffset", "scheduledStart", "scheduledStartISO",
-        "scheduledStartOffset", "end", "endISO", "endOffset", "scheduledEnd", "scheduledEndISO", "scheduledEndOffset", "niceTime",
-        "niceTimeISO", "niceTimeOffset" })
+@JsonPropertyOrder({ "href", "station", "entity", "id", "broadcastDay", "programKey", "program", "programTitle", "title",
+        "subtitle", "ressort", "state", "isOnDemand", "isGeoProtected", "start", "startISO", "startOffset", "scheduledStart",
+        "scheduledStartISO", "scheduledStartOffset", "end", "endISO", "endOffset", "scheduledEnd", "scheduledEndISO",
+        "scheduledEndOffset", "niceTime", "niceTimeISO", "niceTimeOffset" })
 public class Broadcast {
 
     @JsonProperty("href")
@@ -32,6 +32,8 @@ public class Broadcast {
     private String programKey;
     @JsonProperty("program")
     private String program;
+    @JsonProperty("programTitle")
+    private String programTitle;
     @JsonProperty("title")
     private String title;
     @JsonProperty("subtitle")
@@ -116,9 +118,9 @@ public class Broadcast {
      * @param additionalProperties additionalProperties
      */
     public Broadcast(final String href, final String station, final String entity, final Integer id, final Integer broadcastDay,
-            final String programKey, final String program, final String title, final String subtitle, final String ressort,
-            final String state, final Boolean isOnDemand, final Boolean isGeoProtected, final Long start, final String startISO,
-            final Integer startOffset, final Long scheduledStart, final String scheduledStartISO,
+            final String programKey, final String program, final String programTitle, final String title, final String subtitle,
+            final String ressort, final String state, final Boolean isOnDemand, final Boolean isGeoProtected, final Long start,
+            final String startISO, final Integer startOffset, final Long scheduledStart, final String scheduledStartISO,
             final Integer scheduledStartOffset, final Long end, final String endISO, final Integer endOffset,
             final Long scheduledEnd, final String scheduledEndISO, final Integer scheduledEndOffset, final Long niceTime,
             final String niceTimeISO, final Integer niceTimeOffset, final Map<String, Object> additionalProperties) {
@@ -129,6 +131,7 @@ public class Broadcast {
         this.broadcastDay = broadcastDay;
         this.programKey = programKey;
         this.program = program;
+        this.programTitle = programTitle;
         this.title = title;
         this.subtitle = subtitle;
         this.ressort = ressort;
@@ -221,6 +224,16 @@ public class Broadcast {
     @JsonProperty("program")
     public void setProgram(final String program) {
         this.program = program;
+    }
+
+    @JsonProperty("programTitle")
+    public String getProgramTitle() {
+        return programTitle;
+    }
+
+    @JsonProperty("programTitle")
+    public void setProgramTitle(final String programTitle) {
+        this.programTitle = programTitle;
     }
 
     @JsonProperty("title")
@@ -453,6 +466,8 @@ public class Broadcast {
         builder.append(super.toString());
         builder.append(" title=");
         builder.append(title);
+        builder.append(" programTitle=");
+        builder.append(programTitle);
         builder.append(", subtitle=");
         builder.append(subtitle);
         builder.append(", start=");
@@ -489,6 +504,8 @@ public class Broadcast {
         builder.append(programKey);
         builder.append(", program=");
         builder.append(program);
+        builder.append(", programTitle=");
+        builder.append(programTitle);
         builder.append(", title=");
         builder.append(title);
         builder.append(", subtitle=");

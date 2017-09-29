@@ -141,7 +141,8 @@ public class RulesVO {
             logger.debug(methodname + "show = {}", show);
 
             rules.stream().filter((r) -> matches(r, show)).findFirst().ifPresent(rule -> {
-                EVENTLOGGER.info("will get {} {}", show.getScheduledEnd().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
+                EVENTLOGGER.info("will get {} {}/{}",
+                        show.getScheduledEnd().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), show.getProgramTitle(),
                         show.getTitle());
                 final String index = String.format("%02d", indexCounter.getNextIndex(rule));
                 final RecordVO record = new RecordVO(show.getDay(), show.getTitle(), show.getScheduledStart(), index,
@@ -160,7 +161,8 @@ public class RulesVO {
      */
     static boolean matches(final RuleVO rule, final Show show) {
 
-        if (StringUtils.isNotEmpty(rule.getShortTitle()) && !show.getTitle().contains(rule.getShortTitle())) {
+        if (StringUtils.isNotEmpty(rule.getShortTitle())
+                && !(show.getTitle().contains(rule.getShortTitle()) || show.getProgramTitle().contains(rule.getShortTitle()))) {
             return false;
         }
         if (StringUtils.isNotEmpty(rule.getTime())

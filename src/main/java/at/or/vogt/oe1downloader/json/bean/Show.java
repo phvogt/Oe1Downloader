@@ -18,6 +18,8 @@ public class Show {
     /** HREF. */
     private final String href;
     /** Title. */
+    private final String programTitle;
+    /** Title. */
     private final String title;
     /** day. */
     private final String day;
@@ -37,7 +39,7 @@ public class Show {
      * @param b the broadcast
      */
     public Show(final Broadcast b) {
-        this(b.getId(), b.getHref(), b.getTitle(), "" + b.getBroadcastDay(),
+        this(b.getId(), b.getHref(), b.getProgramTitle(), b.getTitle(), "" + b.getBroadcastDay(),
                 b.getSubtitle() == null ? null : Jsoup.parse(b.getSubtitle()).text(), DateParser.parseISO(b.getScheduledStartISO()),
                 DateParser.parseISO(b.getScheduledEndISO()), DateParser.parseISO(b.getStartISO()),
                 DateParser.parseISO(b.getEndISO()));
@@ -55,11 +57,12 @@ public class Show {
      * @param start start
      * @param end end
      */
-    public Show(final int id, final String href, final String title, final String day, final String subtitle,
-            final LocalDateTime scheduledStart, final LocalDateTime scheduledEnd, final LocalDateTime start,
+    public Show(final int id, final String href, final String programTitle, final String title, final String day,
+            final String subtitle, final LocalDateTime scheduledStart, final LocalDateTime scheduledEnd, final LocalDateTime start,
             final LocalDateTime end) {
         this.id = id;
         this.href = href;
+        this.programTitle = programTitle == null ? "" : programTitle;
         this.title = title;
         this.day = day;
         this.subtitle = subtitle;
@@ -83,6 +86,14 @@ public class Show {
      */
     public String getHref() {
         return href;
+    }
+
+    /**
+     * Get the programTitle.
+     * @return the programTitle
+     */
+    public String getProgramTitle() {
+        return programTitle;
     }
 
     /**
@@ -153,6 +164,8 @@ public class Show {
         builder.append(id);
         builder.append(", href=");
         builder.append(href);
+        builder.append(", programTitle=");
+        builder.append(programTitle);
         builder.append(", title=");
         builder.append(title);
         builder.append(", day=");

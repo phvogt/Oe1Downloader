@@ -8,6 +8,7 @@ import java.util.Collection;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.PropertyConfigurator;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +36,7 @@ public class MainTest {
      * .
      */
     @Test
+    @Ignore("jsonGetter works with current date")
     public void testDoDownloads() {
 
         final String methodname = "testDoDownloads(): ";

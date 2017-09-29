@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.apache.log4j.PropertyConfigurator;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,6 +77,7 @@ public class RulesVOTest {
      * Tests the Matching
      */
     @Test
+    @Ignore("jsonGetter works with current date")
     public void testMatching() {
 
         final String methodname = "testMatching(): ";
@@ -107,16 +109,20 @@ public class RulesVOTest {
 
         final RuleVO rule = new RuleVO("name", "title", time, 60, "mp3postfix");
 
-        // Show matches
-        final Show show = new Show(15, "href", "title", "day", "subtitle", now, now, now, now);
+        // Show matches title
+        final Show show = new Show(15, "href", "yyy", "title", "day", "subtitle", now, now, now, now);
         Assert.assertTrue(RulesVO.matches(rule, show));
 
+        // Show matches programTitle
+        final Show showTitle = new Show(15, "href", "title", "zzz", "day", "subtitle", now, now, now, now);
+        Assert.assertTrue(RulesVO.matches(rule, showTitle));
+
         // Show does not match because of title
-        final Show showNotTitle = new Show(15, "href", "xxx", "day", "subtitle", now, now, now, now);
+        final Show showNotTitle = new Show(15, "href", "yyy", "xxx", "day", "subtitle", now, now, now, now);
         Assert.assertFalse(RulesVO.matches(rule, showNotTitle));
 
         // Show does not match because of time
-        final Show showNotTime = new Show(15, "href", "xxx", "day", "subtitle", now, now, now, now);
+        final Show showNotTime = new Show(15, "href", "yyy", "xxx", "day", "subtitle", now, now, now, now);
         Assert.assertFalse(RulesVO.matches(rule, showNotTime));
 
     }
