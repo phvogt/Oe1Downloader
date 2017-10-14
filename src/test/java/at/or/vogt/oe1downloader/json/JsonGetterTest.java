@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import at.or.vogt.oe1downloader.download.DownloadService;
 import at.or.vogt.oe1downloader.download.FileDownloadService;
 import at.or.vogt.oe1downloader.download.HttpClientFactory;
-import at.or.vogt.oe1downloader.json.bean.Broadcast;
 import at.or.vogt.oe1downloader.json.bean.Day;
 import at.or.vogt.oe1downloader.json.bean.Show;
 import at.or.vogt.oe1downloader.json.bean.ShowInfo;
@@ -33,7 +32,8 @@ public class JsonGetterTest {
     private final Logger logger = LoggerFactory.getLogger(JsonGetterTest.class);
 
     /**
-     * Gets the Days ({@link JsonGetter#getDays(String, int)}).
+     * Gets the Days
+     * ({@link at.or.vogt.oe1downloader.json.JsonGetter#getDays(String, long)}).
      * @throws Exception if an error occurs
      */
     @Test
@@ -62,7 +62,8 @@ public class JsonGetterTest {
     }
 
     /**
-     * Gets the ShowInfo ({@link JsonGetter#getShowInfo(Broadcast)}).
+     * Gets the ShowInfo
+     * ({@link at.or.vogt.oe1downloader.json.JsonGetter#getShowInfo(String)}).
      * @throws Exception if an error occurs
      */
     @Test

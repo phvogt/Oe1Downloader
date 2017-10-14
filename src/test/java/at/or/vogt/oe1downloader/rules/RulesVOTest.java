@@ -99,7 +99,8 @@ public class RulesVOTest {
     }
 
     /**
-     * Tests {@link RuleVO#matches(at.or.vogt.oe1downloader.json.bean.Show)}.
+     * Tests
+     * {@link at.or.vogt.oe1downloader.rules.RulesVO#matches(RuleVO, Show)}.
      */
     @Test
     public void testMatches() {
