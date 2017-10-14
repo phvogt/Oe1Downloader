@@ -62,7 +62,7 @@ public class Configuration {
             throw new RuntimeException(message, e);
         }
 
-        return configFileProps;
+        return configFileProps == null ? null : (Properties) configFileProps.clone();
     }
 
     /**

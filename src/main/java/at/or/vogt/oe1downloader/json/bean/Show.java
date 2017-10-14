@@ -49,6 +49,7 @@ public class Show {
      * Constructor.
      * @param id id
      * @param href href
+     * @param programTitle programTitle
      * @param title title
      * @param day day
      * @param subtitle subtitle
