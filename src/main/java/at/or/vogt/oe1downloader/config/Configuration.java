@@ -21,7 +21,7 @@ import at.or.vogt.oe1downloader.EventLogger;
 public class Configuration {
 
     /** file name for config properties. */
-    static final String CONFIG_FILENAME = "conf/config.properties";
+    private static final String CONFIG_FILENAME = "conf/config.properties";
 
     /** event logger. */
     private static final Logger EVENTLOGGER = EventLogger.getLogger();
@@ -94,7 +94,7 @@ public class Configuration {
      * @return the configFileProps
      */
     Properties getProperties() {
-        return configFileProps;
+        return configFileProps == null ? null : (Properties) configFileProps.clone();
     }
 
     /**

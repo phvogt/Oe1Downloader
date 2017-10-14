@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.PropertyConfigurator;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -17,10 +16,6 @@ import at.or.vogt.oe1downloader.json.DateParser;
  * Test for downloading MP3.
  */
 public class DownloadServiceTest {
-
-    static {
-        PropertyConfigurator.configure("src/test/resources/log4j.properties");
-    }
 
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(DownloadServiceTest.class);

@@ -1,6 +1,7 @@
 
 package at.or.vogt.oe1downloader.json.bean;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,12 +42,12 @@ public class Day {
 
     @JsonProperty("broadcasts")
     public List<Broadcast> getBroadcasts() {
-        return broadcasts;
+        return broadcasts == null ? null : new ArrayList<>(broadcasts);
     }
 
     @JsonProperty("broadcasts")
     public void setBroadcasts(final List<Broadcast> broadcasts) {
-        this.broadcasts = broadcasts;
+        this.broadcasts = broadcasts == null ? null : new ArrayList<>(broadcasts);
     }
 
     @JsonProperty("date")

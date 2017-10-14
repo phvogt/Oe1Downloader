@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-import org.apache.log4j.PropertyConfigurator;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -23,10 +22,6 @@ import at.or.vogt.oe1downloader.json.bean.Stream;
  * Test for {@link at.or.vogt.oe1downloader.json.JsonGetter}.
  */
 public class JsonGetterTest {
-
-    static {
-        PropertyConfigurator.configure("src/test/resources/log4j.properties");
-    }
 
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(JsonGetterTest.class);

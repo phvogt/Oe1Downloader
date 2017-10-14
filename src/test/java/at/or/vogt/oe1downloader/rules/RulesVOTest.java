@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.PropertyConfigurator;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -29,10 +28,6 @@ import at.or.vogt.oe1downloader.json.bean.Show;
  * Tests the {@link RulesVO}.
  */
 public class RulesVOTest {
-
-    static {
-        PropertyConfigurator.configure("src/test/resources/log4j.properties");
-    }
 
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(RulesVOTest.class);

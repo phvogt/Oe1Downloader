@@ -1,6 +1,5 @@
 package at.or.vogt.oe1downloader.rules;
 
-import org.apache.log4j.PropertyConfigurator;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -10,10 +9,6 @@ import org.slf4j.LoggerFactory;
  * Test for {@link RuleVO}.
  */
 public class RuleVOTest {
-
-    static {
-        PropertyConfigurator.configure("src/test/resources/log4j.properties");
-    }
 
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(RuleVOTest.class);

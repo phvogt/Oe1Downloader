@@ -1,5 +1,6 @@
 package at.or.vogt.oe1downloader.json.bean;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -422,12 +423,12 @@ public class ShowInfo {
 
     @JsonProperty("tags")
     public List<Object> getTags() {
-        return tags;
+        return tags == null ? null : new ArrayList<>(tags);
     }
 
     @JsonProperty("tags")
     public void setTags(final List<Object> tags) {
-        this.tags = tags;
+        this.tags = tags == null ? null : new ArrayList<>(tags);
     }
 
     @JsonProperty("moderator")
@@ -452,42 +453,42 @@ public class ShowInfo {
 
     @JsonProperty("images")
     public List<Image> getImages() {
-        return images;
+        return images == null ? null : new ArrayList<>(images);
     }
 
     @JsonProperty("images")
     public void setImages(final List<Image> images) {
-        this.images = images;
+        this.images = images == null ? null : new ArrayList<>(images);
     }
 
     @JsonProperty("items")
     public List<Object> getItems() {
-        return items;
+        return items == null ? null : new ArrayList<>(items);
     }
 
     @JsonProperty("items")
     public void setItems(final List<Object> items) {
-        this.items = items;
+        this.items = items == null ? null : new ArrayList<>(items);
     }
 
     @JsonProperty("streams")
     public List<Stream> getStreams() {
-        return streams;
+        return streams == null ? null : new ArrayList<>(streams);
     }
 
     @JsonProperty("streams")
     public void setStreams(final List<Stream> streams) {
-        this.streams = streams;
+        this.streams = streams == null ? null : new ArrayList<>(streams);
     }
 
     @JsonProperty("marks")
     public List<Mark> getMarks() {
-        return marks;
+        return marks == null ? null : new ArrayList<>(marks);
     }
 
     @JsonProperty("marks")
     public void setMarks(final List<Mark> marks) {
-        this.marks = marks;
+        this.marks = marks == null ? null : new ArrayList<>(marks);
     }
 
     @JsonAnyGetter
