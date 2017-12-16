@@ -93,6 +93,7 @@
           <gitFlowConfig>
             <developmentBranch>master</developmentBranch>
           </gitFlowConfig>
+          <pushRemote>true</pushRemote>
         </configuration>
       </plugin>
       <plugin>
