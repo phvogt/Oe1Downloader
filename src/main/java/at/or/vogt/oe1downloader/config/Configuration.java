@@ -21,7 +21,7 @@ import at.or.vogt.oe1downloader.EventLogger;
 public class Configuration {
 
     /** file name for config properties. */
-    private static final String CONFIG_FILENAME = "conf/config.properties";
+    private static String CONFIG_FILENAME = "conf/config.properties";
 
     /** event logger. */
     private static final Logger EVENTLOGGER = EventLogger.getLogger();
@@ -111,6 +111,22 @@ public class Configuration {
         } else {
             return parameter.getDefaultValue();
         }
+    }
+
+    /**
+     * Override the configuration file name. Used for testing.
+     * @param configFilename configuration file name
+     */
+    public static void setConfigFilename(final String configFilename) {
+        CONFIG_FILENAME = configFilename;
+    }
+
+    /**
+     * Get the configuration file name. Used for testing.
+     * @return the configuration file name
+     */
+    public static String gtConfigFilename() {
+        return CONFIG_FILENAME;
     }
 
 }

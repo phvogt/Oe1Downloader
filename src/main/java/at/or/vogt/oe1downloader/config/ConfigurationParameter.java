@@ -17,14 +17,12 @@ public enum ConfigurationParameter {
     DAYSBACK("daysback", "7"),
     /** user agent string to use for downloading. */
     USER_AGENT_STRING("user_agent_string", "Mozilla/5.0 (X11; Linux x86_64; rv:40.0) Gecko/20100101 Firefox/40.0 Iceweasel/40.0"),
-    /**
-     * number of parallel downloads.
-     */
+    /** number of parallel downloads. */
     NUMBER_OF_PARALLEL_DOWNLOADS("number_of_parallel_downloads", "3"),
-    /**
-     * number of retries.
-     */
-    NUMBER_OF_RETRIES("number_of_retries", "3");
+    /** number of retries. */
+    NUMBER_OF_RETRIES("number_of_retries", "3"),
+    /** location to dump the json file to. */
+    DUMP_JSON_LOCATION("dump_json_location", "");
 
     /** name of parameter in configuration. */
     private final String name;

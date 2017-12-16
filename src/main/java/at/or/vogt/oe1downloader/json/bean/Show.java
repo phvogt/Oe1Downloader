@@ -33,6 +33,8 @@ public class Show {
     private final LocalDateTime start;
     /** end. */
     private final LocalDateTime end;
+    /** niceTime. */
+    private final LocalDateTime niceTime;
 
     /**
      * Constructor.
@@ -42,7 +44,7 @@ public class Show {
         this(b.getId(), b.getHref(), b.getProgramTitle(), b.getTitle(), "" + b.getBroadcastDay(),
                 b.getSubtitle() == null ? null : Jsoup.parse(b.getSubtitle()).text(), DateParser.parseISO(b.getScheduledStartISO()),
                 DateParser.parseISO(b.getScheduledEndISO()), DateParser.parseISO(b.getStartISO()),
-                DateParser.parseISO(b.getEndISO()));
+                DateParser.parseISO(b.getEndISO()), DateParser.parseISO(b.getNiceTimeISO()));
     }
 
     /**
@@ -57,10 +59,11 @@ public class Show {
      * @param scheduledEnd scheduledEnd
      * @param start start
      * @param end end
+     * @param niceTime niceTime
      */
     public Show(final int id, final String href, final String programTitle, final String title, final String day,
             final String subtitle, final LocalDateTime scheduledStart, final LocalDateTime scheduledEnd, final LocalDateTime start,
-            final LocalDateTime end) {
+            final LocalDateTime end, final LocalDateTime niceTime) {
         this.id = id;
         this.href = href;
         this.programTitle = programTitle == null ? "" : programTitle;
@@ -71,6 +74,7 @@ public class Show {
         this.scheduledEnd = scheduledEnd;
         this.start = start;
         this.end = end;
+        this.niceTime = niceTime;
     }
 
     /**
@@ -154,6 +158,14 @@ public class Show {
     }
 
     /**
+     * Get the niceTime.
+     * @return the niceTime
+     */
+    public LocalDateTime getNiceTime() {
+        return niceTime;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -181,6 +193,8 @@ public class Show {
         builder.append(start);
         builder.append(", end=");
         builder.append(end);
+        builder.append(", niceTime=");
+        builder.append(niceTime);
         builder.append("]");
         return builder.toString();
     }

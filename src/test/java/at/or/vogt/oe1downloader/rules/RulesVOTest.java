@@ -106,19 +106,19 @@ public class RulesVOTest {
         final RuleVO rule = new RuleVO("name", "title", time, 60, "mp3postfix");
 
         // Show matches title
-        final Show show = new Show(15, "href", "yyy", "title", "day", "subtitle", now, now, now, now);
+        final Show show = new Show(15, "href", "yyy", "title", "day", "subtitle", now, now, now, now, now);
         Assert.assertTrue(RulesVO.matches(rule, show));
 
         // Show matches programTitle
-        final Show showTitle = new Show(15, "href", "title", "zzz", "day", "subtitle", now, now, now, now);
+        final Show showTitle = new Show(15, "href", "title", "zzz", "day", "subtitle", now, now, now, now, now);
         Assert.assertTrue(RulesVO.matches(rule, showTitle));
 
         // Show does not match because of title
-        final Show showNotTitle = new Show(15, "href", "yyy", "xxx", "day", "subtitle", now, now, now, now);
+        final Show showNotTitle = new Show(15, "href", "yyy", "xxx", "day", "subtitle", now, now, now, now, now);
         Assert.assertFalse(RulesVO.matches(rule, showNotTitle));
 
         // Show does not match because of time
-        final Show showNotTime = new Show(15, "href", "yyy", "xxx", "day", "subtitle", now, now, now, now);
+        final Show showNotTime = new Show(15, "href", "yyy", "xxx", "day", "subtitle", now, now, now, now, now);
         Assert.assertFalse(RulesVO.matches(rule, showNotTime));
 
     }

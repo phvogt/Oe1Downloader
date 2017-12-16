@@ -1,14 +1,20 @@
 package at.or.vogt.oe1downloader.download;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import at.or.vogt.oe1downloader.json.DateParser;
 
@@ -105,6 +111,28 @@ public class DownloadServiceTest {
 
         Assert.assertTrue(targetFile.exists());
         FileUtils.deleteQuietly(targetFile);
+    }
+
+    /**
+     * Test of {@link DownloadService#download(String, DownloadHandler)}.
+     * @throws Exception if an error occurs
+     */
+    @Test
+    @Ignore
+    public void testDownloadJson() throws Exception {
+
+        final String methodname = "testDownloadJson(): ";
+
+        final DownloadService dut = new DownloadService(new HttpClientFactory());
+        final StringDownloadHandler handler = new StringDownloadHandler();
+        final boolean result = dut.download("https://audioapi.orf.at/oe1/api/json/current/broadcasts?_s=1511553601980", handler);
+        Assert.assertTrue(result);
+        Assert.assertNotNull(handler.getResult());
+        final ObjectMapper mapper = new ObjectMapper();
+        final Object json = mapper.readValue(handler.getResult(), Object.class);
+        final String jsonPretty = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(json);
+        logger.info(methodname + "result = {}", jsonPretty);
+        IOUtils.write(jsonPretty, new FileOutputStream(new File("program.json")), StandardCharsets.UTF_8);
     }
 
 }
