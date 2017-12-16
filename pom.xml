@@ -4,7 +4,7 @@
 
   <groupId>at.or.vogt.oe1downloader</groupId>
   <artifactId>Oe1Downloader</artifactId>
-  <version>1.0.6</version>
+  <version>1.0.7-SNAPSHOT</version>
 
   <packaging>jar</packaging>
 
@@ -20,7 +20,7 @@
     <url>https://github.com/phvogt/Oe1Downloader</url>
     <connection>scm:git:https://github.com/phvogt/Oe1Downloader.git</connection>
     <developerConnection>scm:git:https://github.com/phvogt/Oe1Downloader.git</developerConnection>
-    <tag>Oe1Downloader-1.0.6</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <build>
