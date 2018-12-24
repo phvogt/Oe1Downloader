@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.util.Collection;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.PropertyConfigurator;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -22,10 +21,6 @@ import at.or.vogt.oe1downloader.download.HttpClientFactory;
  * Test for {@link at.or.vogt.oe1downloader.Main}.
  */
 public class MainTest {
-
-    static {
-        PropertyConfigurator.configure("src/test/resources/log4j.properties");
-    }
 
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(MainTest.class);

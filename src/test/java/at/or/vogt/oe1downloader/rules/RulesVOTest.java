@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.PropertyConfigurator;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -29,10 +28,6 @@ import at.or.vogt.oe1downloader.json.bean.Show;
  * Tests the {@link RulesVO}.
  */
 public class RulesVOTest {
-
-    static {
-        PropertyConfigurator.configure("src/test/resources/log4j.properties");
-    }
 
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(RulesVOTest.class);
@@ -99,7 +94,8 @@ public class RulesVOTest {
     }
 
     /**
-     * Tests {@link RuleVO#matches(at.or.vogt.oe1downloader.json.bean.Show)}.
+     * Tests
+     * {@link at.or.vogt.oe1downloader.rules.RulesVO#matches(RuleVO, Show)}.
      */
     @Test
     public void testMatches() {
@@ -110,19 +106,19 @@ public class RulesVOTest {
         final RuleVO rule = new RuleVO("name", "title", time, 60, "mp3postfix");
 
         // Show matches title
-        final Show show = new Show(15, "href", "yyy", "title", "day", "subtitle", now, now, now, now);
+        final Show show = new Show(15, "href", "yyy", "title", "day", "subtitle", now, now, now, now, now);
         Assert.assertTrue(RulesVO.matches(rule, show));
 
         // Show matches programTitle
-        final Show showTitle = new Show(15, "href", "title", "zzz", "day", "subtitle", now, now, now, now);
+        final Show showTitle = new Show(15, "href", "title", "zzz", "day", "subtitle", now, now, now, now, now);
         Assert.assertTrue(RulesVO.matches(rule, showTitle));
 
         // Show does not match because of title
-        final Show showNotTitle = new Show(15, "href", "yyy", "xxx", "day", "subtitle", now, now, now, now);
+        final Show showNotTitle = new Show(15, "href", "yyy", "xxx", "day", "subtitle", now, now, now, now, now);
         Assert.assertFalse(RulesVO.matches(rule, showNotTitle));
 
         // Show does not match because of time
-        final Show showNotTime = new Show(15, "href", "yyy", "xxx", "day", "subtitle", now, now, now, now);
+        final Show showNotTime = new Show(15, "href", "yyy", "xxx", "day", "subtitle", now, now, now, now, now);
         Assert.assertFalse(RulesVO.matches(rule, showNotTime));
 
     }

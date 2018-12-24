@@ -166,7 +166,7 @@ public class RulesVO {
             return false;
         }
         if (StringUtils.isNotEmpty(rule.getTime())
-                && !show.getScheduledStart().format(DateTimeFormatter.ofPattern("HH:mm")).equals(rule.getTime())) {
+                && !show.getNiceTime().format(DateTimeFormatter.ofPattern("HH:mm")).equals(rule.getTime())) {
             return false;
         }
 

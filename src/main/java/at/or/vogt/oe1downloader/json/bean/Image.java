@@ -1,5 +1,6 @@
 package at.or.vogt.oe1downloader.json.bean;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,12 +55,12 @@ public class Image {
 
     @JsonProperty("versions")
     public List<Version> getVersions() {
-        return versions;
+        return versions == null ? null : new ArrayList<>(versions);
     }
 
     @JsonProperty("versions")
     public void setVersions(final List<Version> versions) {
-        this.versions = versions;
+        this.versions = versions == null ? null : new ArrayList<>(versions);
     }
 
     @JsonProperty("text")

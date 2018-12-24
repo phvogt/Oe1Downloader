@@ -4,7 +4,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import org.apache.log4j.PropertyConfigurator;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -14,10 +13,6 @@ import org.slf4j.LoggerFactory;
  * Tests for {@link Configuration}.
  */
 public class ConfigurationTest {
-
-    static {
-        PropertyConfigurator.configure("src/test/resources/log4j.properties");
-    }
 
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(ConfigurationTest.class);

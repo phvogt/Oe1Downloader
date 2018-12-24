@@ -1,7 +1,6 @@
 package at.or.vogt.oe1downloader.download;
 
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.log4j.PropertyConfigurator;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -11,10 +10,6 @@ import org.slf4j.LoggerFactory;
  * Tests for {@link HttpClientFactory}.
  */
 public class HttpClientFactoryTest {
-
-    static {
-        PropertyConfigurator.configure("src/test/resources/log4j.properties");
-    }
 
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(HttpClientFactoryTest.class);

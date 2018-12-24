@@ -233,13 +233,13 @@ public class DownloadService {
 
                 private boolean successful = false;
 
-                private long _bytesDownloaded = 0;
+                private long bytesDownloaded = 0;
 
                 @Override
                 public void handleDownload(final InputStream input) {
 
                     try (final FileOutputStream fos = new FileOutputStream(tempFilename, true)) {
-                        _bytesDownloaded = IOUtils.copyLarge(input, fos);
+                        bytesDownloaded = IOUtils.copyLarge(input, fos);
                         successful = true;
                     } catch (final IOException e) {
                         EVENTLOGGER.error("error downloading url {}", url, e);
@@ -257,7 +257,7 @@ public class DownloadService {
                     if (tempFile.exists()) {
                         return tempFile.length();
                     }
-                    return _bytesDownloaded;
+                    return bytesDownloaded;
                 }
             };
             successful = download(url, handler);

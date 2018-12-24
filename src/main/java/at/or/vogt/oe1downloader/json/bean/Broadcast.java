@@ -94,6 +94,7 @@ public class Broadcast {
      * @param broadcastDay broadcastDay
      * @param programKey programKey
      * @param program program
+     * @param programTitle program title
      * @param title title
      * @param subtitle subtitle
      * @param ressort ressort

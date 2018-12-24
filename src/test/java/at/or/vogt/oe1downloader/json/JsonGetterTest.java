@@ -1,20 +1,21 @@
 package at.or.vogt.oe1downloader.json;
 
+import java.io.File;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-import org.apache.log4j.PropertyConfigurator;
+import org.apache.commons.io.FilenameUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import at.or.vogt.oe1downloader.config.Configuration;
 import at.or.vogt.oe1downloader.download.DownloadService;
 import at.or.vogt.oe1downloader.download.FileDownloadService;
 import at.or.vogt.oe1downloader.download.HttpClientFactory;
-import at.or.vogt.oe1downloader.json.bean.Broadcast;
 import at.or.vogt.oe1downloader.json.bean.Day;
 import at.or.vogt.oe1downloader.json.bean.Show;
 import at.or.vogt.oe1downloader.json.bean.ShowInfo;
@@ -25,15 +26,12 @@ import at.or.vogt.oe1downloader.json.bean.Stream;
  */
 public class JsonGetterTest {
 
-    static {
-        PropertyConfigurator.configure("src/test/resources/log4j.properties");
-    }
-
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(JsonGetterTest.class);
 
     /**
-     * Gets the Days ({@link JsonGetter#getDays(String, int)}).
+     * Gets the Days
+     * ({@link at.or.vogt.oe1downloader.json.JsonGetter#getDays(String, long)}).
      * @throws Exception if an error occurs
      */
     @Test
@@ -62,7 +60,87 @@ public class JsonGetterTest {
     }
 
     /**
-     * Gets the ShowInfo ({@link JsonGetter#getShowInfo(Broadcast)}).
+     * Gets the Days
+     * ({@link at.or.vogt.oe1downloader.json.JsonGetter#getDays(String, long)})
+     * and dump the JSON.
+     * @throws Exception if an error occurs
+     */
+    @Test
+    public void testGetDaysDumpJSON() throws Exception {
+
+        final String methodname = "testGetDaysDumpJSON(): ";
+        logger.info(methodname + "start");
+
+        final String defaultConfigFilename = Configuration.gtConfigFilename();
+        try {
+            Configuration.setConfigFilename("src/test/resources/config.properties");
+            final String jsonFilename = "logs/testdir/program.json";
+            final File jsonFile = new File(jsonFilename);
+            jsonFile.delete();
+            new File(FilenameUtils.getPath(jsonFilename)).delete();
+
+            final DownloadService testDownloadService = new FileDownloadService(new HttpClientFactory());
+            final JsonGetter dut = new JsonGetter(testDownloadService);
+
+            final long dayOffset = Duration.between(DateParser.parseISO("2017-04-29T08:15:00+02:00").truncatedTo(ChronoUnit.DAYS),
+                    LocalDateTime.now().truncatedTo(ChronoUnit.DAYS)).toDays();
+
+            final List<Day> result = dut.getDays("src/test/resources/tag/broadcast20170429.json", dayOffset + 2);
+            Assert.assertNotNull(result);
+            logger.info(methodname + "result = {}", result);
+            result.forEach(day -> day.getBroadcasts()
+                    .forEach(b -> logger.info("day = " + day.getDateISO() + " broadcast = " + b.toString())));
+
+            Assert.assertEquals(3, result.size());
+
+            Assert.assertTrue(jsonFile.exists());
+            Assert.assertTrue(jsonFile.isFile());
+
+        } finally {
+            Configuration.setConfigFilename(defaultConfigFilename);
+        }
+
+    }
+
+    /**
+     * Gets the Days
+     * ({@link at.or.vogt.oe1downloader.json.JsonGetter#getDays(String, long)})
+     * and dump the JSON but it is not set.
+     * @throws Exception if an error occurs
+     */
+    @Test
+    public void testGetDaysDumpJSONNotSet() throws Exception {
+
+        final String methodname = "testGetDaysDumpJSONNotSet(): ";
+        logger.info(methodname + "start");
+
+        final String defaultConfigFilename = Configuration.gtConfigFilename();
+        try {
+            Configuration.setConfigFilename("src/test/resources/configEmpty.properties");
+
+            final DownloadService testDownloadService = new FileDownloadService(new HttpClientFactory());
+            final JsonGetter dut = new JsonGetter(testDownloadService);
+
+            final long dayOffset = Duration.between(DateParser.parseISO("2017-04-29T08:15:00+02:00").truncatedTo(ChronoUnit.DAYS),
+                    LocalDateTime.now().truncatedTo(ChronoUnit.DAYS)).toDays();
+
+            final List<Day> result = dut.getDays("src/test/resources/tag/broadcast20170429.json", dayOffset + 2);
+            Assert.assertNotNull(result);
+            logger.info(methodname + "result = {}", result);
+            result.forEach(day -> day.getBroadcasts()
+                    .forEach(b -> logger.info("day = " + day.getDateISO() + " broadcast = " + b.toString())));
+
+            Assert.assertEquals(3, result.size());
+
+        } finally {
+            Configuration.setConfigFilename(defaultConfigFilename);
+        }
+
+    }
+
+    /**
+     * Gets the ShowInfo
+     * ({@link at.or.vogt.oe1downloader.json.JsonGetter#getShowInfo(String)}).
      * @throws Exception if an error occurs
      */
     @Test

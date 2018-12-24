@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.PropertyConfigurator;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -14,10 +13,6 @@ import org.slf4j.LoggerFactory;
  * Test for {@link StringDownloadHandler}.
  */
 public class StringDownloadHandlerTest {
-
-    static {
-        PropertyConfigurator.configure("src/test/resources/log4j.properties");
-    }
 
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(StringDownloadHandlerTest.class);
