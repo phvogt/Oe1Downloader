@@ -6,7 +6,7 @@
 
   <groupId>at.or.vogt.oe1downloader</groupId>
   <artifactId>Oe1Downloader</artifactId>
-  <version>1.0.7-version-update-jackson-SNAPSHOT</version>
+  <version>1.0.8</version>
 
   <packaging>jar</packaging>
 
