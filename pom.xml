@@ -5,7 +5,7 @@
 
   <groupId>at.or.vogt.oe1downloader</groupId>
   <artifactId>Oe1Downloader</artifactId>
-  <version>1.0.9-SNAPSHOT</version>
+  <version>1.0.8-SNAPSHOT</version>
 
   <packaging>jar</packaging>
 
@@ -436,16 +436,4 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-  <distributionManagement>
-    <snapshotRepository>
-      <id>snapshots-repo</id>
-      <url>${snapshots-url}</url>
-    </snapshotRepository>
-    <repository>
-      <id>releases-repo</id>
-      <url>${releases-url}</url>
-    </repository>
-  </distributionManagement>
-
 </project>
