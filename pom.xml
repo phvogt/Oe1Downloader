@@ -436,4 +436,16 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <distributionManagement>
+    <snapshotRepository>
+      <id>snapshots-repo</id>
+      <url>${snapshots-url}</url>
+    </snapshotRepository>
+    <repository>
+      <id>releases-repo</id>
+      <url>${releases-url}</url>
+    </repository>
+  </distributionManagement>
+
 </project>
