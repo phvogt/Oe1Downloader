@@ -33,7 +33,7 @@ public class MP3FileUtilTest {
 
         final MP3FileUtil dut = new MP3FileUtil();
         dut.setId3v1Tag(mp3file, record);
-        mp3file.save(FileUtils.getTempDirectoryPath() + "testv1.mp3");
+        mp3file.save(FileUtils.getTempDirectoryPath() + File.separator + "testv1.mp3");
 
     }
 
@@ -53,12 +53,12 @@ public class MP3FileUtilTest {
 
         final MP3FileUtil dut = new MP3FileUtil();
         dut.setId3v2Tag(mp3file, record);
-        mp3file.save(FileUtils.getTempDirectoryPath() + "testv2.mp3");
+        mp3file.save(FileUtils.getTempDirectoryPath() + File.separator + "testv2.mp3");
 
     }
 
     private File createTmpMp3(final String filename) throws IOException {
-        final File tmpMp3File = new File(FileUtils.getTempDirectoryPath() + filename);
+        final File tmpMp3File = new File(FileUtils.getTempDirectoryPath() + File.separator + filename);
         FileUtils.deleteQuietly(tmpMp3File);
         FileUtils.copyFile(new File("src/test/resources/test.mp3"), tmpMp3File);
 
