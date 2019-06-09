@@ -155,7 +155,7 @@ public class DownloadServiceTest {
                 "<p>mit Irene Suchy. \"An die Künstler, Dichter und Musiker. Damit wir uns nicht vor dem Firmament zu schämen haben, müssen wir uns endlich aufmachen und mithelfen, dass eine gerechte Ordnung in Staat und Gesellschaft eingesetzt werde.\" <br/>(Ludwig Meidner, 1919).</p>",
                 DateParser.parseISO("2017-04-29T08:15:00+02:00"), "41", "matrix", "http://oe1.orf.at/pasticcio");
 
-        final String tmpFilename = FileUtils.getTempDirectoryPath() + "testSetMp3.mp3";
+        final String tmpFilename = FileUtils.getTempDirectoryPath() + File.separator + "testSetMp3.mp3";
         final File tmpMp3File = new File(tmpFilename);
         FileUtils.deleteQuietly(tmpMp3File);
         FileUtils.copyFile(new File("src/test/resources/test.mp3"), tmpMp3File);
