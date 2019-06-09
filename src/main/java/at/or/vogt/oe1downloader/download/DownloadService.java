@@ -4,9 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -26,8 +24,6 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mpatric.mp3agic.ID3v1;
-import com.mpatric.mp3agic.ID3v1Tag;
 import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.Mp3File;
 import com.mpatric.mp3agic.NotSupportedException;
@@ -55,6 +51,7 @@ public class DownloadService {
 
     /**
      * Constructor.
+     *
      * @param httpClientFactory factory for http clients for downloading
      */
     public DownloadService(final HttpClientFactory httpClientFactory) {
@@ -63,7 +60,8 @@ public class DownloadService {
 
     /**
      * Handle the download.
-     * @param url URL
+     *
+     * @param url     URL
      * @param handler handler to process content
      * @return true if download was successful otherwise false
      */
@@ -95,7 +93,8 @@ public class DownloadService {
                 }
 
                 try (final CloseableHttpResponse response = httpclient.execute(httpGet)) {
-                    logger.info(methodname + "try {}: url = {} statuscode = {}", retries, url, response.getStatusLine());
+                    logger.info(methodname + "try {}: url = {} statuscode = {}", retries, url,
+                            response.getStatusLine());
                     final HttpEntity entity = response.getEntity();
                     if (logger.isDebugEnabled()) {
                         final Header[] headers = response.getAllHeaders();
@@ -114,8 +113,8 @@ public class DownloadService {
                     }
                     EntityUtils.consume(entity);
                 } catch (final IOException e) {
-                    final String message = "try " + retries + ": error downloading from url = " + url + " bytes downloaded = "
-                            + bytesDownloaded;
+                    final String message = "try " + retries + ": error downloading from url = " + url
+                            + " bytes downloaded = " + bytesDownloaded;
                     logger.error(message, e);
                     EVENTLOGGER.error(message);
                 }
@@ -136,8 +135,9 @@ public class DownloadService {
 
     /**
      * Downloads the records.
+     *
      * @param targetDirectory target directory
-     * @param records records to download
+     * @param records         records to download
      * @throws IOException if an error occcurs
      */
     public void downloadRecords(final String targetDirectory, final List<RecordVO> records) throws IOException {
@@ -148,7 +148,8 @@ public class DownloadService {
         FileUtils.forceMkdir(targetDirFile);
 
         final Configuration config = Configuration.getConfiguration();
-        final int parallelDownloads = NumberUtils.toInt(config.getProperty(ConfigurationParameter.NUMBER_OF_PARALLEL_DOWNLOADS), 3);
+        final int parallelDownloads = NumberUtils
+                .toInt(config.getProperty(ConfigurationParameter.NUMBER_OF_PARALLEL_DOWNLOADS), 3);
 
         final ExecutorService executors = Executors.newFixedThreadPool(parallelDownloads);
         final List<Future<?>> futures = new ArrayList<>();
@@ -196,6 +197,7 @@ public class DownloadService {
 
     /**
      * Downloads the MP3 from the URL.
+     *
      * @param record record to download
      * @return true if download was successful otherwise false
      */
@@ -225,8 +227,8 @@ public class DownloadService {
             // remove old temporary files
             final String tempFilename = record.getTargetFilename() + ".tmp";
             final File tempFile = new File(tempFilename);
-            EVENTLOGGER.info("start downloading {} {} {} to {}", record.getDay(), record.getScheduledStart(), record.getTitle(),
-                    record.getTargetFilename());
+            EVENTLOGGER.info("start downloading {} {} {} to {}", record.getDay(), record.getScheduledStart(),
+                    record.getTitle(), record.getTargetFilename());
 
             // download to file
             final DownloadHandler handler = new DownloadHandler() {
@@ -276,6 +278,7 @@ public class DownloadService {
 
     /**
      * Sets the mp3 tag in the file.
+     *
      * @param record record to set the id3 tag for
      */
     void setMp3Tag(final RecordVO record) {
@@ -283,20 +286,12 @@ public class DownloadService {
         try {
             final String mp3filename = record.getTargetFilename();
             final Mp3File mp3file = new Mp3File(mp3filename);
+            mp3file.removeId3v1Tag();
+            mp3file.removeId3v2Tag();
+            final MP3FileUtil fileUtil = new MP3FileUtil();
+            fileUtil.setId3v1Tag(mp3file, record);
+            fileUtil.setId3v2Tag(mp3file, record);
 
-            final ID3v1 id3v1Tag;
-            if (mp3file.hasId3v1Tag()) {
-                id3v1Tag = mp3file.getId3v1Tag();
-            } else {
-                id3v1Tag = new ID3v1Tag();
-                mp3file.setId3v1Tag(id3v1Tag);
-            }
-            id3v1Tag.setArtist("OE1");
-            id3v1Tag.setTitle(record.getScheduledStart().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
-            id3v1Tag.setAlbum(record.getTitle());
-            id3v1Tag.setTrack(record.getIndex());
-            id3v1Tag.setGenre(12);
-            id3v1Tag.setYear("" + Calendar.getInstance().get(Calendar.YEAR));
             final String tempFilename = mp3filename + ".tmp";
             mp3file.save(tempFilename);
             final File destFile = new File(mp3filename);
