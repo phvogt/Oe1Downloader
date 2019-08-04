@@ -6,7 +6,7 @@
 
   <groupId>at.or.vogt.oe1downloader</groupId>
   <artifactId>Oe1Downloader</artifactId>
-  <version>1.0.10</version>
+  <version>1.0.10-#14-coverity-issues</version>
 
   <packaging>jar</packaging>
 

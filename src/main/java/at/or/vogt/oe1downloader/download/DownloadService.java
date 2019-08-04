@@ -34,6 +34,7 @@ import at.or.vogt.oe1downloader.config.Configuration;
 import at.or.vogt.oe1downloader.config.ConfigurationParameter;
 import at.or.vogt.oe1downloader.json.JsonGetter;
 import at.or.vogt.oe1downloader.json.bean.ShowInfo;
+import at.or.vogt.oe1downloader.json.bean.Stream;
 
 /**
  * Download service for MP3.
@@ -212,7 +213,16 @@ public class DownloadService {
         final String showInfoUrl = record.getHref();
         final JsonGetter jsg = new JsonGetter(this);
         final ShowInfo showInfo = jsg.getShowInfo(showInfoUrl);
-        final String loopStreamId = showInfo.getStreams().get(0).getLoopStreamId();
+        if (showInfo == null) {
+            EVENTLOGGER.error("showInfo null for record {}", record);
+            return false;
+        }
+        final List<Stream> streams = showInfo.getStreams();
+        if (streams == null || streams.get(0) == null) {
+            EVENTLOGGER.error("stream null / empty for record {}", record);
+            return false;
+        }
+        final String loopStreamId = streams.get(0).getLoopStreamId();
 
         // create the download URL
         final Configuration config = Configuration.getConfiguration();

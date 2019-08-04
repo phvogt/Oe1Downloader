@@ -42,28 +42,29 @@ public class Show {
      */
     public Show(final Broadcast b) {
         this(b.getId(), b.getHref(), b.getProgramTitle(), b.getTitle(), "" + b.getBroadcastDay(),
-                b.getSubtitle() == null ? null : Jsoup.parse(b.getSubtitle()).text(), DateParser.parseISO(b.getScheduledStartISO()),
-                DateParser.parseISO(b.getScheduledEndISO()), DateParser.parseISO(b.getStartISO()),
-                DateParser.parseISO(b.getEndISO()), DateParser.parseISO(b.getNiceTimeISO()));
+                b.getSubtitle() == null ? null : Jsoup.parse(b.getSubtitle()).text(),
+                DateParser.parseISO(b.getScheduledStartISO()), DateParser.parseISO(b.getScheduledEndISO()),
+                DateParser.parseISO(b.getStartISO()), DateParser.parseISO(b.getEndISO()),
+                DateParser.parseISO(b.getNiceTimeISO()));
     }
 
     /**
      * Constructor.
-     * @param id id
-     * @param href href
-     * @param programTitle programTitle
-     * @param title title
-     * @param day day
-     * @param subtitle subtitle
+     * @param id             id
+     * @param href           href
+     * @param programTitle   programTitle
+     * @param title          title
+     * @param day            day
+     * @param subtitle       subtitle
      * @param scheduledStart scheduledStart
-     * @param scheduledEnd scheduledEnd
-     * @param start start
-     * @param end end
-     * @param niceTime niceTime
+     * @param scheduledEnd   scheduledEnd
+     * @param start          start
+     * @param end            end
+     * @param niceTime       niceTime
      */
     public Show(final int id, final String href, final String programTitle, final String title, final String day,
-            final String subtitle, final LocalDateTime scheduledStart, final LocalDateTime scheduledEnd, final LocalDateTime start,
-            final LocalDateTime end, final LocalDateTime niceTime) {
+            final String subtitle, final LocalDateTime scheduledStart, final LocalDateTime scheduledEnd,
+            final LocalDateTime start, final LocalDateTime end, final LocalDateTime niceTime) {
         this.id = id;
         this.href = href;
         this.programTitle = programTitle == null ? "" : programTitle;
@@ -201,7 +202,10 @@ public class Show {
 
     public static List<Show> forDay(final Day day) {
         final List<Show> result = new ArrayList<>();
-        day.getBroadcasts().stream().forEach(b -> result.add(new Show(b)));
+        final List<Broadcast> broadcasts = day.getBroadcasts();
+        if (broadcasts != null) {
+            broadcasts.stream().forEach(b -> result.add(new Show(b)));
+        }
         return result;
     }
 
