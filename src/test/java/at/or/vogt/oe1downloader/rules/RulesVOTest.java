@@ -1,14 +1,15 @@
 package at.or.vogt.oe1downloader.rules;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,7 @@ import at.or.vogt.oe1downloader.download.DownloadService;
 import at.or.vogt.oe1downloader.download.FileDownloadService;
 import at.or.vogt.oe1downloader.download.HttpClientFactory;
 import at.or.vogt.oe1downloader.download.RecordVO;
+import at.or.vogt.oe1downloader.json.DateParser;
 import at.or.vogt.oe1downloader.json.JsonGetter;
 import at.or.vogt.oe1downloader.json.bean.Day;
 import at.or.vogt.oe1downloader.json.bean.Show;
@@ -72,7 +74,6 @@ public class RulesVOTest {
      * Tests the Matching
      */
     @Test
-    @Disabled("jsonGetter works with current date")
     public void testMatching() {
 
         final String methodname = "testMatching(): ";
@@ -81,7 +82,11 @@ public class RulesVOTest {
 
         final JsonGetter jsonGetter = new JsonGetter(downloadService);
 
-        final List<Day> days = jsonGetter.getDays("src/test/resources/tag/broadcast20170429.json", 2);
+        final long dayOffset = Duration
+                .between(DateParser.parseISO("2017-04-29T08:15:00+02:00").truncatedTo(ChronoUnit.DAYS),
+                        LocalDateTime.now().truncatedTo(ChronoUnit.DAYS))
+                .toDays();
+        final List<Day> days = jsonGetter.getDays("src/test/resources/tag/broadcast20170429.json", dayOffset + 6);
         final Day day = days.get(0);
 
         final RulesVO dut = new RulesVO();
@@ -119,6 +124,33 @@ public class RulesVOTest {
         // Show does not match because of time
         final Show showNotTime = new Show(15, "href", "yyy", "xxx", "day", "subtitle", now, now, now, now, now);
         Assertions.assertFalse(RulesVO.matches(rule, showNotTime));
+
+    }
+
+    @Test
+    public void testCheckForRecordsDayRuleIndexCounterNoBroadcasts() throws Exception {
+
+        final String methodname = "testCheckForRecordsDayRuleIndexCounterNoBroadcasts(): ";
+        logger.info(methodname);
+
+        final DownloadService downloadService = new FileDownloadService(new HttpClientFactory());
+
+        final JsonGetter jsonGetter = new JsonGetter(downloadService);
+
+        final long dayOffset = Duration
+                .between(DateParser.parseISO("2017-04-29T08:15:00+02:00").truncatedTo(ChronoUnit.DAYS),
+                        LocalDateTime.now().truncatedTo(ChronoUnit.DAYS))
+                .toDays();
+
+        final List<Day> days = jsonGetter.getDays("src/test/resources/tag/broadcast_none.json", dayOffset + 7);
+        final Day day = days.get(0);
+
+        final RulesVO dut = new RulesVO();
+        dut.loadRules();
+        final RuleIndexCounter counter = new RuleIndexCounter();
+        final List<RecordVO> records = dut.checkForRecords(day, counter);
+        Assertions.assertNotNull(records);
+        Assertions.assertEquals(0, records.size());
 
     }
 
