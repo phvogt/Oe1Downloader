@@ -13,11 +13,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({ "href", "station", "entity", "id", "broadcastDay", "programKey", "program", "programTitle", "title",
-        "subtitle", "ressort", "state", "isOnDemand", "isGeoProtected", "start", "startISO", "startOffset", "scheduledStart",
-        "scheduledStartISO", "scheduledStartOffset", "end", "endISO", "endOffset", "scheduledEnd", "scheduledEndISO",
-        "scheduledEndOffset", "niceTime", "niceTimeISO", "niceTimeOffset", "description", "pressRelease", "akm", "tags",
-        "moderator", "url", "images", "items", "streams", "marks" })
+@JsonPropertyOrder({ "href", "station", "entity", "id", "broadcastDay", "programKey", "program", "programTitle",
+        "title", "subtitle", "ressort", "state", "isOnDemand", "isGeoProtected", "start", "startISO", "startOffset",
+        "scheduledStart", "scheduledStartISO", "scheduledStartOffset", "end", "endISO", "endOffset", "scheduledEnd",
+        "scheduledEndISO", "scheduledEndOffset", "niceTime", "niceTimeISO", "niceTimeOffset", "description",
+        "pressRelease", "akm", "tags", "moderator", "url", "images", "items", "streams", "marks" })
 public class ShowInfo {
 
     @JsonProperty("href")
@@ -173,7 +173,7 @@ public class ShowInfo {
 
     @JsonProperty("programTitle")
     public String getProgramTitle() {
-        return program;
+        return programTitle;
     }
 
     @JsonProperty("programTitle")

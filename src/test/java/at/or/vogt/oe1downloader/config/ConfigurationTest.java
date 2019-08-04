@@ -107,4 +107,17 @@ public class ConfigurationTest {
         }
     }
 
+    @Test
+    public void testLoadProperties() throws Exception {
+        final String methodname = "testLoadProperties(): ";
+        logger.info(methodname);
+
+        final Configuration dut = new Configuration();
+        dut.configFileProps = null;
+
+        final Properties result = dut.loadProperties("src/test/resources/config.properties");
+
+        Assertions.assertNotNull(result);
+    }
+
 }

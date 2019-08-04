@@ -123,10 +123,11 @@ public class Main {
     /**
      * Does the downloads.
      * @param downloadService download service to use
-     * @param jsonPathPrefix prefix for JSON path
+     * @param jsonPathPrefix  prefix for JSON path
      * @param targetDirectory target directory for MP3s
      */
-    public void doDownloads(final DownloadService downloadService, final String jsonPathPrefix, final String targetDirectory) {
+    public void doDownloads(final DownloadService downloadService, final String jsonPathPrefix,
+            final String targetDirectory) {
 
         final String methodname = "run(): ";
         LOGGER.info(methodname);
@@ -141,6 +142,10 @@ public class Main {
 
             final JsonGetter jsonGetter = new JsonGetter(downloadService);
             final List<Day> days = jsonGetter.getDays(url, daysback);
+            if (days == null) {
+                EVENTLOGGER.warn("didn't find any days to download");
+                return;
+            }
 
             // determine which records to download
             final RulesVO rules = RulesVO.getRulesVO();
