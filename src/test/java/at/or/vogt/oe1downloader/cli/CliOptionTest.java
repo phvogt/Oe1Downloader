@@ -1,8 +1,8 @@
 package at.or.vogt.oe1downloader.cli;
 
 import org.apache.commons.cli.Option;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,14 +26,14 @@ public class CliOptionTest {
         final CliOption dut = CliOption.HELP;
 
         final Option helpOption = dut.getOption();
-        Assert.assertNotNull(helpOption);
+        Assertions.assertNotNull(helpOption);
         logger.info(methodname + "helpOption = {}", helpOption);
 
-        Assert.assertEquals("h", helpOption.getOpt());
-        Assert.assertFalse(helpOption.hasArg());
-        Assert.assertEquals(dut.isHasArguments(), helpOption.hasArg());
-        Assert.assertNotNull(helpOption.getDescription());
-        Assert.assertEquals(dut.getDescription(), helpOption.getDescription());
+        Assertions.assertEquals("h", helpOption.getOpt());
+        Assertions.assertFalse(helpOption.hasArg());
+        Assertions.assertEquals(dut.isHasArguments(), helpOption.hasArg());
+        Assertions.assertNotNull(helpOption.getDescription());
+        Assertions.assertEquals(dut.getDescription(), helpOption.getDescription());
     }
 
 }
