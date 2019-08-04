@@ -213,6 +213,10 @@ public class DownloadService {
         final String showInfoUrl = record.getHref();
         final JsonGetter jsg = new JsonGetter(this);
         final ShowInfo showInfo = jsg.getShowInfo(showInfoUrl);
+        if (showInfo == null) {
+            EVENTLOGGER.error("showInfo null for record {}", record);
+            return false;
+        }
         final List<Stream> streams = showInfo.getStreams();
         if (streams == null || streams.get(0) == null) {
             EVENTLOGGER.error("stream null / empty for record {}", record);
