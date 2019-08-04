@@ -7,8 +7,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,26 +43,28 @@ public class JsonGetterTest {
         final DownloadService testDownloadService = new FileDownloadService(new HttpClientFactory());
         final JsonGetter dut = new JsonGetter(testDownloadService);
 
-        final long dayOffset = Duration.between(DateParser.parseISO("2017-04-29T08:15:00+02:00").truncatedTo(ChronoUnit.DAYS),
-                LocalDateTime.now().truncatedTo(ChronoUnit.DAYS)).toDays();
+        final long dayOffset = Duration
+                .between(DateParser.parseISO("2017-04-29T08:15:00+02:00").truncatedTo(ChronoUnit.DAYS),
+                        LocalDateTime.now().truncatedTo(ChronoUnit.DAYS))
+                .toDays();
 
         final List<Day> result = dut.getDays("src/test/resources/tag/broadcast20170429.json", dayOffset + 2);
-        Assert.assertNotNull(result);
+        Assertions.assertNotNull(result);
         logger.info(methodname + "result = {}", result);
-        result.forEach(
-                day -> day.getBroadcasts().forEach(b -> logger.info("day = " + day.getDateISO() + " broadcast = " + b.toString())));
+        result.forEach(day -> day.getBroadcasts()
+                .forEach(b -> logger.info("day = " + day.getDateISO() + " broadcast = " + b.toString())));
 
-        Assert.assertEquals(3, result.size());
+        Assertions.assertEquals(3, result.size());
 
         final List<Show> shows1 = Show.forDay(result.get(0));
-        Assert.assertEquals(53, shows1.size());
+        Assertions.assertEquals(53, shows1.size());
         shows1.forEach(s -> logger.info(methodname + "  shows1 = {}", s));
     }
 
     /**
      * Gets the Days
-     * ({@link at.or.vogt.oe1downloader.json.JsonGetter#getDays(String, long)})
-     * and dump the JSON.
+     * ({@link at.or.vogt.oe1downloader.json.JsonGetter#getDays(String, long)}) and
+     * dump the JSON.
      * @throws Exception if an error occurs
      */
     @Test
@@ -82,19 +84,21 @@ public class JsonGetterTest {
             final DownloadService testDownloadService = new FileDownloadService(new HttpClientFactory());
             final JsonGetter dut = new JsonGetter(testDownloadService);
 
-            final long dayOffset = Duration.between(DateParser.parseISO("2017-04-29T08:15:00+02:00").truncatedTo(ChronoUnit.DAYS),
-                    LocalDateTime.now().truncatedTo(ChronoUnit.DAYS)).toDays();
+            final long dayOffset = Duration
+                    .between(DateParser.parseISO("2017-04-29T08:15:00+02:00").truncatedTo(ChronoUnit.DAYS),
+                            LocalDateTime.now().truncatedTo(ChronoUnit.DAYS))
+                    .toDays();
 
             final List<Day> result = dut.getDays("src/test/resources/tag/broadcast20170429.json", dayOffset + 2);
-            Assert.assertNotNull(result);
+            Assertions.assertNotNull(result);
             logger.info(methodname + "result = {}", result);
             result.forEach(day -> day.getBroadcasts()
                     .forEach(b -> logger.info("day = " + day.getDateISO() + " broadcast = " + b.toString())));
 
-            Assert.assertEquals(3, result.size());
+            Assertions.assertEquals(3, result.size());
 
-            Assert.assertTrue(jsonFile.exists());
-            Assert.assertTrue(jsonFile.isFile());
+            Assertions.assertTrue(jsonFile.exists());
+            Assertions.assertTrue(jsonFile.isFile());
 
         } finally {
             Configuration.setConfigFilename(defaultConfigFilename);
@@ -104,8 +108,8 @@ public class JsonGetterTest {
 
     /**
      * Gets the Days
-     * ({@link at.or.vogt.oe1downloader.json.JsonGetter#getDays(String, long)})
-     * and dump the JSON but it is not set.
+     * ({@link at.or.vogt.oe1downloader.json.JsonGetter#getDays(String, long)}) and
+     * dump the JSON but it is not set.
      * @throws Exception if an error occurs
      */
     @Test
@@ -121,16 +125,18 @@ public class JsonGetterTest {
             final DownloadService testDownloadService = new FileDownloadService(new HttpClientFactory());
             final JsonGetter dut = new JsonGetter(testDownloadService);
 
-            final long dayOffset = Duration.between(DateParser.parseISO("2017-04-29T08:15:00+02:00").truncatedTo(ChronoUnit.DAYS),
-                    LocalDateTime.now().truncatedTo(ChronoUnit.DAYS)).toDays();
+            final long dayOffset = Duration
+                    .between(DateParser.parseISO("2017-04-29T08:15:00+02:00").truncatedTo(ChronoUnit.DAYS),
+                            LocalDateTime.now().truncatedTo(ChronoUnit.DAYS))
+                    .toDays();
 
             final List<Day> result = dut.getDays("src/test/resources/tag/broadcast20170429.json", dayOffset + 2);
-            Assert.assertNotNull(result);
+            Assertions.assertNotNull(result);
             logger.info(methodname + "result = {}", result);
             result.forEach(day -> day.getBroadcasts()
                     .forEach(b -> logger.info("day = " + day.getDateISO() + " broadcast = " + b.toString())));
 
-            Assert.assertEquals(3, result.size());
+            Assertions.assertEquals(3, result.size());
 
         } finally {
             Configuration.setConfigFilename(defaultConfigFilename);
@@ -152,13 +158,13 @@ public class JsonGetterTest {
         final DownloadService testDownloadService = new FileDownloadService(new HttpClientFactory());
         final JsonGetter dut = new JsonGetter(testDownloadService);
         final ShowInfo result = dut.getShowInfo("src/test/resources/showinfo/20170429.json");
-        Assert.assertNotNull(result);
+        Assertions.assertNotNull(result);
         logger.info(methodname + "result = {}", result);
 
         final List<Stream> streams = result.getStreams();
         logger.info(methodname + "streams = {}", streams);
-        Assert.assertNotNull(streams);
-        Assert.assertEquals(1, streams.size());
+        Assertions.assertNotNull(streams);
+        Assertions.assertEquals(1, streams.size());
 
         final String streamId = streams.get(0).getLoopStreamId();
         logger.info(methodname + "streamId = {}", streamId);

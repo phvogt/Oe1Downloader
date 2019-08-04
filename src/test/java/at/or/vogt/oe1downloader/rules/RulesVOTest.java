@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,18 +44,18 @@ public class RulesVOTest {
 
         final RulesVO dut = new RulesVO();
         final Map<String, Map<String, String>> rules = dut.parseMap(parsedRules);
-        Assert.assertNotNull(rules);
+        Assertions.assertNotNull(rules);
 
         final String methodname = "logRules(): ";
         final Set<String> rulesKeys = rules.keySet();
-        Assert.assertNotNull(rulesKeys);
-        Assert.assertTrue(rulesKeys.size() > 0);
+        Assertions.assertNotNull(rulesKeys);
+        Assertions.assertTrue(rulesKeys.size() > 0);
 
         final Map<String, String> rule01 = rules.get("01");
-        Assert.assertNotNull(rule01);
+        Assertions.assertNotNull(rule01);
         final String rule01ShortTitle = rule01.get("shortTitle");
-        Assert.assertNotNull(rule01ShortTitle);
-        Assert.assertEquals("Vom Leben der Natur", rule01ShortTitle);
+        Assertions.assertNotNull(rule01ShortTitle);
+        Assertions.assertEquals("Vom Leben der Natur", rule01ShortTitle);
 
         for (final String rulesKey : rulesKeys) {
             logger.info(methodname + "rule = {}", rulesKey);
@@ -72,7 +72,7 @@ public class RulesVOTest {
      * Tests the Matching
      */
     @Test
-    @Ignore("jsonGetter works with current date")
+    @Disabled("jsonGetter works with current date")
     public void testMatching() {
 
         final String methodname = "testMatching(): ";
@@ -94,8 +94,7 @@ public class RulesVOTest {
     }
 
     /**
-     * Tests
-     * {@link at.or.vogt.oe1downloader.rules.RulesVO#matches(RuleVO, Show)}.
+     * Tests {@link at.or.vogt.oe1downloader.rules.RulesVO#matches(RuleVO, Show)}.
      */
     @Test
     public void testMatches() {
@@ -107,19 +106,19 @@ public class RulesVOTest {
 
         // Show matches title
         final Show show = new Show(15, "href", "yyy", "title", "day", "subtitle", now, now, now, now, now);
-        Assert.assertTrue(RulesVO.matches(rule, show));
+        Assertions.assertTrue(RulesVO.matches(rule, show));
 
         // Show matches programTitle
         final Show showTitle = new Show(15, "href", "title", "zzz", "day", "subtitle", now, now, now, now, now);
-        Assert.assertTrue(RulesVO.matches(rule, showTitle));
+        Assertions.assertTrue(RulesVO.matches(rule, showTitle));
 
         // Show does not match because of title
         final Show showNotTitle = new Show(15, "href", "yyy", "xxx", "day", "subtitle", now, now, now, now, now);
-        Assert.assertFalse(RulesVO.matches(rule, showNotTitle));
+        Assertions.assertFalse(RulesVO.matches(rule, showNotTitle));
 
         // Show does not match because of time
         final Show showNotTime = new Show(15, "href", "yyy", "xxx", "day", "subtitle", now, now, now, now, now);
-        Assert.assertFalse(RulesVO.matches(rule, showNotTime));
+        Assertions.assertFalse(RulesVO.matches(rule, showNotTime));
 
     }
 

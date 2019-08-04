@@ -1,6 +1,6 @@
 package at.or.vogt.oe1downloader;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 
 /**

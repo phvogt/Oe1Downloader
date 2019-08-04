@@ -4,8 +4,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,10 +27,10 @@ public class ConfigurationTest {
 
         final Configuration dut = Configuration.getConfiguration();
         final Properties props = dut.getProperties();
-        Assert.assertNotNull(props);
+        Assertions.assertNotNull(props);
 
         final Set<Object> keys = props.keySet();
-        Assert.assertTrue(keys.size() > 0);
+        Assertions.assertTrue(keys.size() > 0);
         for (final Object key : keys) {
             final Object value = props.get(key);
             logger.info(methodname + "key = {} / value = {}", key, value);
@@ -45,13 +45,13 @@ public class ConfigurationTest {
 
         final Configuration dut = Configuration.getConfiguration();
         final String result = dut.getProperty(ConfigurationParameter.DAYSBACK);
-        Assert.assertNotNull(result);
-        Assert.assertNotEquals(ConfigurationParameter.DAYSBACK.getDefaultValue(), result);
+        Assertions.assertNotNull(result);
+        Assertions.assertNotEquals(ConfigurationParameter.DAYSBACK.getDefaultValue(), result);
     }
 
     /**
-     * Tests {@link Configuration#getProperty(ConfigurationParameter)} with
-     * empty property.
+     * Tests {@link Configuration#getProperty(ConfigurationParameter)} with empty
+     * property.
      * @throws Exception if an error occurs
      */
     @Test
@@ -60,8 +60,8 @@ public class ConfigurationTest {
         final Configuration dut = new Configuration();
         dut.loadProperties("src/test/resources/configEmpty.properties");
         final String result = dut.getProperty(ConfigurationParameter.DAYSBACK);
-        Assert.assertNotNull(result);
-        Assert.assertEquals(ConfigurationParameter.DAYSBACK.getDefaultValue(), result);
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(ConfigurationParameter.DAYSBACK.getDefaultValue(), result);
     }
 
     /**
@@ -72,18 +72,21 @@ public class ConfigurationTest {
 
         final Configuration dut = Configuration.getConfiguration();
         final Map<String, String> result = dut.getPropertyMap(ConfigurationParameter.RULES);
-        Assert.assertNotNull(result);
-        Assert.assertTrue(result.keySet().size() > 0);
+        Assertions.assertNotNull(result);
+        Assertions.assertTrue(result.keySet().size() > 0);
     }
 
     /**
      * Tests property loading with an error.
      */
-    @Test(expected = RuntimeException.class)
+    @Test
     public void testLoadPropertiesError() {
 
         final Configuration dut = new Configuration();
-        dut.loadProperties("asdf.properties");
+        final RuntimeException exception = Assertions.assertThrows(RuntimeException.class, () -> {
+            dut.loadProperties("asdf.properties");
+        });
+        Assertions.assertEquals("could not load asdf.properties", exception.getMessage());
     }
 
     /**

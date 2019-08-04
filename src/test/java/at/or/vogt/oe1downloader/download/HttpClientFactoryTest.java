@@ -1,8 +1,8 @@
 package at.or.vogt.oe1downloader.download;
 
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +25,7 @@ public class HttpClientFactoryTest {
         final HttpClientFactory dut = new HttpClientFactory();
         final CloseableHttpClient result = dut.getHttpClient();
 
-        Assert.assertNotNull(result);
+        Assertions.assertNotNull(result);
         logger.info(methodname + "result = {}", result);
     }
 
