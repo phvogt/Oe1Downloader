@@ -6,9 +6,9 @@ import java.io.FileNotFoundException;
 import java.util.Collection;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +31,7 @@ public class MainTest {
      * .
      */
     @Test
-    @Ignore("jsonGetter works with current date")
+    @Disabled("jsonGetter works with current date")
     public void testDoDownloads() {
 
         final String methodname = "testDoDownloads(): ";
@@ -66,7 +66,8 @@ public class MainTest {
         };
 
         // delete old files
-        final Collection<File> oldFiles = FileUtils.listFiles(FileUtils.getTempDirectory(), new String[] { "mp3" }, false);
+        final Collection<File> oldFiles = FileUtils.listFiles(FileUtils.getTempDirectory(), new String[] { "mp3" },
+                false);
         logger.info(methodname + "oldFiles = {}", oldFiles);
         for (final File file : oldFiles) {
             if (file.getName().contains("kolleg_17.08.2015")) {
@@ -79,7 +80,7 @@ public class MainTest {
             expectedFile.delete();
         }
         dut.doDownloads(downloadService, "src/test/resources/tag/", FileUtils.getTempDirectoryPath());
-        Assert.assertTrue(expectedFile.exists());
+        Assertions.assertTrue(expectedFile.exists());
     }
 
     /**
@@ -94,7 +95,7 @@ public class MainTest {
         final Main dut = new Main();
 
         final DownloadService downloadService = dut.getDownloadService();
-        Assert.assertNotNull(downloadService);
+        Assertions.assertNotNull(downloadService);
         logger.info(methodname + "downloadService = {}", downloadService);
     }
 
@@ -110,7 +111,7 @@ public class MainTest {
         final Main dut = new Main();
 
         final String jsonPathPrefix = dut.getJsonPathPrefix();
-        Assert.assertNotNull(jsonPathPrefix);
+        Assertions.assertNotNull(jsonPathPrefix);
         logger.info(methodname + "jsonPathPrefix = {}", jsonPathPrefix);
 
     }
@@ -127,14 +128,14 @@ public class MainTest {
         final Main dut = new Main();
 
         final String targetDirectory = dut.getTargetDirectory(null);
-        Assert.assertNotNull(targetDirectory);
+        Assertions.assertNotNull(targetDirectory);
         logger.info(methodname + "targetDirectory = {}", targetDirectory);
-        Assert.assertEquals("./150826", targetDirectory);
+        Assertions.assertEquals("./150826", targetDirectory);
 
         final String targetDirectory2 = dut.getTargetDirectory("testdir");
-        Assert.assertNotNull(targetDirectory2);
+        Assertions.assertNotNull(targetDirectory2);
         logger.info(methodname + "targetDirectory2 = {}", targetDirectory2);
-        Assert.assertEquals("testdir", targetDirectory2);
+        Assertions.assertEquals("testdir", targetDirectory2);
 
     }
 
@@ -166,26 +167,26 @@ public class MainTest {
 
         try {
             final CommandLineParser cmd = dut.processCommandline(new String[] {});
-            Assert.assertNotNull(cmd);
+            Assertions.assertNotNull(cmd);
         } catch (final SystemExitException e) {
             logger.error("error", e);
-            Assert.fail();
+            Assertions.fail();
         }
 
         try {
             dut.processCommandline(new String[] { "-h" });
             logger.error("error");
-            Assert.fail();
+            Assertions.fail();
         } catch (final SystemExitException e) {
-            Assert.assertEquals(1, e.getExitCode());
+            Assertions.assertEquals(1, e.getExitCode());
         }
 
         try {
             dut.processCommandline(new String[] { "-x" });
             logger.error("error");
-            Assert.fail();
+            Assertions.fail();
         } catch (final SystemExitException e) {
-            Assert.assertEquals(2, e.getExitCode());
+            Assertions.assertEquals(2, e.getExitCode());
         }
     }
 

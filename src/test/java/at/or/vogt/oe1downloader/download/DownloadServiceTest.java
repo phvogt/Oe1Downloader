@@ -8,9 +8,9 @@ import java.util.Arrays;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,8 +38,8 @@ public class DownloadServiceTest {
                 new FileHttpClientFactory("src/test/resources/tag/broadcast20170429.json"));
         final StringDownloadHandler handler = new StringDownloadHandler();
         final boolean result = dut.download("src/test/resources/tag/broadcast20170429.json", handler);
-        Assert.assertTrue(result);
-        Assert.assertNotNull(handler.getResult());
+        Assertions.assertTrue(result);
+        Assertions.assertNotNull(handler.getResult());
         logger.info(methodname + "result = {}", handler.getResult());
     }
 
@@ -55,8 +55,8 @@ public class DownloadServiceTest {
                 new FileHttpClientFactoryConnectionReset("src/test/resources/tag/broadcast20170429.json"));
         final StringDownloadHandler handler = new StringDownloadHandler();
         final boolean result = dut.download("src/test/resources/tag/broadcast20170429.json", handler);
-        Assert.assertFalse(result);
-        Assert.assertEquals("", handler.getResult());
+        Assertions.assertFalse(result);
+        Assertions.assertEquals("", handler.getResult());
         logger.info(methodname + "result = {}", handler.getResult());
     }
 
@@ -85,7 +85,7 @@ public class DownloadServiceTest {
 
         dut.download(record);
 
-        Assert.assertTrue(targetFile.exists());
+        Assertions.assertTrue(targetFile.exists());
         FileUtils.deleteQuietly(targetFile);
 
     }
@@ -116,7 +116,7 @@ public class DownloadServiceTest {
 
         dut.downloadRecords(FileUtils.getTempDirectoryPath(), Arrays.asList(new RecordVO[] { record }));
 
-        Assert.assertTrue(targetFile.exists());
+        Assertions.assertTrue(targetFile.exists());
         FileUtils.deleteQuietly(targetFile);
     }
 
@@ -126,7 +126,7 @@ public class DownloadServiceTest {
      * @throws Exception if an error occurs
      */
     @Test
-    @Ignore
+    @Disabled
     public void testDownloadJson() throws Exception {
 
         final String methodname = "testDownloadJson(): ";
@@ -135,8 +135,8 @@ public class DownloadServiceTest {
         final StringDownloadHandler handler = new StringDownloadHandler();
         final boolean result = dut.download("https://audioapi.orf.at/oe1/api/json/current/broadcasts?_s=1511553601980",
                 handler);
-        Assert.assertTrue(result);
-        Assert.assertNotNull(handler.getResult());
+        Assertions.assertTrue(result);
+        Assertions.assertNotNull(handler.getResult());
         final ObjectMapper mapper = new ObjectMapper();
         final Object json = mapper.readValue(handler.getResult(), Object.class);
         final String jsonPretty = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(json);
