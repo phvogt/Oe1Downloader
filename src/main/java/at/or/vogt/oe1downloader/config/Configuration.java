@@ -30,7 +30,7 @@ public class Configuration {
     private final Logger logger = LoggerFactory.getLogger(Configuration.class);
 
     /** contains the properties. */
-    private Properties configFileProps = new Properties();
+    Properties configFileProps = new Properties();
 
     /**
      * Gets the configuration.
@@ -54,6 +54,9 @@ public class Configuration {
         logger.info("loading properties from " + configFilename + ".");
 
         try (final FileInputStream in = new FileInputStream(new File(configFilename))) {
+            if (configFileProps == null) {
+                configFileProps = new Properties();
+            }
             configFileProps.load(in);
         } catch (final IOException e) {
             final String message = "could not load " + configFilename;
