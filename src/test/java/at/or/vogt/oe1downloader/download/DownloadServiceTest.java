@@ -165,4 +165,20 @@ public class DownloadServiceTest {
 
     }
 
+    @Test
+    public void testDownloadRecordVO() throws Exception {
+        final String methodname = "testDownloadRecordVO(): ";
+        logger.info(methodname);
+
+        final DownloadService dut = new DownloadService(
+                new FileHttpClientFactory("src/test/resources/showinfo/20170430_no_Streams.json"));
+        final LocalDateTime scheduledStartLdt = DateParser.parseISO("2017-04-29T08:15:00+02:00");
+        final RecordVO record = new RecordVO("20170429", "Pasticcio", "Mit den Händen kann ich es auch",
+                "<p>mit Irene Suchy. \"An die Künstler, Dichter und Musiker. Damit wir uns nicht vor dem Firmament zu schämen haben, müssen wir uns endlich aufmachen und mithelfen, dass eine gerechte Ordnung in Staat und Gesellschaft eingesetzt werde.\" <br/>(Ludwig Meidner, 1919).</p>",
+                scheduledStartLdt, "60", "mp3postfix", "src/test/resources/showinfo/20170429.json");
+        final boolean result = dut.download(record);
+        Assertions.assertFalse(result);
+
+    }
+
 }

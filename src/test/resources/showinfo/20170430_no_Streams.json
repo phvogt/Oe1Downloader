@@ -1,0 +1,73 @@
+{
+	"href": "https://audioapi.orf.at/oe1/api/json/current/broadcast/468750/20170429",
+	"station": "oe1",
+	"entity": "Broadcast",
+	"id": 32592,
+	"broadcastDay": 20170429,
+	"programKey": "468750",
+	"program": "9",
+	"title": "Pasticcio",
+	"subtitle": "<p>mit Wolfgang Schlag.</p>",
+	"ressort": "musik",
+	"state": "C",
+	"isOnDemand": true,
+	"isGeoProtected": false,
+	"start": 1493446499000,
+	"startISO": "2017-04-29T08:14:59+02:00",
+	"startOffset": -7200000,
+	"scheduledStart": 1493446500000,
+	"scheduledStartISO": "2017-04-29T08:15:00+02:00",
+	"scheduledStartOffset": -7200000,
+	"end": 1493449189000,
+	"endISO": "2017-04-29T08:59:49+02:00",
+	"endOffset": -7200000,
+	"scheduledEnd": 1493449200000,
+	"scheduledEndISO": "2017-04-29T09:00:00+02:00",
+	"scheduledEndOffset": -7200000,
+	"niceTime": 1493446500000,
+	"niceTimeISO": "2017-04-29T08:15:00+02:00",
+	"niceTimeOffset": -7200000,
+	"description": null,
+	"pressRelease": null,
+	"akm": "",
+	"tags": [],
+	"moderator": "Wolfgang Schlag",
+	"url": "http://oe1.orf.at/pasticcio",
+	"images": [
+		{
+			"category": "imgprog",
+			"copyright": "(c) ORF",
+			"versions": [
+				{
+					"width": 1750,
+					"hashCode": 21408987,
+					"path": "http://oe1.orf.at/i/header_retina/r/musik.png"
+				},
+				{
+					"width": 875,
+					"hashCode": 423657766,
+					"path": "http://oe1.orf.at/i/header/r/musik.png"
+				}
+			],
+			"text": "Ö1 musik",
+			"hashCode": 1100821364,
+			"mode": "external",
+			"alt": "Radiothek musik"
+		}
+	],
+	"items": [],
+	"marks": [
+		{
+			"type": "in",
+			"timestamp": 1493446499000,
+			"timestampISO": "2017-04-29T08:14:59+02:00",
+			"timestampOffset": -7200000
+		},
+		{
+			"type": "out",
+			"timestamp": 1493449189000,
+			"timestampISO": "2017-04-29T08:59:49+02:00",
+			"timestampOffset": -7200000
+		}
+	]
+}
