@@ -170,4 +170,22 @@ public class JsonGetterTest {
         logger.info(methodname + "streamId = {}", streamId);
     }
 
+    @Test
+    public void testDumpJson() throws Exception {
+        final String methodname = "testDumpJson(): ";
+        logger.info(methodname);
+
+        final DownloadService testDownloadService = new FileDownloadService(new HttpClientFactory());
+        final JsonGetter dut = new JsonGetter(testDownloadService);
+
+        final String json = "{\"test\": \"1\"}";
+
+        dut.dumpJson(json, "target/tmp/test.json");
+        Assertions.assertTrue(new File("target/tmp/test.json").exists());
+        dut.dumpJson(json, "test.json");
+        Assertions.assertTrue(new File("test.json").exists());
+        new File("test.json").delete();
+
+    }
+
 }

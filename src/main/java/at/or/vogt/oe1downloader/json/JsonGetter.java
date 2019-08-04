@@ -49,7 +49,7 @@ public class JsonGetter {
 
     /**
      * Get Days from URL.
-     * @param url url to load JSON from
+     * @param url      url to load JSON from
      * @param daysback number of days back
      * @return list of days
      */
@@ -140,16 +140,20 @@ public class JsonGetter {
 
     /**
      * Dump the JSON string to file.
-     * @param json json
+     * @param json             json
      * @param dumpJsonLocation location of the json file
      */
-    private void dumpJson(final String json, final String dumpJsonLocation) {
+    void dumpJson(final String json, final String dumpJsonLocation) {
         try {
             final ObjectMapper mapper = new ObjectMapper();
             final Object jsonObject = mapper.readValue(json, Object.class);
-            final String jsonPretty = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(jsonObject);
+            final String jsonPretty = new ObjectMapper().writerWithDefaultPrettyPrinter()
+                    .writeValueAsString(jsonObject);
             final File dumpFile = new File(dumpJsonLocation);
-            new File(FilenameUtils.getPath(dumpJsonLocation)).mkdirs();
+            final String dumpFilePath = FilenameUtils.getPath(dumpJsonLocation);
+            if (dumpFilePath != null && !"".equals(dumpFilePath)) {
+                new File(dumpFilePath).mkdirs();
+            }
             try (final FileWriter fw = new FileWriter(dumpFile, false)) {
                 fw.write(jsonPretty);
                 fw.flush();
