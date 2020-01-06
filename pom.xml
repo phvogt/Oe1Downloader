@@ -96,6 +96,7 @@
             <developmentBranch>master</developmentBranch>
           </gitFlowConfig>
           <pushRemote>true</pushRemote>
+          <keepBranch>true</keepBranch>
         </configuration>
       </plugin>
       <plugin>
