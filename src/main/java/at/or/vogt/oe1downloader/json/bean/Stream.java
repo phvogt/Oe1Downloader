@@ -1,17 +1,30 @@
+
 package at.or.vogt.oe1downloader.json.bean;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({ "alias", "title", "loopStreamId", "start", "startISO", "startOffset", "end", "endISO", "endOffset" })
+@JsonPropertyOrder({
+    "alias",
+    "title",
+    "loopStreamId",
+    "start",
+    "startISO",
+    "startOffset",
+    "end",
+    "endISO",
+    "endOffset"
+})
 public class Stream {
 
     @JsonProperty("alias")
@@ -35,13 +48,45 @@ public class Stream {
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
+    /**
+     * No args constructor for use in serialization
+     * 
+     */
+    public Stream() {
+    }
+
+    /**
+     * 
+     * @param loopStreamId
+     * @param endOffset
+     * @param startOffset
+     * @param start
+     * @param alias
+     * @param end
+     * @param title
+     * @param endISO
+     * @param startISO
+     */
+    public Stream(String alias, Object title, String loopStreamId, Long start, String startISO, Long startOffset, Long end, String endISO, Long endOffset) {
+        super();
+        this.alias = alias;
+        this.title = title;
+        this.loopStreamId = loopStreamId;
+        this.start = start;
+        this.startISO = startISO;
+        this.startOffset = startOffset;
+        this.end = end;
+        this.endISO = endISO;
+        this.endOffset = endOffset;
+    }
+
     @JsonProperty("alias")
     public String getAlias() {
         return alias;
     }
 
     @JsonProperty("alias")
-    public void setAlias(final String alias) {
+    public void setAlias(String alias) {
         this.alias = alias;
     }
 
@@ -51,7 +96,7 @@ public class Stream {
     }
 
     @JsonProperty("title")
-    public void setTitle(final Object title) {
+    public void setTitle(Object title) {
         this.title = title;
     }
 
@@ -61,7 +106,7 @@ public class Stream {
     }
 
     @JsonProperty("loopStreamId")
-    public void setLoopStreamId(final String loopStreamId) {
+    public void setLoopStreamId(String loopStreamId) {
         this.loopStreamId = loopStreamId;
     }
 
@@ -71,7 +116,7 @@ public class Stream {
     }
 
     @JsonProperty("start")
-    public void setStart(final Long start) {
+    public void setStart(Long start) {
         this.start = start;
     }
 
@@ -81,7 +126,7 @@ public class Stream {
     }
 
     @JsonProperty("startISO")
-    public void setStartISO(final String startISO) {
+    public void setStartISO(String startISO) {
         this.startISO = startISO;
     }
 
@@ -91,7 +136,7 @@ public class Stream {
     }
 
     @JsonProperty("startOffset")
-    public void setStartOffset(final Long startOffset) {
+    public void setStartOffset(Long startOffset) {
         this.startOffset = startOffset;
     }
 
@@ -101,7 +146,7 @@ public class Stream {
     }
 
     @JsonProperty("end")
-    public void setEnd(final Long end) {
+    public void setEnd(Long end) {
         this.end = end;
     }
 
@@ -111,7 +156,7 @@ public class Stream {
     }
 
     @JsonProperty("endISO")
-    public void setEndISO(final String endISO) {
+    public void setEndISO(String endISO) {
         this.endISO = endISO;
     }
 
@@ -121,7 +166,7 @@ public class Stream {
     }
 
     @JsonProperty("endOffset")
-    public void setEndOffset(final Long endOffset) {
+    public void setEndOffset(Long endOffset) {
         this.endOffset = endOffset;
     }
 
@@ -131,40 +176,30 @@ public class Stream {
     }
 
     @JsonAnySetter
-    public void setAdditionalProperty(final String name, final Object value) {
+    public void setAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("Stream [super = ");
-        builder.append(super.toString());
-        builder.append(" alias=");
-        builder.append(alias);
-        builder.append(", title=");
-        builder.append(title);
-        builder.append(", loopStreamId=");
-        builder.append(loopStreamId);
-        builder.append(", start=");
-        builder.append(start);
-        builder.append(", startISO=");
-        builder.append(startISO);
-        builder.append(", startOffset=");
-        builder.append(startOffset);
-        builder.append(", end=");
-        builder.append(end);
-        builder.append(", endISO=");
-        builder.append(endISO);
-        builder.append(", endOffset=");
-        builder.append(endOffset);
-        builder.append(", additionalProperties=");
-        builder.append(additionalProperties);
-        builder.append("]");
-        return builder.toString();
+        return new ToStringBuilder(this).append("alias", alias).append("title", title).append("loopStreamId", loopStreamId).append("start", start).append("startISO", startISO).append("startOffset", startOffset).append("end", end).append("endISO", endISO).append("endOffset", endOffset).append("additionalProperties", additionalProperties).toString();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(loopStreamId).append(endOffset).append(startOffset).append(start).append(alias).append(end).append(additionalProperties).append(title).append(endISO).append(startISO).toHashCode();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == this) {
+            return true;
+        }
+        if ((other instanceof Stream) == false) {
+            return false;
+        }
+        Stream rhs = ((Stream) other);
+        return new EqualsBuilder().append(loopStreamId, rhs.loopStreamId).append(endOffset, rhs.endOffset).append(startOffset, rhs.startOffset).append(start, rhs.start).append(alias, rhs.alias).append(end, rhs.end).append(additionalProperties, rhs.additionalProperties).append(title, rhs.title).append(endISO, rhs.endISO).append(startISO, rhs.startISO).isEquals();
     }
 
 }

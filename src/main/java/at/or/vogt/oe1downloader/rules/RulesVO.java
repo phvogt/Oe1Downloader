@@ -17,7 +17,7 @@ import at.or.vogt.oe1downloader.config.Configuration;
 import at.or.vogt.oe1downloader.config.ConfigurationParameter;
 import at.or.vogt.oe1downloader.download.RecordVO;
 import at.or.vogt.oe1downloader.json.bean.Broadcast;
-import at.or.vogt.oe1downloader.json.bean.Day;
+import at.or.vogt.oe1downloader.json.bean.Program;
 import at.or.vogt.oe1downloader.json.bean.Show;
 
 /**
@@ -111,52 +111,55 @@ public class RulesVO {
     }
 
     /**
-     * Checks the day for matching Shows and returns them as a list of RecordVO.
+     * Checks the programs for matching {@link Broadcast} and returns them as a list
+     * of RecordVO.
      *
-     * @param days         Day to check
+     * @param programs     {@link Program} to check
      * @param indexCounter filename index counter
-     * @return list of RecordVO
+     * @return list of {@link RecordVO}
      */
-    public List<RecordVO> checkForRecords(final List<Day> days, final RuleIndexCounter indexCounter) {
+    public List<RecordVO> checkForRecords(final List<Program> programs, final RuleIndexCounter indexCounter) {
 
-        final List<RecordVO> result = new ArrayList<>();
-
-        for (final Day day : days) {
-            final List<RecordVO> records = checkForRecords(day, indexCounter);
-            result.addAll(records);
-        }
+        final List<RecordVO> result = programs
+                .stream()
+                .map(program -> checkForRecords(program, indexCounter))
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
 
         return result;
     }
 
     /**
-     * Checks the day for matching Shows and returns them as a list of RecordVO.
+     * Checks the {@link Program} for matching Shows and returns them as a list of
+     * RecordVO.
      *
-     * @param day          Day to check
+     * @param program      Day to check
      * @param indexCounter filename index counter
      * @return list of RecordVO
      */
-    List<RecordVO> checkForRecords(final Day day, final RuleIndexCounter indexCounter) {
+    List<RecordVO> checkForRecords(final Program program, final RuleIndexCounter indexCounter) {
 
         final String methodname = "checkForRecords(): ";
 
         final List<RecordVO> result = new ArrayList<RecordVO>();
 
-        final List<Broadcast> broadcasts = day.getBroadcasts();
+        final List<Broadcast> broadcasts = program.getBroadcasts();
         if (broadcasts == null) {
             return result;
         }
+
         final List<Show> shows = broadcasts.stream().map(b -> new Show(b)).collect(Collectors.toList());
         for (final Show show : shows) {
             logger.debug(methodname + "show = {}", show);
 
             rules.stream().filter((r) -> matches(r, show)).findFirst().ifPresent(rule -> {
-                EVENTLOGGER.info("will get {} {}/{}",
-                        show.getScheduledEnd().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
-                        show.getProgramTitle(), show.getTitle());
+                EVENTLOGGER
+                        .info("will get on {} the broadcast \"{} - {}\"",
+                                show.getScheduledEnd().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
+                                show.getProgramTitle(), show.getTitle());
                 final String index = String.format("%02d", indexCounter.getNextIndex(rule));
                 final RecordVO record = new RecordVO(show.getDay(), show.getProgramTitle(), show.getTitle(),
-                        show.getSubtitle(), show.getScheduledStart(), index, rule.getMp3postfix(), show.getHref());
+                        show.getSubtitle(), show.getScheduledStart(), index, rule.getMp3Postfix(), show.getHref());
                 result.add(record);
             });
         }
@@ -172,8 +175,8 @@ public class RulesVO {
      */
     static boolean matches(final RuleVO rule, final Show show) {
 
-        if (StringUtils.isNotEmpty(rule.getShortTitle()) && !(show.getTitle().contains(rule.getShortTitle())
-                || show.getProgramTitle().contains(rule.getShortTitle()))) {
+        if (StringUtils.isNotEmpty(rule.getTitle())
+                && !(show.getTitle().contains(rule.getTitle()) || show.getProgramTitle().contains(rule.getTitle()))) {
             return false;
         }
         if (StringUtils.isNotEmpty(rule.getTime())

@@ -2,7 +2,12 @@
 package at.or.vogt.oe1downloader.json.bean;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
@@ -12,10 +17,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({ "href", "station", "entity", "id", "broadcastDay", "programKey", "program", "programTitle", "title",
-        "subtitle", "ressort", "state", "isOnDemand", "isGeoProtected", "start", "startISO", "startOffset", "scheduledStart",
-        "scheduledStartISO", "scheduledStartOffset", "end", "endISO", "endOffset", "scheduledEnd", "scheduledEndISO",
-        "scheduledEndOffset", "niceTime", "niceTimeISO", "niceTimeOffset" })
+@JsonPropertyOrder({ "href", "station", "entity", "id", "broadcastDay", "programKey", "program", "programTitle",
+        "title", "subtitle", "ressort", "state", "isOnDemand", "isGeoProtected", "isAdFree", "start", "startISO",
+        "startOffset", "scheduledStart", "scheduledStartISO", "scheduledStartOffset", "end", "endISO", "endOffset",
+        "scheduledEnd", "scheduledEndISO", "scheduledEndOffset", "niceTime", "niceTimeISO", "niceTimeOffset",
+        "description", "pressRelease", "akm", "tags", "moderator", "url", "urlText", "images", "categories", "items",
+        "streams", "marks" })
 public class Broadcast {
 
     @JsonProperty("href")
@@ -25,9 +32,9 @@ public class Broadcast {
     @JsonProperty("entity")
     private String entity;
     @JsonProperty("id")
-    private Integer id;
+    private Long id;
     @JsonProperty("broadcastDay")
-    private Integer broadcastDay;
+    private Long broadcastDay;
     @JsonProperty("programKey")
     private String programKey;
     @JsonProperty("program")
@@ -46,85 +53,129 @@ public class Broadcast {
     private Boolean isOnDemand;
     @JsonProperty("isGeoProtected")
     private Boolean isGeoProtected;
+    @JsonProperty("isAdFree")
+    private Boolean isAdFree;
     @JsonProperty("start")
     private Long start;
     @JsonProperty("startISO")
     private String startISO;
     @JsonProperty("startOffset")
-    private Integer startOffset;
+    private Long startOffset;
     @JsonProperty("scheduledStart")
     private Long scheduledStart;
     @JsonProperty("scheduledStartISO")
     private String scheduledStartISO;
     @JsonProperty("scheduledStartOffset")
-    private Integer scheduledStartOffset;
+    private Long scheduledStartOffset;
     @JsonProperty("end")
     private Long end;
     @JsonProperty("endISO")
     private String endISO;
     @JsonProperty("endOffset")
-    private Integer endOffset;
+    private Long endOffset;
     @JsonProperty("scheduledEnd")
     private Long scheduledEnd;
     @JsonProperty("scheduledEndISO")
     private String scheduledEndISO;
     @JsonProperty("scheduledEndOffset")
-    private Integer scheduledEndOffset;
+    private Long scheduledEndOffset;
     @JsonProperty("niceTime")
     private Long niceTime;
     @JsonProperty("niceTimeISO")
     private String niceTimeISO;
     @JsonProperty("niceTimeOffset")
-    private Integer niceTimeOffset;
+    private Long niceTimeOffset;
+    @JsonProperty("description")
+    private Object description;
+    @JsonProperty("pressRelease")
+    private String pressRelease;
+    @JsonProperty("akm")
+    private String akm;
+    @JsonProperty("tags")
+    private List<Object> tags = null;
+    @JsonProperty("moderator")
+    private Object moderator;
+    @JsonProperty("url")
+    private String url;
+    @JsonProperty("urlText")
+    private String urlText;
+    @JsonProperty("images")
+    private List<Image> images = null;
+    @JsonProperty("categories")
+    private List<Object> categories = null;
+    @JsonProperty("items")
+    private List<Object> items = null;
+    @JsonProperty("streams")
+    private List<Stream> streams = null;
+    @JsonProperty("marks")
+    private List<Mark> marks = null;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     /**
-     * Constructor.
+     * No args constructor for use in serialization
+     *
      */
     public Broadcast() {
     }
 
     /**
-     * Constructor.
-     * @param href href
-     * @param station station
-     * @param entity entity
-     * @param id id
-     * @param broadcastDay broadcastDay
-     * @param programKey programKey
-     * @param program program
-     * @param programTitle program title
-     * @param title title
-     * @param subtitle subtitle
-     * @param ressort ressort
-     * @param state state
-     * @param isOnDemand isOnDemand
-     * @param isGeoProtected isGeoProtected
-     * @param start start
-     * @param startISO startISO
-     * @param startOffset startOffset
-     * @param scheduledStart scheduledStart
-     * @param scheduledStartISO scheduledStartISO
-     * @param scheduledStartOffset scheduledStartOffset
-     * @param end end
-     * @param endISO endISO
-     * @param endOffset endOffset
-     * @param scheduledEnd scheduledEnd
-     * @param scheduledEndISO scheduledEndISO
-     * @param scheduledEndOffset scheduledEndOffset
-     * @param niceTime niceTime
-     * @param niceTimeISO niceTimeISO
-     * @param niceTimeOffset niceTimeOffset
-     * @param additionalProperties additionalProperties
+     *
+     * @param endOffset
+     * @param niceTimeISO
+     * @param akm
+     * @param isOnDemand
+     * @param moderator
+     * @param niceTimeOffset
+     * @param description
+     * @param programKey
+     * @param program
+     * @param title
+     * @param scheduledEndOffset
+     * @param scheduledStartISO
+     * @param ressort
+     * @param station
+     * @param end
+     * @param href
+     * @param id
+     * @param state
+     * @param scheduledEndISO
+     * @param categories
+     * @param niceTime
+     * @param scheduledStart
+     * @param images
+     * @param scheduledEnd
+     * @param urlText
+     * @param streams
+     * @param start
+     * @param marks
+     * @param isAdFree
+     * @param pressRelease
+     * @param url
+     * @param tags
+     * @param programTitle
+     * @param isGeoProtected
+     * @param scheduledStartOffset
+     * @param startOffset
+     * @param broadcastDay
+     * @param subtitle
+     * @param endISO
+     * @param items
+     * @param entity
+     * @param startISO
      */
-    public Broadcast(final String href, final String station, final String entity, final Integer id, final Integer broadcastDay,
-            final String programKey, final String program, final String programTitle, final String title, final String subtitle,
-            final String ressort, final String state, final Boolean isOnDemand, final Boolean isGeoProtected, final Long start,
-            final String startISO, final Integer startOffset, final Long scheduledStart, final String scheduledStartISO,
-            final Integer scheduledStartOffset, final Long end, final String endISO, final Integer endOffset,
-            final Long scheduledEnd, final String scheduledEndISO, final Integer scheduledEndOffset, final Long niceTime,
-            final String niceTimeISO, final Integer niceTimeOffset, final Map<String, Object> additionalProperties) {
+    public Broadcast(final String href, final String station, final String entity, final Long id,
+            final Long broadcastDay, final String programKey, final String program, final String programTitle,
+            final String title, final String subtitle, final String ressort, final String state,
+            final Boolean isOnDemand, final Boolean isGeoProtected, final Boolean isAdFree, final Long start,
+            final String startISO, final Long startOffset, final Long scheduledStart, final String scheduledStartISO,
+            final Long scheduledStartOffset, final Long end, final String endISO, final Long endOffset,
+            final Long scheduledEnd, final String scheduledEndISO, final Long scheduledEndOffset, final Long niceTime,
+            final String niceTimeISO, final Long niceTimeOffset, final Object description, final String pressRelease,
+            final String akm, final List<Object> tags, final Object moderator, final String url, final String urlText,
+            final List<Image> images, final List<Object> categories, final List<Object> items,
+            final List<Stream> streams, final List<Mark> marks) {
+        super();
         this.href = href;
         this.station = station;
         this.entity = entity;
@@ -139,6 +190,7 @@ public class Broadcast {
         this.state = state;
         this.isOnDemand = isOnDemand;
         this.isGeoProtected = isGeoProtected;
+        this.isAdFree = isAdFree;
         this.start = start;
         this.startISO = startISO;
         this.startOffset = startOffset;
@@ -154,7 +206,18 @@ public class Broadcast {
         this.niceTime = niceTime;
         this.niceTimeISO = niceTimeISO;
         this.niceTimeOffset = niceTimeOffset;
-        this.additionalProperties = additionalProperties;
+        this.description = description;
+        this.pressRelease = pressRelease;
+        this.akm = akm;
+        this.tags = tags;
+        this.moderator = moderator;
+        this.url = url;
+        this.urlText = urlText;
+        this.images = images;
+        this.categories = categories;
+        this.items = items;
+        this.streams = streams;
+        this.marks = marks;
     }
 
     @JsonProperty("href")
@@ -188,22 +251,22 @@ public class Broadcast {
     }
 
     @JsonProperty("id")
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
     @JsonProperty("id")
-    public void setId(final Integer id) {
+    public void setId(final Long id) {
         this.id = id;
     }
 
     @JsonProperty("broadcastDay")
-    public Integer getBroadcastDay() {
+    public Long getBroadcastDay() {
         return broadcastDay;
     }
 
     @JsonProperty("broadcastDay")
-    public void setBroadcastDay(final Integer broadcastDay) {
+    public void setBroadcastDay(final Long broadcastDay) {
         this.broadcastDay = broadcastDay;
     }
 
@@ -297,6 +360,16 @@ public class Broadcast {
         this.isGeoProtected = isGeoProtected;
     }
 
+    @JsonProperty("isAdFree")
+    public Boolean getIsAdFree() {
+        return isAdFree;
+    }
+
+    @JsonProperty("isAdFree")
+    public void setIsAdFree(final Boolean isAdFree) {
+        this.isAdFree = isAdFree;
+    }
+
     @JsonProperty("start")
     public Long getStart() {
         return start;
@@ -318,12 +391,12 @@ public class Broadcast {
     }
 
     @JsonProperty("startOffset")
-    public Integer getStartOffset() {
+    public Long getStartOffset() {
         return startOffset;
     }
 
     @JsonProperty("startOffset")
-    public void setStartOffset(final Integer startOffset) {
+    public void setStartOffset(final Long startOffset) {
         this.startOffset = startOffset;
     }
 
@@ -348,12 +421,12 @@ public class Broadcast {
     }
 
     @JsonProperty("scheduledStartOffset")
-    public Integer getScheduledStartOffset() {
+    public Long getScheduledStartOffset() {
         return scheduledStartOffset;
     }
 
     @JsonProperty("scheduledStartOffset")
-    public void setScheduledStartOffset(final Integer scheduledStartOffset) {
+    public void setScheduledStartOffset(final Long scheduledStartOffset) {
         this.scheduledStartOffset = scheduledStartOffset;
     }
 
@@ -378,12 +451,12 @@ public class Broadcast {
     }
 
     @JsonProperty("endOffset")
-    public Integer getEndOffset() {
+    public Long getEndOffset() {
         return endOffset;
     }
 
     @JsonProperty("endOffset")
-    public void setEndOffset(final Integer endOffset) {
+    public void setEndOffset(final Long endOffset) {
         this.endOffset = endOffset;
     }
 
@@ -408,12 +481,12 @@ public class Broadcast {
     }
 
     @JsonProperty("scheduledEndOffset")
-    public Integer getScheduledEndOffset() {
+    public Long getScheduledEndOffset() {
         return scheduledEndOffset;
     }
 
     @JsonProperty("scheduledEndOffset")
-    public void setScheduledEndOffset(final Integer scheduledEndOffset) {
+    public void setScheduledEndOffset(final Long scheduledEndOffset) {
         this.scheduledEndOffset = scheduledEndOffset;
     }
 
@@ -438,13 +511,133 @@ public class Broadcast {
     }
 
     @JsonProperty("niceTimeOffset")
-    public Integer getNiceTimeOffset() {
+    public Long getNiceTimeOffset() {
         return niceTimeOffset;
     }
 
     @JsonProperty("niceTimeOffset")
-    public void setNiceTimeOffset(final Integer niceTimeOffset) {
+    public void setNiceTimeOffset(final Long niceTimeOffset) {
         this.niceTimeOffset = niceTimeOffset;
+    }
+
+    @JsonProperty("description")
+    public Object getDescription() {
+        return description;
+    }
+
+    @JsonProperty("description")
+    public void setDescription(final Object description) {
+        this.description = description;
+    }
+
+    @JsonProperty("pressRelease")
+    public String getPressRelease() {
+        return pressRelease;
+    }
+
+    @JsonProperty("pressRelease")
+    public void setPressRelease(final String pressRelease) {
+        this.pressRelease = pressRelease;
+    }
+
+    @JsonProperty("akm")
+    public String getAkm() {
+        return akm;
+    }
+
+    @JsonProperty("akm")
+    public void setAkm(final String akm) {
+        this.akm = akm;
+    }
+
+    @JsonProperty("tags")
+    public List<Object> getTags() {
+        return tags;
+    }
+
+    @JsonProperty("tags")
+    public void setTags(final List<Object> tags) {
+        this.tags = tags;
+    }
+
+    @JsonProperty("moderator")
+    public Object getModerator() {
+        return moderator;
+    }
+
+    @JsonProperty("moderator")
+    public void setModerator(final Object moderator) {
+        this.moderator = moderator;
+    }
+
+    @JsonProperty("url")
+    public String getUrl() {
+        return url;
+    }
+
+    @JsonProperty("url")
+    public void setUrl(final String url) {
+        this.url = url;
+    }
+
+    @JsonProperty("urlText")
+    public String getUrlText() {
+        return urlText;
+    }
+
+    @JsonProperty("urlText")
+    public void setUrlText(final String urlText) {
+        this.urlText = urlText;
+    }
+
+    @JsonProperty("images")
+    public List<Image> getImages() {
+        return images;
+    }
+
+    @JsonProperty("images")
+    public void setImages(final List<Image> images) {
+        this.images = images;
+    }
+
+    @JsonProperty("categories")
+    public List<Object> getCategories() {
+        return categories;
+    }
+
+    @JsonProperty("categories")
+    public void setCategories(final List<Object> categories) {
+        this.categories = categories;
+    }
+
+    @JsonProperty("items")
+    public List<Object> getItems() {
+        return items;
+    }
+
+    @JsonProperty("items")
+    public void setItems(final List<Object> items) {
+        this.items = items;
+    }
+
+    @JsonProperty("streams")
+    public List<Stream> getStreams() {
+        return streams;
+    }
+
+    @JsonProperty("streams")
+    public void setStreams(final List<Stream> streams) {
+        this.streams = streams;
+    }
+
+    @JsonProperty("marks")
+    public List<Mark> getMarks() {
+        return marks;
+    }
+
+    @JsonProperty("marks")
+    public void setMarks(final List<Mark> marks) {
+        this.marks = marks;
     }
 
     @JsonAnyGetter
@@ -457,102 +650,158 @@ public class Broadcast {
         this.additionalProperties.put(name, value);
     }
 
-    /**
-     * Short info.
-     * @return short info
-     */
-    public String toStringShort() {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("Broadcast [super = ");
-        builder.append(super.toString());
-        builder.append(" title=");
-        builder.append(title);
-        builder.append(" programTitle=");
-        builder.append(programTitle);
-        builder.append(", subtitle=");
-        builder.append(subtitle);
-        builder.append(", start=");
-        builder.append(start);
-        builder.append(", scheduledStart=");
-        builder.append(scheduledStart);
-        builder.append(", end=");
-        builder.append(end);
-        builder.append(", scheduledEnd=");
-        builder.append(scheduledEnd);
-        builder.append("]");
-        return builder.toString();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("Broadcast [super = ");
-        builder.append(super.toString());
-        builder.append(" href=");
-        builder.append(href);
-        builder.append(", station=");
-        builder.append(station);
-        builder.append(", entity=");
-        builder.append(entity);
-        builder.append(", id=");
-        builder.append(id);
-        builder.append(", broadcastDay=");
-        builder.append(broadcastDay);
-        builder.append(", programKey=");
-        builder.append(programKey);
-        builder.append(", program=");
-        builder.append(program);
-        builder.append(", programTitle=");
-        builder.append(programTitle);
-        builder.append(", title=");
-        builder.append(title);
-        builder.append(", subtitle=");
-        builder.append(subtitle);
-        builder.append(", ressort=");
-        builder.append(ressort);
-        builder.append(", state=");
-        builder.append(state);
-        builder.append(", isOnDemand=");
-        builder.append(isOnDemand);
-        builder.append(", isGeoProtected=");
-        builder.append(isGeoProtected);
-        builder.append(", start=");
-        builder.append(start);
-        builder.append(", startISO=");
-        builder.append(startISO);
-        builder.append(", startOffset=");
-        builder.append(startOffset);
-        builder.append(", scheduledStart=");
-        builder.append(scheduledStart);
-        builder.append(", scheduledStartISO=");
-        builder.append(scheduledStartISO);
-        builder.append(", scheduledStartOffset=");
-        builder.append(scheduledStartOffset);
-        builder.append(", end=");
-        builder.append(end);
-        builder.append(", endISO=");
-        builder.append(endISO);
-        builder.append(", endOffset=");
-        builder.append(endOffset);
-        builder.append(", scheduledEnd=");
-        builder.append(scheduledEnd);
-        builder.append(", scheduledEndISO=");
-        builder.append(scheduledEndISO);
-        builder.append(", scheduledEndOffset=");
-        builder.append(scheduledEndOffset);
-        builder.append(", niceTime=");
-        builder.append(niceTime);
-        builder.append(", niceTimeISO=");
-        builder.append(niceTimeISO);
-        builder.append(", niceTimeOffset=");
-        builder.append(niceTimeOffset);
-        builder.append(", additionalProperties=");
-        builder.append(additionalProperties);
-        builder.append("]");
-        return builder.toString();
+        return new ToStringBuilder(this)
+                .append("href", href)
+                .append("station", station)
+                .append("entity", entity)
+                .append("id", id)
+                .append("broadcastDay", broadcastDay)
+                .append("programKey", programKey)
+                .append("program", program)
+                .append("programTitle", programTitle)
+                .append("title", title)
+                .append("subtitle", subtitle)
+                .append("ressort", ressort)
+                .append("state", state)
+                .append("isOnDemand", isOnDemand)
+                .append("isGeoProtected", isGeoProtected)
+                .append("isAdFree", isAdFree)
+                .append("start", start)
+                .append("startISO", startISO)
+                .append("startOffset", startOffset)
+                .append("scheduledStart", scheduledStart)
+                .append("scheduledStartISO", scheduledStartISO)
+                .append("scheduledStartOffset", scheduledStartOffset)
+                .append("end", end)
+                .append("endISO", endISO)
+                .append("endOffset", endOffset)
+                .append("scheduledEnd", scheduledEnd)
+                .append("scheduledEndISO", scheduledEndISO)
+                .append("scheduledEndOffset", scheduledEndOffset)
+                .append("niceTime", niceTime)
+                .append("niceTimeISO", niceTimeISO)
+                .append("niceTimeOffset", niceTimeOffset)
+                .append("description", description)
+                .append("pressRelease", pressRelease)
+                .append("akm", akm)
+                .append("tags", tags)
+                .append("moderator", moderator)
+                .append("url", url)
+                .append("urlText", urlText)
+                .append("images", images)
+                .append("categories", categories)
+                .append("items", items)
+                .append("streams", streams)
+                .append("marks", marks)
+                .append("additionalProperties", additionalProperties)
+                .toString();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder()
+                .append(endOffset)
+                .append(niceTimeISO)
+                .append(akm)
+                .append(isOnDemand)
+                .append(moderator)
+                .append(niceTimeOffset)
+                .append(description)
+                .append(programKey)
+                .append(program)
+                .append(title)
+                .append(scheduledEndOffset)
+                .append(scheduledStartISO)
+                .append(ressort)
+                .append(station)
+                .append(end)
+                .append(href)
+                .append(id)
+                .append(state)
+                .append(scheduledEndISO)
+                .append(categories)
+                .append(niceTime)
+                .append(scheduledStart)
+                .append(images)
+                .append(scheduledEnd)
+                .append(urlText)
+                .append(streams)
+                .append(start)
+                .append(marks)
+                .append(isAdFree)
+                .append(pressRelease)
+                .append(url)
+                .append(tags)
+                .append(programTitle)
+                .append(isGeoProtected)
+                .append(scheduledStartOffset)
+                .append(startOffset)
+                .append(broadcastDay)
+                .append(subtitle)
+                .append(additionalProperties)
+                .append(endISO)
+                .append(items)
+                .append(entity)
+                .append(startISO)
+                .toHashCode();
+    }
+
+    @Override
+    public boolean equals(final Object other) {
+        if (other == this) {
+            return true;
+        }
+        if ((other instanceof Broadcast) == false) {
+            return false;
+        }
+        final Broadcast rhs = ((Broadcast) other);
+        return new EqualsBuilder()
+                .append(endOffset, rhs.endOffset)
+                .append(niceTimeISO, rhs.niceTimeISO)
+                .append(akm, rhs.akm)
+                .append(isOnDemand, rhs.isOnDemand)
+                .append(moderator, rhs.moderator)
+                .append(niceTimeOffset, rhs.niceTimeOffset)
+                .append(description, rhs.description)
+                .append(programKey, rhs.programKey)
+                .append(program, rhs.program)
+                .append(title, rhs.title)
+                .append(scheduledEndOffset, rhs.scheduledEndOffset)
+                .append(scheduledStartISO, rhs.scheduledStartISO)
+                .append(ressort, rhs.ressort)
+                .append(station, rhs.station)
+                .append(end, rhs.end)
+                .append(href, rhs.href)
+                .append(id, rhs.id)
+                .append(state, rhs.state)
+                .append(scheduledEndISO, rhs.scheduledEndISO)
+                .append(categories, rhs.categories)
+                .append(niceTime, rhs.niceTime)
+                .append(scheduledStart, rhs.scheduledStart)
+                .append(images, rhs.images)
+                .append(scheduledEnd, rhs.scheduledEnd)
+                .append(urlText, rhs.urlText)
+                .append(streams, rhs.streams)
+                .append(start, rhs.start)
+                .append(marks, rhs.marks)
+                .append(isAdFree, rhs.isAdFree)
+                .append(pressRelease, rhs.pressRelease)
+                .append(url, rhs.url)
+                .append(tags, rhs.tags)
+                .append(programTitle, rhs.programTitle)
+                .append(isGeoProtected, rhs.isGeoProtected)
+                .append(scheduledStartOffset, rhs.scheduledStartOffset)
+                .append(startOffset, rhs.startOffset)
+                .append(broadcastDay, rhs.broadcastDay)
+                .append(subtitle, rhs.subtitle)
+                .append(additionalProperties, rhs.additionalProperties)
+                .append(endISO, rhs.endISO)
+                .append(items, rhs.items)
+                .append(entity, rhs.entity)
+                .append(startISO, rhs.startISO)
+                .isEquals();
     }
 
 }

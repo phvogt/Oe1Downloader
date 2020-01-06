@@ -1,8 +1,6 @@
 package at.or.vogt.oe1downloader.json.bean;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.jsoup.Jsoup;
 
@@ -14,7 +12,7 @@ import at.or.vogt.oe1downloader.json.DateParser;
 public class Show {
 
     /** ID. */
-    private final int id;
+    private final long id;
     /** HREF. */
     private final String href;
     /** Title. */
@@ -62,7 +60,7 @@ public class Show {
      * @param end            end
      * @param niceTime       niceTime
      */
-    public Show(final int id, final String href, final String programTitle, final String title, final String day,
+    public Show(final long id, final String href, final String programTitle, final String title, final String day,
             final String subtitle, final LocalDateTime scheduledStart, final LocalDateTime scheduledEnd,
             final LocalDateTime start, final LocalDateTime end, final LocalDateTime niceTime) {
         this.id = id;
@@ -82,7 +80,7 @@ public class Show {
      * Get the id.
      * @return the id
      */
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -198,15 +196,6 @@ public class Show {
         builder.append(niceTime);
         builder.append("]");
         return builder.toString();
-    }
-
-    public static List<Show> forDay(final Day day) {
-        final List<Show> result = new ArrayList<>();
-        final List<Broadcast> broadcasts = day.getBroadcasts();
-        if (broadcasts != null) {
-            broadcasts.stream().forEach(b -> result.add(new Show(b)));
-        }
-        return result;
     }
 
 }

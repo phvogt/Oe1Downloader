@@ -18,7 +18,7 @@ import at.or.vogt.oe1downloader.download.DownloadService;
 import at.or.vogt.oe1downloader.download.HttpClientFactory;
 import at.or.vogt.oe1downloader.download.RecordVO;
 import at.or.vogt.oe1downloader.json.JsonGetter;
-import at.or.vogt.oe1downloader.json.bean.Day;
+import at.or.vogt.oe1downloader.json.bean.Program;
 import at.or.vogt.oe1downloader.rules.RuleIndexCounter;
 import at.or.vogt.oe1downloader.rules.RulesVO;
 
@@ -62,10 +62,10 @@ public class Main {
     private void doRun(final CommandLineParser cmd) {
 
         final DownloadService downloadService = getDownloadService();
-        final String jsonPathPrefix = getJsonPathPrefix();
+        final String jsonBroadcastsUrl = getJsonBroadcastsUrl();
         final String targetDirectory = getTargetDirectory(cmd.getTargetDirectory());
 
-        doDownloads(downloadService, jsonPathPrefix, targetDirectory);
+        doDownloads(downloadService, jsonBroadcastsUrl, targetDirectory);
     }
 
     /**
@@ -122,11 +122,11 @@ public class Main {
 
     /**
      * Does the downloads.
-     * @param downloadService download service to use
-     * @param jsonPathPrefix  prefix for JSON path
-     * @param targetDirectory target directory for MP3s
+     * @param downloadService   download service to use
+     * @param jsonBroadcastsUrl broadcasts URL for JSON
+     * @param targetDirectory   target directory for MP3s
      */
-    public void doDownloads(final DownloadService downloadService, final String jsonPathPrefix,
+    public void doDownloads(final DownloadService downloadService, final String jsonBroadcastsUrl,
             final String targetDirectory) {
 
         final String methodname = "run(): ";
@@ -136,21 +136,18 @@ public class Main {
 
             EVENTLOGGER.info("starting");
 
-            // download JSON data
-            final String url = jsonPathPrefix + System.currentTimeMillis();
-            final int daysback = getDaysBack();
-
             final JsonGetter jsonGetter = new JsonGetter(downloadService);
-            final List<Day> days = jsonGetter.getDays(url, daysback);
-            if (days == null) {
-                EVENTLOGGER.warn("didn't find any days to download");
+
+            final List<Program> programs = jsonGetter.getProgram(jsonBroadcastsUrl);
+            if (programs == null) {
+                EVENTLOGGER.warn("didn't find a program to download");
                 return;
             }
 
             // determine which records to download
             final RulesVO rules = RulesVO.getRulesVO();
             final RuleIndexCounter counter = new RuleIndexCounter();
-            final List<RecordVO> records = rules.checkForRecords(days, counter);
+            final List<RecordVO> records = rules.checkForRecords(programs, counter);
 
             // download the records
             downloadService.downloadRecords(targetDirectory, records);
@@ -175,22 +172,12 @@ public class Main {
     }
 
     /**
-     * Gets the JSON path prefix to use.
-     * @return JSON path prefix
+     * Gets the JSON broadcast URL to use.
+     * @return JSON broadcast URL
      */
-    String getJsonPathPrefix() {
+    String getJsonBroadcastsUrl() {
         final Configuration config = Configuration.getConfiguration();
-        final String result = config.getProperty(ConfigurationParameter.JSON_BASE_URL);
-        return result;
-    }
-
-    /**
-     * Gets the days back to check for shows.
-     * @return number of days back
-     */
-    int getDaysBack() {
-        final Configuration config = Configuration.getConfiguration();
-        final int result = Integer.parseInt(config.getProperty(ConfigurationParameter.DAYSBACK));
+        final String result = config.getProperty(ConfigurationParameter.JSON_BROADCASTS_URL);
         return result;
     }
 

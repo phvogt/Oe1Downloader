@@ -1,0 +1,82 @@
+{
+	"href": "https://audioapi.orf.at/oe1/api/json/4.0/broadcast/583255/20200104",
+	"station": "oe1",
+	"entity": "Broadcast",
+	"id": 92681,
+	"broadcastDay": 20200104,
+	"programKey": "583255",
+	"program": "49",
+	"programTitle": "Heimspiel",
+	"title": "Die Woche im RadioKulturhaus",
+	"subtitle": null,
+	"ressort": "kultur",
+	"state": "C",
+	"isOnDemand": true,
+	"isGeoProtected": false,
+	"isAdFree": false,
+	"start": 1578124500000,
+	"startISO": "2020-01-04T08:55:00+01:00",
+	"startOffset": -3600000,
+	"scheduledStart": 1578124500000,
+	"scheduledStartISO": "2020-01-04T08:55:00+01:00",
+	"scheduledStartOffset": -3600000,
+	"end": 1578124789000,
+	"endISO": "2020-01-04T08:59:49+01:00",
+	"endOffset": -3600000,
+	"scheduledEnd": 1578124800000,
+	"scheduledEndISO": "2020-01-04T09:00:00+01:00",
+	"scheduledEndOffset": -3600000,
+	"niceTime": 1578124500000,
+	"niceTimeISO": "2020-01-04T08:55:00+01:00",
+	"niceTimeOffset": -3600000,
+	"description": null,
+	"pressRelease": "<p>Details zu den Veranstaltungen im <a href=\"http://radiokulturhaus.orf.at/programm\">ORF RadioKulturhaus</a></p>",
+	"akm": "",
+	"tags": [],
+	"moderator": null,
+	"url": "https://oe1.orf.at/heimspiel",
+	"urlText": "Heimspiel",
+	"images": [
+		{
+			"category": "imgprog",
+			"copyright": "ORF",
+			"versions": [
+				{
+					"width": 1750,
+					"hashCode": 878460699,
+					"path": "https://oe1.orf.at/i/header_retina/d/kultur_2.jpg"
+				},
+				{
+					"width": 984,
+					"hashCode": 1952935767,
+					"path": "https://oe1.orf.at/i/square/d/kultur_2.jpg"
+				},
+				{
+					"width": 875,
+					"hashCode": 1098312632,
+					"path": "https://oe1.orf.at/i/header/d/kultur_2.jpg"
+				}
+			],
+			"text": "Ö1 Kultur",
+			"hashCode": 84481083,
+			"mode": "external",
+			"alt": "Ö1 Kultur"
+		}
+	],
+	"categories": [],
+	"items": [],
+	"marks": [
+		{
+			"type": "in",
+			"timestamp": 1578124500000,
+			"timestampISO": "2020-01-04T08:55:00+01:00",
+			"timestampOffset": -3600000
+		},
+		{
+			"type": "out",
+			"timestamp": 1578124789000,
+			"timestampISO": "2020-01-04T08:59:49+01:00",
+			"timestampOffset": -3600000
+		}
+	]
+}

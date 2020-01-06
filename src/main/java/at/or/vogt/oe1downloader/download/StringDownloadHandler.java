@@ -14,6 +14,9 @@ public class StringDownloadHandler implements DownloadHandler {
     /** Contains result. */
     private final StringBuffer result = new StringBuffer();
 
+    /** content length. */
+    private long contentLength = 0;
+
     /** flag if download was successful. */
     private boolean successful = false;
 
@@ -52,6 +55,16 @@ public class StringDownloadHandler implements DownloadHandler {
     @Override
     public long getBytesDownloaded() {
         return result.length();
+    }
+
+    @Override
+    public long getContentLength() {
+        return contentLength;
+    }
+
+    @Override
+    public void setContentLength(final long contentLength) {
+        this.contentLength = contentLength;
     }
 
 }
