@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
@@ -146,7 +145,7 @@ public class JsonGetter {
                 if (dumpFilePath != null && !"".equals(dumpFilePath)) {
                     new File(dumpFilePath).mkdirs();
                 }
-                try (final FileWriter fw = new FileWriter(dumpFile, StandardCharsets.UTF_8, false)) {
+                try (final FileWriter fw = new FileWriter(dumpFile, false)) {
                     fw.write(jsonPretty);
                     fw.flush();
                 }
