@@ -16,6 +16,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.scm.id>github-scm-server</project.scm.id>
+    <doclint>none</doclint>
   </properties>
 
   <scm>
