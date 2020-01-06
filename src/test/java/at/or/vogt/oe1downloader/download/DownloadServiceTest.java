@@ -2,15 +2,20 @@ package at.or.vogt.oe1downloader.download;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,11 +38,14 @@ public class DownloadServiceTest {
     public void testDownloadWithHandler() {
 
         final String methodname = "testDownloadWithHandler(): ";
+        logger.info("{}start", methodname);
 
         final DownloadService dut = new DownloadService(
-                new FileHttpClientFactory("src/test/resources/tag/broadcast20170429.json"));
+                new FileHttpClientFactory("src/test/resources/broadcast/broadcast_20200106.json"));
         final StringDownloadHandler handler = new StringDownloadHandler();
-        final boolean result = dut.download("src/test/resources/tag/broadcast20170429.json", handler);
+
+        final boolean result = dut.download("src/test/resources/broadcast/broadcast_20200106.json", handler);
+
         Assertions.assertTrue(result);
         Assertions.assertNotNull(handler.getResult());
         logger.info(methodname + "result = {}", handler.getResult());
@@ -50,11 +58,14 @@ public class DownloadServiceTest {
     public void testDownloadWithHandlerConnectionReset() {
 
         final String methodname = "testDownloadWithHandlerConnectionReset(): ";
+        logger.info("{}start", methodname);
 
-        final DownloadService dut = new DownloadService(
-                new FileHttpClientFactoryConnectionReset("src/test/resources/tag/broadcast20170429.json"));
         final StringDownloadHandler handler = new StringDownloadHandler();
-        final boolean result = dut.download("src/test/resources/tag/broadcast20170429.json", handler);
+        final DownloadService dut = new DownloadService(
+                new FileHttpClientFactoryConnectionReset("src/test/resources/broadcast/broadcast_20200106.json"));
+
+        final boolean result = dut.download("src/test/resources/broadcast/broadcast_20200106.json", handler);
+
         Assertions.assertFalse(result);
         Assertions.assertEquals("", handler.getResult());
         logger.info(methodname + "result = {}", handler.getResult());
@@ -71,11 +82,11 @@ public class DownloadServiceTest {
         final String methodname = "testDownloadWithRecord(): ";
 
         final DownloadService dut = new DownloadService(
-                new FileHttpClientFactory("src/test/resources/showinfo/20170429.json"));
+                new FileHttpClientFactory("src/test/resources/broadcast/broadcast_20200106.json"));
         final LocalDateTime scheduledStartLdt = DateParser.parseISO("2017-04-29T08:15:00+02:00");
         final RecordVO record = new RecordVO("20170429", "Pasticcio", "Mit den Händen kann ich es auch",
                 "<p>mit Irene Suchy. \"An die Künstler, Dichter und Musiker. Damit wir uns nicht vor dem Firmament zu schämen haben, müssen wir uns endlich aufmachen und mithelfen, dass eine gerechte Ordnung in Staat und Gesellschaft eingesetzt werde.\" <br/>(Ludwig Meidner, 1919).</p>",
-                scheduledStartLdt, "60", "mp3postfix", "src/test/resources/showinfo/20170429.json");
+                scheduledStartLdt, "60", "mp3postfix", "src/test/resources/broadcast/broadcast_20200106.json");
         final File tmpFile = File.createTempFile("test", ".mp3");
         FileUtils.deleteQuietly(tmpFile);
         final String targetFilename = tmpFile.getCanonicalPath();
@@ -101,11 +112,11 @@ public class DownloadServiceTest {
         final String methodname = "testDownloadRecords(): ";
 
         final DownloadService dut = new DownloadService(
-                new FileHttpClientFactory("src/test/resources/showinfo/20170429.json"));
+                new FileHttpClientFactory("src/test/resources/broadcast/broadcast_20200106.json"));
         final LocalDateTime scheduledStartLdt = DateParser.parseISO("2017-04-29T08:15:00+02:00");
         final RecordVO record = new RecordVO("20170429", "Pasticcio", "Mit den Händen kann ich es auch",
                 "<p>mit Irene Suchy. \"An die Künstler, Dichter und Musiker. Damit wir uns nicht vor dem Firmament zu schämen haben, müssen wir uns endlich aufmachen und mithelfen, dass eine gerechte Ordnung in Staat und Gesellschaft eingesetzt werde.\" <br/>(Ludwig Meidner, 1919).</p>",
-                scheduledStartLdt, "60", "mp3postfix", "src/test/resources/showinfo/20170429.json");
+                scheduledStartLdt, "60", "mp3postfix", "src/test/resources/broadcast/broadcast_20200106.json");
         final File tmpFile = File.createTempFile("test", ".mp3");
         FileUtils.deleteQuietly(tmpFile);
         final String targetFilename = tmpFile.getName();
@@ -133,8 +144,9 @@ public class DownloadServiceTest {
 
         final DownloadService dut = new DownloadService(new HttpClientFactory());
         final StringDownloadHandler handler = new StringDownloadHandler();
-        final boolean result = dut.download("https://audioapi.orf.at/oe1/api/json/current/broadcasts?_s=1511553601980",
-                handler);
+
+        final boolean result = dut.download("https://audioapi.orf.at/oe1/json/4.0/broadcasts?_o=oe1.orf.at", handler);
+
         Assertions.assertTrue(result);
         Assertions.assertNotNull(handler.getResult());
         final ObjectMapper mapper = new ObjectMapper();
@@ -166,16 +178,17 @@ public class DownloadServiceTest {
     }
 
     @Test
-    public void testDownloadRecordVONoBroadcast() throws Exception {
-        final String methodname = "testDownloadRecordVONoBroadcast(): ";
+    public void testDownloadRecordVONoStreams() throws Exception {
+        final String methodname = "testDownloadRecordVONoStreams(): ";
         logger.info(methodname);
 
         final DownloadService dut = new DownloadService(
-                new FileHttpClientFactory("src/test/resources/showinfo/20170430_no_Streams.json"));
+                new FileHttpClientFactory("src/test/resources/broadcast/broadcast_20200107_no_streams.json"));
         final LocalDateTime scheduledStartLdt = DateParser.parseISO("2017-04-29T08:15:00+02:00");
         final RecordVO record = new RecordVO("20170429", "Pasticcio", "Mit den Händen kann ich es auch",
                 "<p>mit Irene Suchy. \"An die Künstler, Dichter und Musiker. Damit wir uns nicht vor dem Firmament zu schämen haben, müssen wir uns endlich aufmachen und mithelfen, dass eine gerechte Ordnung in Staat und Gesellschaft eingesetzt werde.\" <br/>(Ludwig Meidner, 1919).</p>",
-                scheduledStartLdt, "60", "mp3postfix", "src/test/resources/showinfo/20170429.json");
+                scheduledStartLdt, "60", "mp3postfix",
+                "src/test/resources/broadcast/broadcast_20200107_no_streams.json");
 
         final boolean result = dut.download(record);
 
@@ -184,20 +197,74 @@ public class DownloadServiceTest {
     }
 
     @Test
-    public void testDownloadRecordVONoShowInfo() throws Exception {
-        final String methodname = "testDownloadRecordVONoShowInfo(): ";
+    public void testDownloadRecordVONoBroadcast() throws Exception {
+        final String methodname = "testDownloadRecordVONoBroadcast(): ";
         logger.info(methodname);
 
         final DownloadService dut = new DownloadService(
-                new FileHttpClientFactory("src/test/resources/showinfo/20170430_no_ShowInfo.json"));
+                new FileHttpClientFactory("src/test/resources/broadcast/broadcast_20200107_no_broadcast.json"));
         final LocalDateTime scheduledStartLdt = DateParser.parseISO("2017-04-29T08:15:00+02:00");
         final RecordVO record = new RecordVO("20170429", "Pasticcio", "Mit den Händen kann ich es auch",
                 "<p>mit Irene Suchy. \"An die Künstler, Dichter und Musiker. Damit wir uns nicht vor dem Firmament zu schämen haben, müssen wir uns endlich aufmachen und mithelfen, dass eine gerechte Ordnung in Staat und Gesellschaft eingesetzt werde.\" <br/>(Ludwig Meidner, 1919).</p>",
-                scheduledStartLdt, "60", "mp3postfix", "src/test/resources/showinfo/20170429.json");
+                scheduledStartLdt, "60", "mp3postfix",
+                "src/test/resources/broadcast/broadcast_20200107_no_broadcast.json");
 
         final boolean result = dut.download(record);
 
         Assertions.assertFalse(result);
+
+    }
+
+    @Test
+    public void testPercentageForSuccessReached() throws Exception {
+        final String methodname = "testPercentageForSuccessReached(): ";
+        logger.info("{}start", methodname);
+
+        final DownloadService dut = new DownloadService(new HttpClientFactory());
+
+        final boolean result = dut.percentageForSuccessReached(new DownloadHandler() {
+
+            @Override
+            public boolean successful() {
+                return false;
+            }
+
+            @Override
+            public void setContentLength(final long length) {
+            }
+
+            @Override
+            public void handleDownload(final InputStream input) {
+            }
+
+            @Override
+            public long getContentLength() {
+                return 5000;
+            }
+
+            @Override
+            public long getBytesDownloaded() {
+                return 4990;
+            }
+        });
+        logger.info("{}dut = {}", methodname, dut);
+        Assertions.assertTrue(result);
+    }
+
+    @Test
+    public void testDebugHeaders() throws Exception {
+        final String methodname = "testDebugHeaders(): ";
+        logger.info("{}start", methodname);
+
+        final DownloadService dut = new DownloadService(new HttpClientFactory());
+        final CloseableHttpResponse response = Mockito.mock(CloseableHttpResponse.class);
+        final HttpEntity entity = Mockito.mock(HttpEntity.class);
+
+        final Header[] headers = new Header[1];
+        headers[0] = Mockito.mock(Header.class);
+        Mockito.when(response.getAllHeaders()).thenReturn(headers);
+
+        dut.debugHeaders(response, entity);
 
     }
 

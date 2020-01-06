@@ -1,19 +1,18 @@
 package at.or.vogt.oe1downloader.rules;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import at.or.vogt.oe1downloader.TestParameters;
 import at.or.vogt.oe1downloader.config.Configuration;
 import at.or.vogt.oe1downloader.config.ConfigurationHelper;
 import at.or.vogt.oe1downloader.config.ConfigurationParameter;
@@ -21,9 +20,8 @@ import at.or.vogt.oe1downloader.download.DownloadService;
 import at.or.vogt.oe1downloader.download.FileDownloadService;
 import at.or.vogt.oe1downloader.download.HttpClientFactory;
 import at.or.vogt.oe1downloader.download.RecordVO;
-import at.or.vogt.oe1downloader.json.DateParser;
 import at.or.vogt.oe1downloader.json.JsonGetter;
-import at.or.vogt.oe1downloader.json.bean.Day;
+import at.or.vogt.oe1downloader.json.bean.Program;
 import at.or.vogt.oe1downloader.json.bean.Show;
 
 /**
@@ -33,6 +31,11 @@ public class RulesVOTest {
 
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(RulesVOTest.class);
+
+    @BeforeEach
+    public void before() {
+        Configuration.setConfigFilename(TestParameters.TEST_CONFIG_FILENAME);
+    }
 
     /**
      * Tests the rules.
@@ -82,20 +85,16 @@ public class RulesVOTest {
 
         final JsonGetter jsonGetter = new JsonGetter(downloadService);
 
-        final long dayOffset = Duration
-                .between(DateParser.parseISO("2017-04-29T08:15:00+02:00").truncatedTo(ChronoUnit.DAYS),
-                        LocalDateTime.now().truncatedTo(ChronoUnit.DAYS))
-                .toDays();
-        final List<Day> days = jsonGetter.getDays("src/test/resources/tag/broadcast20170429.json", dayOffset + 6);
-        final Day day = days.get(0);
+        final List<Program> programs = jsonGetter.getProgram("src/test/resources/program/program_20200106.json");
 
         final RulesVO dut = new RulesVO();
         dut.loadRules();
         final RuleIndexCounter counter = new RuleIndexCounter();
-        final List<RecordVO> records = dut.checkForRecords(Arrays.asList(new Day[] { day }), counter);
+        final List<RecordVO> records = dut.checkForRecords(programs, counter);
         for (final RecordVO recordVO : records) {
             logger.info(methodname + "recordVO = {}", recordVO);
         }
+        Assertions.assertEquals(1, records.size());
     }
 
     /**
@@ -137,18 +136,12 @@ public class RulesVOTest {
 
         final JsonGetter jsonGetter = new JsonGetter(downloadService);
 
-        final long dayOffset = Duration
-                .between(DateParser.parseISO("2017-04-29T08:15:00+02:00").truncatedTo(ChronoUnit.DAYS),
-                        LocalDateTime.now().truncatedTo(ChronoUnit.DAYS))
-                .toDays();
-
-        final List<Day> days = jsonGetter.getDays("src/test/resources/tag/broadcast_none.json", dayOffset + 7);
-        final Day day = days.get(0);
+        final List<Program> programs = jsonGetter.getProgram("src/test/resources/program/program_none.json");
 
         final RulesVO dut = new RulesVO();
         dut.loadRules();
         final RuleIndexCounter counter = new RuleIndexCounter();
-        final List<RecordVO> records = dut.checkForRecords(day, counter);
+        final List<RecordVO> records = dut.checkForRecords(programs, counter);
         Assertions.assertNotNull(records);
         Assertions.assertEquals(0, records.size());
 

@@ -3,11 +3,9 @@ package at.or.vogt.oe1downloader.json;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -22,8 +20,8 @@ import at.or.vogt.oe1downloader.config.Configuration;
 import at.or.vogt.oe1downloader.config.ConfigurationParameter;
 import at.or.vogt.oe1downloader.download.DownloadService;
 import at.or.vogt.oe1downloader.download.StringDownloadHandler;
-import at.or.vogt.oe1downloader.json.bean.Day;
-import at.or.vogt.oe1downloader.json.bean.ShowInfo;
+import at.or.vogt.oe1downloader.json.bean.Broadcast;
+import at.or.vogt.oe1downloader.json.bean.Program;
 
 /**
  * Gets the JSONs.
@@ -48,12 +46,11 @@ public class JsonGetter {
     }
 
     /**
-     * Get Days from URL.
-     * @param url      url to load JSON from
-     * @param daysback number of days back
-     * @return list of days
+     * Get the {@link Program} from URL.
+     * @param url url to load JSON from
+     * @return list of {@link Program}
      */
-    public List<Day> getDays(final String url, final long daysback) {
+    public List<Program> getProgram(final String url) {
 
         final StringDownloadHandler handler = new StringDownloadHandler();
         final boolean successfulDownload = downloadService.download(url, handler);
@@ -63,25 +60,12 @@ public class JsonGetter {
         }
 
         final String json = handler.getResult();
-        // dump JSON to the provided location
-        final Configuration config = Configuration.getConfiguration();
-        final String dumpJsonLocation = config.getProperty(ConfigurationParameter.DUMP_JSON_LOCATION);
-        if (StringUtils.isNotBlank(dumpJsonLocation)) {
-            dumpJson(json, dumpJsonLocation);
-        }
+        dumpJson(json, "program.json");
         try {
-            final TypeReference<List<Day>> trList = new TypeReference<List<Day>>() {
+            final TypeReference<List<Program>> trList = new TypeReference<List<Program>>() {
             };
-            final List<Day> allDays = parseJson(json, trList);
-
-            List<Day> result = new ArrayList<>();
-            final LocalDateTime firstDayDate = LocalDateTime.now().minusDays(daysback).truncatedTo(ChronoUnit.DAYS);
-            if (allDays != null) {
-                result = allDays.stream().filter(d -> DateParser.parseISO(d.getDateISO()).isAfter(firstDayDate))
-                        .collect(Collectors.toList());
-
-            }
-            return result;
+            final List<Program> program = parseJson(json, trList);
+            return program;
 
         } catch (final Oe1JsonParseException e) {
             final String message = "error parsing " + url + " ignoring!";
@@ -92,11 +76,11 @@ public class JsonGetter {
     }
 
     /**
-     * Get the show info.
-     * @param url the url
-     * @return the ShowInfo
+     * Get {@link Broadcast} from URL.
+     * @param url url to load JSON from
+     * @return {@link Broadcast}
      */
-    public ShowInfo getShowInfo(final String url) {
+    public Broadcast getBroadcast(final String url) {
 
         final StringDownloadHandler handler = new StringDownloadHandler();
         final boolean successfulDownload = downloadService.download(url, handler);
@@ -106,14 +90,15 @@ public class JsonGetter {
         }
 
         final String json = handler.getResult();
+        dumpJson(json, url);
         try {
-            final TypeReference<ShowInfo> trList = new TypeReference<ShowInfo>() {
+            final TypeReference<Broadcast> tr = new TypeReference<Broadcast>() {
             };
-            final ShowInfo result = parseJson(json, trList);
-            return result;
+            final Broadcast broadcast = parseJson(json, tr);
+            return broadcast;
 
         } catch (final Oe1JsonParseException e) {
-            final String message = "error parsing url " + url + " ignoring!";
+            final String message = "error parsing " + url + " ignoring!";
             logger.error(message, e);
             EVENTLOGGER.error(message, e);
             return null;
@@ -140,27 +125,54 @@ public class JsonGetter {
 
     /**
      * Dump the JSON string to file.
-     * @param json             json
-     * @param dumpJsonLocation location of the json file
+     * @param json     json
+     * @param filename name of file to dump to
      */
-    void dumpJson(final String json, final String dumpJsonLocation) {
+    void dumpJson(final String json, final String filename) {
         try {
-            final ObjectMapper mapper = new ObjectMapper();
-            final Object jsonObject = mapper.readValue(json, Object.class);
-            final String jsonPretty = new ObjectMapper().writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(jsonObject);
-            final File dumpFile = new File(dumpJsonLocation);
-            final String dumpFilePath = FilenameUtils.getPath(dumpJsonLocation);
-            if (dumpFilePath != null && !"".equals(dumpFilePath)) {
-                new File(dumpFilePath).mkdirs();
-            }
-            try (final FileWriter fw = new FileWriter(dumpFile, false)) {
-                fw.write(jsonPretty);
-                fw.flush();
+
+            // dump JSON to the provided location
+            final Configuration config = Configuration.getConfiguration();
+            final String dumpJsonLocation = config.getProperty(ConfigurationParameter.DUMP_JSON_LOCATION);
+            if (StringUtils.isNotBlank(dumpJsonLocation)) {
+
+                final ObjectMapper mapper = new ObjectMapper();
+                final Object jsonObject = mapper.readValue(json, Object.class);
+                final String jsonPretty = new ObjectMapper()
+                        .writerWithDefaultPrettyPrinter()
+                        .writeValueAsString(jsonObject);
+                final File dumpFile = new File(dumpJsonLocation + escapeFilename(filename));
+                final String dumpFilePath = FilenameUtils.getPath(dumpJsonLocation);
+                if (dumpFilePath != null && !"".equals(dumpFilePath)) {
+                    new File(dumpFilePath).mkdirs();
+                }
+                try (final FileWriter fw = new FileWriter(dumpFile, StandardCharsets.UTF_8, false)) {
+                    fw.write(jsonPretty);
+                    fw.flush();
+                }
             }
         } catch (final Throwable e) {
-            logger.error("error occurred. dumpJsonLocation = " + dumpJsonLocation, e);
+            logger.error("error occurred. filename = " + filename, e);
         }
+    }
+
+    /**
+     * Escapes the file name, e.g. a URL to only the escaped path.
+     * @param filename file name to escape
+     * @return escaped file name.
+     */
+    String escapeFilename(final String filename) {
+        String result = filename;
+        try {
+            final URI uri = URI.create(filename);
+            final String path = uri.getPath();
+            result = path.replaceAll("\\/", "_");
+        } finally {
+
+        }
+
+        return result;
+
     }
 
 }

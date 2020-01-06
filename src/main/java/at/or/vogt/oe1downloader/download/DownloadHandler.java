@@ -8,6 +8,18 @@ import java.io.InputStream;
 public interface DownloadHandler {
 
     /**
+     * Content length reported by server.
+     * @param length the length reported by the server
+     */
+    void setContentLength(final long length);
+
+    /**
+     * Get the content length reported by the server.
+     * @return length reported by the server
+     */
+    long getContentLength();
+
+    /**
      * Handle the download.
      * @param input input stream with content
      */

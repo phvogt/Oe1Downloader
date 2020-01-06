@@ -1,7 +1,7 @@
 package at.or.vogt.oe1downloader.rules;
 
 /**
- * Rule.
+ * Rule to match a Broadcast.
  */
 public class RuleVO {
 
@@ -14,22 +14,23 @@ public class RuleVO {
     /** mp3 file name start index number. */
     private final int mp3StartIndex;
     /** mp3 file name postfix. */
-    private final String mp3postfix;
+    private final String mp3Postfix;
 
     /**
      * Constructor.
-     * @param name name
-     * @param title title
-     * @param time time the Show starts
+     * @param name          name
+     * @param title         title
+     * @param time          time the Broadcast starts
      * @param mp3StartIndex mp3 file name start index number
-     * @param mp3postfix mp3 file name postfix
+     * @param mp3Postfix    mp3 file name postfix
      */
-    public RuleVO(final String name, final String title, final String time, final int mp3StartIndex, final String mp3postfix) {
+    public RuleVO(final String name, final String title, final String time, final int mp3StartIndex,
+            final String mp3Postfix) {
         this.name = name;
         this.title = title;
         this.time = time;
         this.mp3StartIndex = mp3StartIndex;
-        this.mp3postfix = mp3postfix;
+        this.mp3Postfix = mp3Postfix;
     }
 
     /**
@@ -44,7 +45,7 @@ public class RuleVO {
      * Get the title.
      * @return the title
      */
-    public String getShortTitle() {
+    public String getTitle() {
         return title;
     }
 
@@ -68,8 +69,8 @@ public class RuleVO {
      * Get the mp3postfix.
      * @return the mp3postfix
      */
-    public String getMp3postfix() {
-        return mp3postfix;
+    public String getMp3Postfix() {
+        return mp3Postfix;
     }
 
     /**
@@ -89,7 +90,7 @@ public class RuleVO {
         builder.append(", mp3StartIndex=");
         builder.append(mp3StartIndex);
         builder.append(", mp3postfix=");
-        builder.append(mp3postfix);
+        builder.append(mp3Postfix);
         builder.append("]");
         return builder.toString();
     }
