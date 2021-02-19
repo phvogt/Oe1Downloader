@@ -122,7 +122,7 @@ public class Configuration {
     /**
      * Gets the property for the configuration parameter with parameters to replace.
      * @param configParameter to get
-     * @parameter
+     * @param parameters      parameters for the property
      * @return the configuration value
      */
     public String getProperty(final ConfigurationParameter configParameter, final String... parameters) {
