@@ -24,10 +24,10 @@ public class RuleVOTest {
         final RuleVO dut = new RuleVO("name", "shortTitle", "time", 60, "mp3postfix");
         logger.info(methodname + "dut = ", dut);
         Assertions.assertEquals("name", dut.getName());
-        Assertions.assertEquals("shortTitle", dut.getShortTitle());
+        Assertions.assertEquals("shortTitle", dut.getTitle());
         Assertions.assertEquals("time", dut.getTime());
         Assertions.assertEquals(60, dut.getMp3StartIndex());
-        Assertions.assertEquals("mp3postfix", dut.getMp3postfix());
+        Assertions.assertEquals("mp3postfix", dut.getMp3Postfix());
         Assertions.assertNotNull(dut.toString());
 
     }

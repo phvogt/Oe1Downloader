@@ -1,8 +1,6 @@
 package at.or.vogt.oe1downloader.json.bean;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.jsoup.Jsoup;
 
@@ -14,7 +12,7 @@ import at.or.vogt.oe1downloader.json.DateParser;
 public class Show {
 
     /** ID. */
-    private final int id;
+    private final long id;
     /** HREF. */
     private final String href;
     /** Title. */
@@ -42,28 +40,29 @@ public class Show {
      */
     public Show(final Broadcast b) {
         this(b.getId(), b.getHref(), b.getProgramTitle(), b.getTitle(), "" + b.getBroadcastDay(),
-                b.getSubtitle() == null ? null : Jsoup.parse(b.getSubtitle()).text(), DateParser.parseISO(b.getScheduledStartISO()),
-                DateParser.parseISO(b.getScheduledEndISO()), DateParser.parseISO(b.getStartISO()),
-                DateParser.parseISO(b.getEndISO()), DateParser.parseISO(b.getNiceTimeISO()));
+                b.getSubtitle() == null ? null : Jsoup.parse(b.getSubtitle()).text(),
+                DateParser.parseISO(b.getScheduledStartISO()), DateParser.parseISO(b.getScheduledEndISO()),
+                DateParser.parseISO(b.getStartISO()), DateParser.parseISO(b.getEndISO()),
+                DateParser.parseISO(b.getNiceTimeISO()));
     }
 
     /**
      * Constructor.
-     * @param id id
-     * @param href href
-     * @param programTitle programTitle
-     * @param title title
-     * @param day day
-     * @param subtitle subtitle
+     * @param id             id
+     * @param href           href
+     * @param programTitle   programTitle
+     * @param title          title
+     * @param day            day
+     * @param subtitle       subtitle
      * @param scheduledStart scheduledStart
-     * @param scheduledEnd scheduledEnd
-     * @param start start
-     * @param end end
-     * @param niceTime niceTime
+     * @param scheduledEnd   scheduledEnd
+     * @param start          start
+     * @param end            end
+     * @param niceTime       niceTime
      */
-    public Show(final int id, final String href, final String programTitle, final String title, final String day,
-            final String subtitle, final LocalDateTime scheduledStart, final LocalDateTime scheduledEnd, final LocalDateTime start,
-            final LocalDateTime end, final LocalDateTime niceTime) {
+    public Show(final long id, final String href, final String programTitle, final String title, final String day,
+            final String subtitle, final LocalDateTime scheduledStart, final LocalDateTime scheduledEnd,
+            final LocalDateTime start, final LocalDateTime end, final LocalDateTime niceTime) {
         this.id = id;
         this.href = href;
         this.programTitle = programTitle == null ? "" : programTitle;
@@ -81,7 +80,7 @@ public class Show {
      * Get the id.
      * @return the id
      */
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -197,12 +196,6 @@ public class Show {
         builder.append(niceTime);
         builder.append("]");
         return builder.toString();
-    }
-
-    public static List<Show> forDay(final Day day) {
-        final List<Show> result = new ArrayList<>();
-        day.getBroadcasts().stream().forEach(b -> result.add(new Show(b)));
-        return result;
     }
 
 }

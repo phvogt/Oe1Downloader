@@ -2,17 +2,17 @@ package at.or.vogt.oe1downloader.rules;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import at.or.vogt.oe1downloader.TestParameters;
 import at.or.vogt.oe1downloader.config.Configuration;
 import at.or.vogt.oe1downloader.config.ConfigurationHelper;
 import at.or.vogt.oe1downloader.config.ConfigurationParameter;
@@ -21,7 +21,7 @@ import at.or.vogt.oe1downloader.download.FileDownloadService;
 import at.or.vogt.oe1downloader.download.HttpClientFactory;
 import at.or.vogt.oe1downloader.download.RecordVO;
 import at.or.vogt.oe1downloader.json.JsonGetter;
-import at.or.vogt.oe1downloader.json.bean.Day;
+import at.or.vogt.oe1downloader.json.bean.Program;
 import at.or.vogt.oe1downloader.json.bean.Show;
 
 /**
@@ -31,6 +31,11 @@ public class RulesVOTest {
 
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(RulesVOTest.class);
+
+    @BeforeEach
+    public void before() {
+        Configuration.setConfigFilename(TestParameters.TEST_CONFIG_FILENAME);
+    }
 
     /**
      * Tests the rules.
@@ -72,7 +77,6 @@ public class RulesVOTest {
      * Tests the Matching
      */
     @Test
-    @Disabled("jsonGetter works with current date")
     public void testMatching() {
 
         final String methodname = "testMatching(): ";
@@ -81,16 +85,16 @@ public class RulesVOTest {
 
         final JsonGetter jsonGetter = new JsonGetter(downloadService);
 
-        final List<Day> days = jsonGetter.getDays("src/test/resources/tag/broadcast20170429.json", 2);
-        final Day day = days.get(0);
+        final List<Program> programs = jsonGetter.getProgram("src/test/resources/program/program_20200106.json");
 
         final RulesVO dut = new RulesVO();
         dut.loadRules();
         final RuleIndexCounter counter = new RuleIndexCounter();
-        final List<RecordVO> records = dut.checkForRecords(Arrays.asList(new Day[] { day }), counter);
+        final List<RecordVO> records = dut.checkForRecords(programs, counter);
         for (final RecordVO recordVO : records) {
             logger.info(methodname + "recordVO = {}", recordVO);
         }
+        Assertions.assertEquals(1, records.size());
     }
 
     /**
@@ -119,6 +123,27 @@ public class RulesVOTest {
         // Show does not match because of time
         final Show showNotTime = new Show(15, "href", "yyy", "xxx", "day", "subtitle", now, now, now, now, now);
         Assertions.assertFalse(RulesVO.matches(rule, showNotTime));
+
+    }
+
+    @Test
+    public void testCheckForRecordsDayRuleIndexCounterNoBroadcasts() throws Exception {
+
+        final String methodname = "testCheckForRecordsDayRuleIndexCounterNoBroadcasts(): ";
+        logger.info(methodname);
+
+        final DownloadService downloadService = new FileDownloadService(new HttpClientFactory());
+
+        final JsonGetter jsonGetter = new JsonGetter(downloadService);
+
+        final List<Program> programs = jsonGetter.getProgram("src/test/resources/program/program_none.json");
+
+        final RulesVO dut = new RulesVO();
+        dut.loadRules();
+        final RuleIndexCounter counter = new RuleIndexCounter();
+        final List<RecordVO> records = dut.checkForRecords(programs, counter);
+        Assertions.assertNotNull(records);
+        Assertions.assertEquals(0, records.size());
 
     }
 

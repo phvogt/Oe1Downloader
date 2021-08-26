@@ -7,12 +7,14 @@ import java.util.Collection;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import at.or.vogt.oe1downloader.cli.CommandLineParser;
+import at.or.vogt.oe1downloader.config.Configuration;
 import at.or.vogt.oe1downloader.download.DownloadHandler;
 import at.or.vogt.oe1downloader.download.DownloadService;
 import at.or.vogt.oe1downloader.download.HttpClientFactory;
@@ -24,6 +26,11 @@ public class MainTest {
 
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(MainTest.class);
+
+    @BeforeEach
+    public void before() {
+        Configuration.setConfigFilename(TestParameters.TEST_CONFIG_FILENAME);
+    }
 
     /**
      * Tests
@@ -66,8 +73,8 @@ public class MainTest {
         };
 
         // delete old files
-        final Collection<File> oldFiles = FileUtils.listFiles(FileUtils.getTempDirectory(), new String[] { "mp3" },
-                false);
+        final Collection<File> oldFiles = FileUtils
+                .listFiles(FileUtils.getTempDirectory(), new String[] { "mp3" }, false);
         logger.info(methodname + "oldFiles = {}", oldFiles);
         for (final File file : oldFiles) {
             if (file.getName().contains("kolleg_17.08.2015")) {
@@ -100,19 +107,19 @@ public class MainTest {
     }
 
     /**
-     * Tests {@link at.or.vogt.oe1downloader.Main#getJsonPathPrefix()}.
+     * Tests {@link at.or.vogt.oe1downloader.Main#getJsonBroadcastsUrl()}.
      */
     @Test
-    public void testGetJsonPathPrefix() {
+    public void testGetJsonBroadcastsUrl() {
 
-        final String methodname = "testGetter(): ";
+        final String methodname = "testGetJsonBroadcastsUrl(): ";
         logger.info(methodname + "start");
 
         final Main dut = new Main();
 
-        final String jsonPathPrefix = dut.getJsonPathPrefix();
-        Assertions.assertNotNull(jsonPathPrefix);
-        logger.info(methodname + "jsonPathPrefix = {}", jsonPathPrefix);
+        final String jsonBroadcastsUrl = dut.getJsonBroadcastsUrl();
+        Assertions.assertNotNull(jsonBroadcastsUrl);
+        logger.info(methodname + "jsonBroadcastsUrl = {}", jsonBroadcastsUrl);
 
     }
 

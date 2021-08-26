@@ -3,6 +3,7 @@ package at.or.vogt.oe1downloader.config;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -20,8 +21,10 @@ import at.or.vogt.oe1downloader.EventLogger;
  */
 public class Configuration {
 
+    /** default configuration file name. */
+    public final static String CONFIG_FILENAME_DEFAULT = "conf/config.properties";
     /** file name for config properties. */
-    private static String CONFIG_FILENAME = "conf/config.properties";
+    private static String CONFIG_FILENAME = CONFIG_FILENAME_DEFAULT;
 
     /** event logger. */
     private static final Logger EVENTLOGGER = EventLogger.getLogger();
@@ -30,7 +33,7 @@ public class Configuration {
     private final Logger logger = LoggerFactory.getLogger(Configuration.class);
 
     /** contains the properties. */
-    private Properties configFileProps = new Properties();
+    Properties configFileProps = new Properties();
 
     /**
      * Gets the configuration.
@@ -54,6 +57,9 @@ public class Configuration {
         logger.info("loading properties from " + configFilename + ".");
 
         try (final FileInputStream in = new FileInputStream(new File(configFilename))) {
+            if (configFileProps == null) {
+                configFileProps = new Properties();
+            }
             configFileProps.load(in);
         } catch (final IOException e) {
             final String message = "could not load " + configFilename;
@@ -110,6 +116,24 @@ public class Configuration {
             return result;
         } else {
             return parameter.getDefaultValue();
+        }
+    }
+
+    /**
+     * Gets the property for the configuration parameter with parameters to replace.
+     * @param configParameter to get
+     * @param parameters      parameters for the property
+     * @return the configuration value
+     */
+    public String getProperty(final ConfigurationParameter configParameter, final String... parameters) {
+
+        final String result = configFileProps.getProperty(configParameter.getName());
+
+        if (result != null) {
+            return MessageFormat.format(result, (Object[]) parameters);
+        } else {
+            final String defaultValue = configParameter.getDefaultValue();
+            return MessageFormat.format(defaultValue, (Object[]) parameters);
         }
     }
 

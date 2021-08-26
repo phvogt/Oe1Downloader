@@ -1,17 +1,25 @@
+
 package at.or.vogt.oe1downloader.json.bean;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({ "type", "timestamp", "timestampISO", "timestampOffset" })
+@JsonPropertyOrder({
+    "type",
+    "timestamp",
+    "timestampISO",
+    "timestampOffset"
+})
 public class Mark {
 
     @JsonProperty("type")
@@ -25,13 +33,35 @@ public class Mark {
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
+    /**
+     * No args constructor for use in serialization
+     * 
+     */
+    public Mark() {
+    }
+
+    /**
+     * 
+     * @param timestampOffset
+     * @param timestampISO
+     * @param type
+     * @param timestamp
+     */
+    public Mark(String type, Long timestamp, String timestampISO, Long timestampOffset) {
+        super();
+        this.type = type;
+        this.timestamp = timestamp;
+        this.timestampISO = timestampISO;
+        this.timestampOffset = timestampOffset;
+    }
+
     @JsonProperty("type")
     public String getType() {
         return type;
     }
 
     @JsonProperty("type")
-    public void setType(final String type) {
+    public void setType(String type) {
         this.type = type;
     }
 
@@ -41,7 +71,7 @@ public class Mark {
     }
 
     @JsonProperty("timestamp")
-    public void setTimestamp(final Long timestamp) {
+    public void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -51,7 +81,7 @@ public class Mark {
     }
 
     @JsonProperty("timestampISO")
-    public void setTimestampISO(final String timestampISO) {
+    public void setTimestampISO(String timestampISO) {
         this.timestampISO = timestampISO;
     }
 
@@ -61,7 +91,7 @@ public class Mark {
     }
 
     @JsonProperty("timestampOffset")
-    public void setTimestampOffset(final Long timestampOffset) {
+    public void setTimestampOffset(Long timestampOffset) {
         this.timestampOffset = timestampOffset;
     }
 
@@ -71,30 +101,30 @@ public class Mark {
     }
 
     @JsonAnySetter
-    public void setAdditionalProperty(final String name, final Object value) {
+    public void setAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("Mark [super = ");
-        builder.append(super.toString());
-        builder.append(" type=");
-        builder.append(type);
-        builder.append(", timestamp=");
-        builder.append(timestamp);
-        builder.append(", timestampISO=");
-        builder.append(timestampISO);
-        builder.append(", timestampOffset=");
-        builder.append(timestampOffset);
-        builder.append(", additionalProperties=");
-        builder.append(additionalProperties);
-        builder.append("]");
-        return builder.toString();
+        return new ToStringBuilder(this).append("type", type).append("timestamp", timestamp).append("timestampISO", timestampISO).append("timestampOffset", timestampOffset).append("additionalProperties", additionalProperties).toString();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(timestampISO).append(timestampOffset).append(additionalProperties).append(type).append(timestamp).toHashCode();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == this) {
+            return true;
+        }
+        if ((other instanceof Mark) == false) {
+            return false;
+        }
+        Mark rhs = ((Mark) other);
+        return new EqualsBuilder().append(timestampISO, rhs.timestampISO).append(timestampOffset, rhs.timestampOffset).append(additionalProperties, rhs.additionalProperties).append(type, rhs.type).append(timestamp, rhs.timestamp).isEquals();
     }
 
 }

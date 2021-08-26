@@ -1,17 +1,24 @@
+
 package at.or.vogt.oe1downloader.json.bean;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({ "width", "hashCode", "path" })
+@JsonPropertyOrder({
+    "width",
+    "hashCode",
+    "path"
+})
 public class Version {
 
     @JsonProperty("width")
@@ -23,13 +30,33 @@ public class Version {
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
+    /**
+     * No args constructor for use in serialization
+     * 
+     */
+    public Version() {
+    }
+
+    /**
+     * 
+     * @param path
+     * @param hashCode
+     * @param width
+     */
+    public Version(Long width, Long hashCode, String path) {
+        super();
+        this.width = width;
+        this.hashCode = hashCode;
+        this.path = path;
+    }
+
     @JsonProperty("width")
     public Long getWidth() {
         return width;
     }
 
     @JsonProperty("width")
-    public void setWidth(final Long width) {
+    public void setWidth(Long width) {
         this.width = width;
     }
 
@@ -39,7 +66,7 @@ public class Version {
     }
 
     @JsonProperty("hashCode")
-    public void setHashCode(final Long hashCode) {
+    public void setHashCode(Long hashCode) {
         this.hashCode = hashCode;
     }
 
@@ -49,7 +76,7 @@ public class Version {
     }
 
     @JsonProperty("path")
-    public void setPath(final String path) {
+    public void setPath(String path) {
         this.path = path;
     }
 
@@ -59,28 +86,30 @@ public class Version {
     }
 
     @JsonAnySetter
-    public void setAdditionalProperty(final String name, final Object value) {
+    public void setAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("Version [super = ");
-        builder.append(super.toString());
-        builder.append(" width=");
-        builder.append(width);
-        builder.append(", hashCode=");
-        builder.append(hashCode);
-        builder.append(", path=");
-        builder.append(path);
-        builder.append(", additionalProperties=");
-        builder.append(additionalProperties);
-        builder.append("]");
-        return builder.toString();
+        return new ToStringBuilder(this).append("width", width).append("hashCode", hashCode).append("path", path).append("additionalProperties", additionalProperties).toString();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(width).append(path).append(additionalProperties).append(hashCode).toHashCode();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == this) {
+            return true;
+        }
+        if ((other instanceof Version) == false) {
+            return false;
+        }
+        Version rhs = ((Version) other);
+        return new EqualsBuilder().append(width, rhs.width).append(path, rhs.path).append(additionalProperties, rhs.additionalProperties).append(hashCode, rhs.hashCode).isEquals();
     }
 
 }
