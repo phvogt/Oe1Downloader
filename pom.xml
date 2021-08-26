@@ -93,7 +93,14 @@
         <version>1.16.0</version>
         <configuration>
           <gitFlowConfig>
-            <developmentBranch>master</developmentBranch>
+            <productionBranch>master</productionBranch>
+            <developmentBranch>develop</developmentBranch>
+            <featureBranchPrefix>feature/</featureBranchPrefix>
+            <releaseBranchPrefix>release/</releaseBranchPrefix>
+            <hotfixBranchPrefix>hotfix/</hotfixBranchPrefix>
+            <supportBranchPrefix>support/</supportBranchPrefix>
+            <versionTagPrefix></versionTagPrefix>
+            <origin>origin</origin>
           </gitFlowConfig>
           <pushRemote>true</pushRemote>
           <keepBranch>true</keepBranch>
@@ -188,8 +195,8 @@
           <artifactId>maven-resources-plugin</artifactId>
           <version>3.2.0</version>
         </plugin>
-        <!--This plugin's configuration is used to store Eclipse m2e settings 
-          only. It has no influence on the Maven build itself. -->
+        <!--This plugin's configuration is used to store Eclipse m2e settings only. 
+          It has no influence on the Maven build itself. -->
         <plugin>
           <groupId>org.eclipse.m2e</groupId>
           <artifactId>lifecycle-mapping</artifactId>
