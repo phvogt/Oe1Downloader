@@ -6,7 +6,7 @@
 
   <groupId>at.or.vogt.oe1downloader</groupId>
   <artifactId>Oe1Downloader</artifactId>
-  <version>1.0.13-SNAPSHOT</version>
+  <version>1.0.13</version>
 
   <packaging>jar</packaging>
 
