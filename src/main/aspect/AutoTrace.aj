@@ -5,8 +5,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import org.apache.log4j.Logger;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
 
@@ -25,7 +26,7 @@ public aspect AutoTrace pertypewithin(*) {
    * Insert the TraceLogger in the static part of the class.
    */
   after() : staticinitialization(*) && !within(AutoTrace)  {
-    traceLogger = Logger.getLogger(getWithinTypeName());
+    traceLogger = LoggerFactory.getLogger(getWithinTypeName());
   }
 
   /**
@@ -40,7 +41,7 @@ public aspect AutoTrace pertypewithin(*) {
   before() : traceMethods() {
     // should only be null in enums
     if (traceLogger == null) {
-      traceLogger = Logger.getLogger(getWithinTypeName());
+      traceLogger = LoggerFactory.getLogger(getWithinTypeName());
     }
 
     if (traceLogger.isDebugEnabled()) {
