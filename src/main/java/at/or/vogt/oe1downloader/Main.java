@@ -6,7 +6,6 @@ import java.util.List;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.ParseException;
-import org.apache.log4j.PropertyConfigurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,6 +20,7 @@ import at.or.vogt.oe1downloader.json.JsonGetter;
 import at.or.vogt.oe1downloader.json.bean.Program;
 import at.or.vogt.oe1downloader.rules.RuleIndexCounter;
 import at.or.vogt.oe1downloader.rules.RulesVO;
+import ch.qos.logback.classic.util.ContextInitializer;
 
 /**
  * Main class for Oe1 downloader.
@@ -28,7 +28,7 @@ import at.or.vogt.oe1downloader.rules.RulesVO;
 public class Main {
 
     static {
-        PropertyConfigurator.configure("conf/log4j.properties");
+        System.setProperty(ContextInitializer.CONFIG_FILE_PROPERTY, "conf/logback.xml");
     }
 
     /** event LOGGER. */
