@@ -1,7 +1,7 @@
 # OE1 Downloader
 
 [![Build Status](https://travis-ci.org/phvogt/Oe1Downloader.svg?branch=master)](https://travis-ci.org/phvogt/Oe1Downloader)
-[![Coverage Status](https://coveralls.io/repos/phvogt/Oe1Downloader/badge.svg?branch=master&service=github)](https://coveralls.io/github/phvogt/Oe1Downloader?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/phvogt/Oe1Downloader/badge.svg?branch=master)](https://coveralls.io/github/phvogt/Oe1Downloader?branch=master)
 [![Coverity Scan Build Status](https://img.shields.io/coverity/scan/6414.svg)](https://scan.coverity.com/projects/phvogt-oe1downloader)
 
 This project provides an application to download shows from the [7 day archive](https://oe1.orf.at/player/) from the austrian radio station [Ö1](https://oe1.orf.at).
