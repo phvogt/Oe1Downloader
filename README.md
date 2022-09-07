@@ -1,6 +1,6 @@
 # OE1 Downloader
 
-[![Build Status](https://travis-ci.org/phvogt/Oe1Downloader.svg?branch=master)](https://travis-ci.org/phvogt/Oe1Downloader)
+[![Build Status](https://app.travis-ci.com/phvogt/Oe1Downloader.svg?branch=master)](https://app.travis-ci.com/phvogt/Oe1Downloader)
 [![Coverage Status](https://coveralls.io/repos/github/phvogt/Oe1Downloader/badge.svg?branch=master)](https://coveralls.io/github/phvogt/Oe1Downloader?branch=master)
 [![Coverity Scan Build Status](https://img.shields.io/coverity/scan/6414.svg)](https://scan.coverity.com/projects/phvogt-oe1downloader)
 
