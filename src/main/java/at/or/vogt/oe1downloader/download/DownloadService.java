@@ -53,7 +53,6 @@ public class DownloadService {
 
     /**
      * Constructor.
-     *
      * @param httpClientFactory factory for http clients for downloading
      */
     public DownloadService(final HttpClientFactory httpClientFactory) {
@@ -62,9 +61,8 @@ public class DownloadService {
 
     /**
      * Downloads the records.
-     *
      * @param targetDirectory target directory
-     * @param records         records to download
+     * @param records records to download
      * @throws IOException if an error occcurs
      */
     public void downloadRecords(final String targetDirectory, final List<RecordVO> records) throws IOException {
@@ -75,8 +73,7 @@ public class DownloadService {
         FileUtils.forceMkdir(targetDirFile);
 
         final Configuration config = Configuration.getConfiguration();
-        final int parallelDownloads = NumberUtils
-                .toInt(config.getProperty(ConfigurationParameter.NUMBER_OF_PARALLEL_DOWNLOADS), 3);
+        final int parallelDownloads = NumberUtils.toInt(config.getProperty(ConfigurationParameter.NUMBER_OF_PARALLEL_DOWNLOADS), 3);
 
         final ExecutorService executors = Executors.newFixedThreadPool(parallelDownloads);
         final List<Future<?>> futures = new ArrayList<>();
@@ -106,25 +103,28 @@ public class DownloadService {
             }));
         }
 
-        try {
-            for (final Future<?> future : futures) {
+        for (final Future<?> future : futures) {
+            try {
                 final Object result = future.get();
                 logger.info(methodname + "result = {}", result);
+            } catch (final InterruptedException | ExecutionException e) {
+                EVENTLOGGER.error("error downloading", e);
             }
+        }
 
-            logger.info(methodname + "stopping executors");
-            executors.shutdown();
+        logger.info(methodname + "stopping executors");
+        executors.shutdown();
+        try {
             logger.info(methodname + "waiting 60s");
             executors.awaitTermination(60, TimeUnit.SECONDS);
-        } catch (final InterruptedException | ExecutionException e) {
-            EVENTLOGGER.error("error downloading", e);
+        } catch (final InterruptedException e) {
+            EVENTLOGGER.error("error waiting for termination", e);
         }
 
     }
 
     /**
      * Downloads the MP3 from the URL.
-     *
      * @param record record to download
      * @return true if download was successful otherwise false
      */
@@ -153,10 +153,8 @@ public class DownloadService {
         final String loopStreamId = streams.get(0).getLoopStreamId();
 
         // create the download URL
-        final String url = Configuration
-                .getConfiguration()
-                .getProperty(ConfigurationParameter.MP3_BASE_URL, "" + ZonedDateTime.now().toEpochSecond() * 1000,
-                        loopStreamId);
+        final String url = Configuration.getConfiguration().getProperty(ConfigurationParameter.MP3_BASE_URL,
+                "" + ZonedDateTime.now().toEpochSecond() * 1000, loopStreamId);
 
         try {
 
@@ -166,9 +164,8 @@ public class DownloadService {
             // remove old temporary files
             final String tempFilename = record.getTargetFilename() + ".tmp";
             final File tempFile = new File(tempFilename);
-            EVENTLOGGER
-                    .info("start downloading on {} the broadcast \"{} - {}\" to file {}", record.getScheduledStart(),
-                            record.getProgramTitle(), record.getTitle(), record.getTargetFilename());
+            EVENTLOGGER.info("start downloading on {} the broadcast \"{} - {}\" to file {}", record.getScheduledStart(),
+                    record.getProgramTitle(), record.getTitle(), record.getTargetFilename());
 
             // download to file
             final DownloadHandler handler = new DownloadHandler() {
@@ -216,10 +213,9 @@ public class DownloadService {
             successful = download(url, handler);
 
             FileUtils.moveFile(new File(tempFilename), new File(record.getTargetFilename()));
-            EVENTLOGGER
-                    .info("done downloading on {} the broadcast \"{} - {}\" to file {} and it took {} ms",
-                            record.getScheduledStart(), record.getProgramTitle(), record.getTitle(),
-                            record.getTargetFilename(), (System.currentTimeMillis() - start));
+            EVENTLOGGER.info("done downloading on {} the broadcast \"{} - {}\" to file {} and it took {} ms",
+                    record.getScheduledStart(), record.getProgramTitle(), record.getTitle(), record.getTargetFilename(),
+                    (System.currentTimeMillis() - start));
         } catch (final Exception e) {
             EVENTLOGGER.error("error downloading url {}", url, e);
             successful = false;
@@ -231,8 +227,7 @@ public class DownloadService {
 
     /**
      * Handle the download.
-     *
-     * @param url     URL
+     * @param url URL
      * @param handler handler to process content
      * @return true if download was successful otherwise false
      */
@@ -242,9 +237,9 @@ public class DownloadService {
 
         boolean result = false;
 
-        final int maxRetries = NumberUtils
-                .toInt(Configuration.getConfiguration().getProperty(ConfigurationParameter.NUMBER_OF_RETRIES),
-                        Integer.valueOf(ConfigurationParameter.NUMBER_OF_RETRIES.getDefaultValue()));
+        final int maxRetries = NumberUtils.toInt(
+                Configuration.getConfiguration().getProperty(ConfigurationParameter.NUMBER_OF_RETRIES),
+                Integer.valueOf(ConfigurationParameter.NUMBER_OF_RETRIES.getDefaultValue()));
         int retries = 1;
         long bytesDownloaded = 0;
 
@@ -264,9 +259,7 @@ public class DownloadService {
                 }
 
                 try (final CloseableHttpResponse response = httpclient.execute(httpGet)) {
-                    logger
-                            .info(methodname + "try {}: url = {} statuscode = {}", retries, url,
-                                    response.getStatusLine());
+                    logger.info(methodname + "try {}: url = {} statuscode = {}", retries, url, response.getStatusLine());
                     final HttpEntity entity = response.getEntity();
                     if (logger.isDebugEnabled()) {
                         debugHeaders(response, entity);
@@ -282,8 +275,8 @@ public class DownloadService {
                     }
                     EntityUtils.consume(entity);
                 } catch (final IOException e) {
-                    final String message = "try " + retries + ": error downloading from url = " + url
-                            + " bytes downloaded = " + bytesDownloaded;
+                    final String message = "try " + retries + ": error downloading from url = " + url + " bytes downloaded = "
+                            + bytesDownloaded;
                     logger.error(message, e);
                     EVENTLOGGER.error(message);
                 }
@@ -309,7 +302,6 @@ public class DownloadService {
 
     /**
      * Sets the mp3 tag in the file.
-     *
      * @param record record to set the id3 tag for
      */
     void setMp3Tag(final RecordVO record) {
@@ -338,7 +330,7 @@ public class DownloadService {
     /**
      * Debug the headers.
      * @param response response
-     * @param entity   entity
+     * @param entity entity
      */
     void debugHeaders(final CloseableHttpResponse response, final HttpEntity entity) {
         final String methodname = "debugHeaders(): ";
@@ -360,21 +352,16 @@ public class DownloadService {
     boolean percentageForSuccessReached(final DownloadHandler handler) {
         final String methodname = "percentageForSuccessReached(): ";
 
-        final float percentage = NumberUtils
-                .toFloat(
-                        Configuration
-                                .getConfiguration()
-                                .getProperty(ConfigurationParameter.DOWNLOAD_PERCENTAGE_FOR_SUCCESS),
-                        Float.valueOf(ConfigurationParameter.DOWNLOAD_PERCENTAGE_FOR_SUCCESS.getDefaultValue()));
-        final float downloadPercentage = (float) handler.getBytesDownloaded() / (float) handler.getContentLength()
-                * 100;
+        final float percentage = NumberUtils.toFloat(
+                Configuration.getConfiguration().getProperty(ConfigurationParameter.DOWNLOAD_PERCENTAGE_FOR_SUCCESS),
+                Float.valueOf(ConfigurationParameter.DOWNLOAD_PERCENTAGE_FOR_SUCCESS.getDefaultValue()));
+        final float downloadPercentage = (float) handler.getBytesDownloaded() / (float) handler.getContentLength() * 100;
         if (logger.isDebugEnabled()) {
             logger.debug("{}downloadPercentage = {}", methodname, downloadPercentage);
         }
         if (downloadPercentage > percentage) {
-            EVENTLOGGER
-                    .error("although only {} of {} bytes = {} % were downloaded, it is more than configured percentage {}",
-                            handler.getBytesDownloaded(), handler.getContentLength(), downloadPercentage, percentage);
+            EVENTLOGGER.error("although only {} of {} bytes = {} % were downloaded, it is more than configured percentage {}",
+                    handler.getBytesDownloaded(), handler.getContentLength(), downloadPercentage, percentage);
             return true;
         }
         return false;
