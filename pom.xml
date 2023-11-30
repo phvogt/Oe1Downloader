@@ -4,7 +4,7 @@
 
   <groupId>at.or.vogt.oe1downloader</groupId>
   <artifactId>Oe1Downloader</artifactId>
-  <version>1.0.15-SNAPSHOT</version>
+  <version>0.1.15</version>
 
   <packaging>jar</packaging>
 
@@ -21,7 +21,7 @@
     <url>https://github.com/phvogt/Oe1Downloader</url>
     <connection>scm:git:https://github.com/phvogt/Oe1Downloader.git</connection>
     <developerConnection>scm:git:https://github.com/phvogt/Oe1Downloader.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>Oe1Downloader-0.1.15</tag>
   </scm>
 
   <build>
@@ -91,7 +91,7 @@
             <releaseBranchPrefix>release/</releaseBranchPrefix>
             <hotfixBranchPrefix>hotfix/</hotfixBranchPrefix>
             <supportBranchPrefix>support/</supportBranchPrefix>
-            <versionTagPrefix></versionTagPrefix>
+            <versionTagPrefix />
             <origin>origin</origin>
           </gitFlowConfig>
           <pushRemote>true</pushRemote>
