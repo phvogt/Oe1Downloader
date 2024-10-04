@@ -58,7 +58,7 @@ public class MP3FileUtil {
         id3v1Tag.setComment(StringUtils.isEmpty(subtitle) ? "" : Jsoup.parse(subtitle).text());
         id3v1Tag.setYear("" + Calendar.getInstance().get(Calendar.YEAR));
 
-        logger.info(methodname + "id3v1Tag = {}", id3v1Tag);
+        logger.info("{}id3v1Tag = {}", methodname, id3v1Tag);
     }
 
 }

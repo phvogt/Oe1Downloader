@@ -54,7 +54,7 @@ public class Configuration {
      */
     Properties loadProperties(final String configFilename) {
 
-        logger.info("loading properties from " + configFilename + ".");
+        logger.info("loading properties from {}.", configFilename);
 
         try (final FileInputStream in = new FileInputStream(new File(configFilename))) {
             if (configFileProps == null) {
@@ -79,9 +79,9 @@ public class Configuration {
     public Map<String, String> getPropertyMap(final ConfigurationParameter parameter) {
 
         final String propertyPrefix = parameter.getName();
-        final Map<String, String> result = new LinkedHashMap<String, String>();
+        final Map<String, String> result = new LinkedHashMap<>();
 
-        final List<String> keys = new ArrayList<String>(configFileProps.stringPropertyNames());
+        final List<String> keys = new ArrayList<>(configFileProps.stringPropertyNames());
         Collections.sort(keys);
         for (final String key : keys) {
             if (key.startsWith(propertyPrefix)) {
@@ -114,9 +114,8 @@ public class Configuration {
 
         if (result != null) {
             return result;
-        } else {
-            return parameter.getDefaultValue();
         }
+        return parameter.getDefaultValue();
     }
 
     /**
@@ -131,10 +130,9 @@ public class Configuration {
 
         if (result != null) {
             return MessageFormat.format(result, (Object[]) parameters);
-        } else {
-            final String defaultValue = configParameter.getDefaultValue();
-            return MessageFormat.format(defaultValue, (Object[]) parameters);
         }
+        final String defaultValue = configParameter.getDefaultValue();
+        return MessageFormat.format(defaultValue, (Object[]) parameters);
     }
 
     /**

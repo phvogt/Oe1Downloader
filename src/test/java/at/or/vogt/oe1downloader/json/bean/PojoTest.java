@@ -8,7 +8,7 @@ import com.openpojo.validation.ValidatorBuilder;
 import com.openpojo.validation.test.impl.GetterTester;
 import com.openpojo.validation.test.impl.SetterTester;
 
-public class PojoTest {
+class PojoTest {
 
     private static final Validator ACCESSOR_VALIDATOR = ValidatorBuilder
             .create()
@@ -21,7 +21,7 @@ public class PojoTest {
     }
 
     @Test
-    public void testBeanGetterSetter() {
+    void testBeanGetterSetter() {
         PojoTest.validateAccessors(Program.class);
         PojoTest.validateAccessors(Broadcast.class);
         PojoTest.validateAccessors(Image.class);

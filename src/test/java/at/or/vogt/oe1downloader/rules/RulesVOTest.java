@@ -27,7 +27,7 @@ import at.or.vogt.oe1downloader.json.bean.Show;
 /**
  * Tests the {@link RulesVO}.
  */
-public class RulesVOTest {
+class RulesVOTest {
 
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(RulesVOTest.class);
@@ -41,7 +41,7 @@ public class RulesVOTest {
      * Tests the rules.
      */
     @Test
-    public void testRules() {
+    void testRules() {
 
         final Configuration config = ConfigurationHelper.getTestConfiguration();
 
@@ -77,7 +77,7 @@ public class RulesVOTest {
      * Tests the Matching
      */
     @Test
-    public void testMatching() {
+    void testMatching() {
 
         final String methodname = "testMatching(): ";
 
@@ -92,7 +92,7 @@ public class RulesVOTest {
         final RuleIndexCounter counter = new RuleIndexCounter();
         final List<RecordVO> records = dut.checkForRecords(programs, counter);
         for (final RecordVO recordVO : records) {
-            logger.info(methodname + "recordVO = {}", recordVO);
+            logger.info("{}recordVO = {}", methodname, recordVO);
         }
         Assertions.assertEquals(1, records.size());
     }
@@ -101,7 +101,7 @@ public class RulesVOTest {
      * Tests {@link at.or.vogt.oe1downloader.rules.RulesVO#matches(RuleVO, Show)}.
      */
     @Test
-    public void testMatches() {
+    void testMatches() {
 
         final LocalDateTime now = LocalDateTime.now();
         final String time = now.format(DateTimeFormatter.ofPattern("HH:mm"));
@@ -127,7 +127,7 @@ public class RulesVOTest {
     }
 
     @Test
-    public void testCheckForRecordsDayRuleIndexCounterNoBroadcasts() throws Exception {
+    void testCheckForRecordsDayRuleIndexCounterNoBroadcasts() {
 
         final String methodname = "testCheckForRecordsDayRuleIndexCounterNoBroadcasts(): ";
         logger.info(methodname);

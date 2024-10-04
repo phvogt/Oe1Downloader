@@ -20,7 +20,7 @@ import at.or.vogt.oe1downloader.json.JsonGetter;
 import at.or.vogt.oe1downloader.json.bean.Program;
 import at.or.vogt.oe1downloader.rules.RuleIndexCounter;
 import at.or.vogt.oe1downloader.rules.RulesVO;
-import ch.qos.logback.classic.util.ContextInitializer;
+import ch.qos.logback.classic.ClassicConstants;
 
 /**
  * Main class for Oe1 downloader.
@@ -28,7 +28,7 @@ import ch.qos.logback.classic.util.ContextInitializer;
 public class Main {
 
     static {
-        System.setProperty(ContextInitializer.CONFIG_FILE_PROPERTY, "conf/logback.xml");
+        System.setProperty(ClassicConstants.CONFIG_FILE_PROPERTY, "conf/logback.xml");
     }
 
     /** event LOGGER. */
@@ -167,8 +167,7 @@ public class Main {
      * @return DownloadService
      */
     DownloadService getDownloadService() {
-        final DownloadService result = new DownloadService(new HttpClientFactory());
-        return result;
+        return new DownloadService(new HttpClientFactory());
     }
 
     /**
@@ -177,8 +176,7 @@ public class Main {
      */
     String getJsonBroadcastsUrl() {
         final Configuration config = Configuration.getConfiguration();
-        final String result = config.getProperty(ConfigurationParameter.JSON_BROADCASTS_URL);
-        return result;
+        return config.getProperty(ConfigurationParameter.JSON_BROADCASTS_URL);
     }
 
     /**
@@ -193,8 +191,7 @@ public class Main {
         }
 
         final Configuration config = Configuration.getConfiguration();
-        final String result = config.getProperty(ConfigurationParameter.TARGET_DIRECTORY);
-        return result;
+        return config.getProperty(ConfigurationParameter.TARGET_DIRECTORY);
 
     }
 

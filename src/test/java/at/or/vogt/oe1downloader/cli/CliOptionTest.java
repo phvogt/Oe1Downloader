@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Test for {@link at.or.vogt.oe1downloader.cli.CliOption}.
  */
-public class CliOptionTest {
+class CliOptionTest {
 
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(CliOptionTest.class);
@@ -18,16 +18,16 @@ public class CliOptionTest {
      * Tests {@link CliOption#getOption()}.
      */
     @Test
-    public void testOption() {
+    void testOption() {
 
         final String methodname = "testOption(): ";
-        logger.info(methodname + "start");
+        logger.info("{}start", methodname);
 
         final CliOption dut = CliOption.HELP;
 
         final Option helpOption = dut.getOption();
         Assertions.assertNotNull(helpOption);
-        logger.info(methodname + "helpOption = {}", helpOption);
+        logger.info("{}helpOption = {}", methodname, helpOption);
 
         Assertions.assertEquals("h", helpOption.getOpt());
         Assertions.assertFalse(helpOption.hasArg());

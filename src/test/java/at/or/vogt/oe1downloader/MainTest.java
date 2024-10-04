@@ -22,7 +22,7 @@ import at.or.vogt.oe1downloader.download.HttpClientFactory;
 /**
  * Test for {@link at.or.vogt.oe1downloader.Main}.
  */
-public class MainTest {
+class MainTest {
 
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(MainTest.class);
@@ -39,10 +39,10 @@ public class MainTest {
      */
     @Test
     @Disabled("jsonGetter works with current date")
-    public void testDoDownloads() {
+    void testDoDownloads() {
 
         final String methodname = "testDoDownloads(): ";
-        logger.info(methodname + "start");
+        logger.info("{}start", methodname);
 
         final Main dut = new Main();
         final DownloadService downloadService = new DownloadService(new HttpClientFactory()) {
@@ -75,7 +75,7 @@ public class MainTest {
         // delete old files
         final Collection<File> oldFiles = FileUtils
                 .listFiles(FileUtils.getTempDirectory(), new String[] { "mp3" }, false);
-        logger.info(methodname + "oldFiles = {}", oldFiles);
+        logger.info("{}oldFiles = {}", methodname, oldFiles);
         for (final File file : oldFiles) {
             if (file.getName().contains("kolleg_17.08.2015")) {
                 file.delete();
@@ -94,32 +94,32 @@ public class MainTest {
      * Tests {@link at.or.vogt.oe1downloader.Main#getDownloadService()}.
      */
     @Test
-    public void testGetDownloadService() {
+    void testGetDownloadService() {
 
         final String methodname = "testGetDownloadService(): ";
-        logger.info(methodname + "start");
+        logger.info("{}start", methodname);
 
         final Main dut = new Main();
 
         final DownloadService downloadService = dut.getDownloadService();
         Assertions.assertNotNull(downloadService);
-        logger.info(methodname + "downloadService = {}", downloadService);
+        logger.info("{}downloadService = {}", methodname, downloadService);
     }
 
     /**
      * Tests {@link at.or.vogt.oe1downloader.Main#getJsonBroadcastsUrl()}.
      */
     @Test
-    public void testGetJsonBroadcastsUrl() {
+    void testGetJsonBroadcastsUrl() {
 
         final String methodname = "testGetJsonBroadcastsUrl(): ";
-        logger.info(methodname + "start");
+        logger.info("{}start", methodname);
 
         final Main dut = new Main();
 
         final String jsonBroadcastsUrl = dut.getJsonBroadcastsUrl();
         Assertions.assertNotNull(jsonBroadcastsUrl);
-        logger.info(methodname + "jsonBroadcastsUrl = {}", jsonBroadcastsUrl);
+        logger.info("{}jsonBroadcastsUrl = {}", methodname, jsonBroadcastsUrl);
 
     }
 
@@ -127,21 +127,21 @@ public class MainTest {
      * Tests {@link at.or.vogt.oe1downloader.Main#getTargetDirectory(String)}.
      */
     @Test
-    public void testGetTargetDirectory() {
+    void testGetTargetDirectory() {
 
         final String methodname = "testGetter(): ";
-        logger.info(methodname + "start");
+        logger.info("{}start", methodname);
 
         final Main dut = new Main();
 
         final String targetDirectory = dut.getTargetDirectory(null);
         Assertions.assertNotNull(targetDirectory);
-        logger.info(methodname + "targetDirectory = {}", targetDirectory);
+        logger.info("{}targetDirectory = {}", methodname, targetDirectory);
         Assertions.assertEquals("./150826", targetDirectory);
 
         final String targetDirectory2 = dut.getTargetDirectory("testdir");
         Assertions.assertNotNull(targetDirectory2);
-        logger.info(methodname + "targetDirectory2 = {}", targetDirectory2);
+        logger.info("{}targetDirectory2 = {}", methodname, targetDirectory2);
         Assertions.assertEquals("testdir", targetDirectory2);
 
     }
@@ -150,10 +150,10 @@ public class MainTest {
      * Tests {@link at.or.vogt.oe1downloader.Main#showUsage(String)}.
      */
     @Test
-    public void testShowUsage() {
+    void testShowUsage() {
 
         final String methodname = "testShowUsage(): ";
-        logger.info(methodname + "start");
+        logger.info("{}start", methodname);
 
         final Main dut = new Main();
         dut.showUsage(null);
@@ -165,10 +165,10 @@ public class MainTest {
      * Tests {@link at.or.vogt.oe1downloader.Main#processCommandline(String[])}.
      */
     @Test
-    public void testProcessCommandline() {
+    void testProcessCommandline() {
 
         final String methodname = "testProcessCommandline(): ";
-        logger.info(methodname + "start");
+        logger.info("{}start", methodname);
 
         final Main dut = new Main();
 

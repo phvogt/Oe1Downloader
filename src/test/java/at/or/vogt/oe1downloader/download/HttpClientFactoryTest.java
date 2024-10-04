@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Tests for {@link HttpClientFactory}.
  */
-public class HttpClientFactoryTest {
+class HttpClientFactoryTest {
 
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(HttpClientFactoryTest.class);
@@ -18,7 +18,7 @@ public class HttpClientFactoryTest {
      * Test of {@link HttpClientFactory#getHttpClient()}.
      */
     @Test
-    public void testGetHttpClient() {
+    void testGetHttpClient() {
 
         final String methodname = "testGetHttpClient(): ";
 
@@ -26,7 +26,7 @@ public class HttpClientFactoryTest {
         final CloseableHttpClient result = dut.getHttpClient();
 
         Assertions.assertNotNull(result);
-        logger.info(methodname + "result = {}", result);
+        logger.info("{}result = {}", methodname, result);
     }
 
 }

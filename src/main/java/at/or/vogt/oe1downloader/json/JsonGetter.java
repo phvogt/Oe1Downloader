@@ -61,7 +61,7 @@ public class JsonGetter {
         final String json = handler.getResult();
         dumpJson(json, "program.json");
         try {
-            final TypeReference<List<Program>> trList = new TypeReference<List<Program>>() {
+            final TypeReference<List<Program>> trList = new TypeReference<>() {
             };
             final List<Program> program = parseJson(json, trList);
             return program;
@@ -84,14 +84,14 @@ public class JsonGetter {
         final StringDownloadHandler handler = new StringDownloadHandler();
         final boolean successfulDownload = downloadService.download(url, handler);
         if (!successfulDownload) {
-            EVENTLOGGER.error("could not download the url " + url);
+            EVENTLOGGER.error("could not download the url {}", url);
             return null;
         }
 
         final String json = handler.getResult();
         dumpJson(json, url);
         try {
-            final TypeReference<Broadcast> tr = new TypeReference<Broadcast>() {
+            final TypeReference<Broadcast> tr = new TypeReference<>() {
             };
             final Broadcast broadcast = parseJson(json, tr);
             return broadcast;
@@ -114,8 +114,7 @@ public class JsonGetter {
 
         final ObjectMapper om = new ObjectMapper();
         try {
-            final T result = om.readValue(json, tr);
-            return result;
+            return om.readValue(json, tr);
         } catch (final IOException e) {
             throw new Oe1JsonParseException("error parsing json", e);
         }
