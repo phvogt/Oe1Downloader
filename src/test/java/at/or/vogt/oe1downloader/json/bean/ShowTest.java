@@ -12,13 +12,13 @@ import at.or.vogt.oe1downloader.download.FileDownloadService;
 import at.or.vogt.oe1downloader.download.HttpClientFactory;
 import at.or.vogt.oe1downloader.json.JsonGetter;
 
-public class ShowTest {
+class ShowTest {
 
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(ShowTest.class);
 
     @Test
-    public void testShowBroadcast() throws Exception {
+    void testShowBroadcast() throws Exception {
         final String methodname = "testShowBroadcast(): ";
         logger.info(methodname);
 

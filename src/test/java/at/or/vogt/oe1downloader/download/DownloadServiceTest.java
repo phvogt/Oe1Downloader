@@ -26,7 +26,7 @@ import at.or.vogt.oe1downloader.json.DateParser;
 /**
  * Test for downloading MP3.
  */
-public class DownloadServiceTest {
+class DownloadServiceTest {
 
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(DownloadServiceTest.class);
@@ -35,7 +35,7 @@ public class DownloadServiceTest {
      * Test of {@link DownloadService#download(String, DownloadHandler)}.
      */
     @Test
-    public void testDownloadWithHandler() {
+    void testDownloadWithHandler() {
 
         final String methodname = "testDownloadWithHandler(): ";
         logger.info("{}start", methodname);
@@ -48,14 +48,14 @@ public class DownloadServiceTest {
 
         Assertions.assertTrue(result);
         Assertions.assertNotNull(handler.getResult());
-        logger.info(methodname + "result = {}", handler.getResult());
+        logger.info("{}result = {}", methodname, handler.getResult());
     }
 
     /**
      * Test of {@link DownloadService#download(String, DownloadHandler)}.
      */
     @Test
-    public void testDownloadWithHandlerConnectionReset() {
+    void testDownloadWithHandlerConnectionReset() {
 
         final String methodname = "testDownloadWithHandlerConnectionReset(): ";
         logger.info("{}start", methodname);
@@ -68,7 +68,7 @@ public class DownloadServiceTest {
 
         Assertions.assertFalse(result);
         Assertions.assertEquals("", handler.getResult());
-        logger.info(methodname + "result = {}", handler.getResult());
+        logger.info("{}result = {}", methodname, handler.getResult());
     }
 
     /**
@@ -77,24 +77,24 @@ public class DownloadServiceTest {
      * @throws Exception if an error occurs
      */
     @Test
-    public void testDownloadWithRecord() throws Exception {
+    void testDownloadWithRecord() throws Exception {
 
         final String methodname = "testDownloadWithRecord(): ";
 
         final DownloadService dut = new DownloadService(
                 new FileHttpClientFactory("src/test/resources/broadcast/broadcast_20200106.json"));
         final LocalDateTime scheduledStartLdt = DateParser.parseISO("2017-04-29T08:15:00+02:00");
-        final RecordVO record = new RecordVO("20170429", "Pasticcio", "Mit den Händen kann ich es auch",
+        final RecordVO recordVO = new RecordVO("20170429", "Pasticcio", "Mit den Händen kann ich es auch",
                 "<p>mit Irene Suchy. \"An die Künstler, Dichter und Musiker. Damit wir uns nicht vor dem Firmament zu schämen haben, müssen wir uns endlich aufmachen und mithelfen, dass eine gerechte Ordnung in Staat und Gesellschaft eingesetzt werde.\" <br/>(Ludwig Meidner, 1919).</p>",
                 scheduledStartLdt, "60", "mp3postfix", "src/test/resources/broadcast/broadcast_20200106.json");
         final File tmpFile = File.createTempFile("test", ".mp3");
         FileUtils.deleteQuietly(tmpFile);
         final String targetFilename = tmpFile.getCanonicalPath();
-        logger.info(methodname + "targetFilename = {}", targetFilename);
+        logger.info("{}targetFilename = {}", methodname, targetFilename);
         final File targetFile = new File(targetFilename);
-        record.setTargetFilename(targetFilename);
+        recordVO.setTargetFilename(targetFilename);
 
-        dut.download(record);
+        dut.download(recordVO);
 
         Assertions.assertTrue(targetFile.exists());
         FileUtils.deleteQuietly(targetFile);
@@ -107,25 +107,25 @@ public class DownloadServiceTest {
      * @throws Exception if an error occurs
      */
     @Test
-    public void testDownloadRecords() throws Exception {
+    void testDownloadRecords() throws Exception {
 
         final String methodname = "testDownloadRecords(): ";
 
         final DownloadService dut = new DownloadService(
                 new FileHttpClientFactory("src/test/resources/broadcast/broadcast_20200106.json"));
         final LocalDateTime scheduledStartLdt = DateParser.parseISO("2017-04-29T08:15:00+02:00");
-        final RecordVO record = new RecordVO("20170429", "Pasticcio", "Mit den Händen kann ich es auch",
+        final RecordVO recordVO = new RecordVO("20170429", "Pasticcio", "Mit den Händen kann ich es auch",
                 "<p>mit Irene Suchy. \"An die Künstler, Dichter und Musiker. Damit wir uns nicht vor dem Firmament zu schämen haben, müssen wir uns endlich aufmachen und mithelfen, dass eine gerechte Ordnung in Staat und Gesellschaft eingesetzt werde.\" <br/>(Ludwig Meidner, 1919).</p>",
                 scheduledStartLdt, "60", "mp3postfix", "src/test/resources/broadcast/broadcast_20200106.json");
         final File tmpFile = File.createTempFile("test", ".mp3");
         FileUtils.deleteQuietly(tmpFile);
         final String targetFilename = tmpFile.getName();
-        record.setTargetFilename(targetFilename);
-        logger.info(methodname + "targetFilename = {}", targetFilename);
-        final File targetFile = new File(FileUtils.getTempDirectoryPath() + "/" + record.getFilename());
+        recordVO.setTargetFilename(targetFilename);
+        logger.info("{}targetFilename = {}", methodname, targetFilename);
+        final File targetFile = new File(FileUtils.getTempDirectoryPath() + "/" + recordVO.getFilename());
         FileUtils.deleteQuietly(targetFile);
 
-        dut.downloadRecords(FileUtils.getTempDirectoryPath(), Arrays.asList(new RecordVO[] { record }));
+        dut.downloadRecords(FileUtils.getTempDirectoryPath(), Arrays.asList(recordVO));
 
         Assertions.assertTrue(targetFile.exists());
         FileUtils.deleteQuietly(targetFile);
@@ -138,7 +138,7 @@ public class DownloadServiceTest {
      */
     @Test
     @Disabled
-    public void testDownloadJson() throws Exception {
+    void testDownloadJson() throws Exception {
 
         final String methodname = "testDownloadJson(): ";
 
@@ -152,12 +152,12 @@ public class DownloadServiceTest {
         final ObjectMapper mapper = new ObjectMapper();
         final Object json = mapper.readValue(handler.getResult(), Object.class);
         final String jsonPretty = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(json);
-        logger.info(methodname + "result = {}", jsonPretty);
+        logger.info("{}result = {}", methodname, jsonPretty);
         IOUtils.write(jsonPretty, new FileOutputStream(new File("program.json")), StandardCharsets.UTF_8);
     }
 
     @Test
-    public void testSetMp3Tag() throws Exception {
+    void testSetMp3Tag() throws Exception {
         final String methodname = "testSetMp3Tag(): ";
         logger.info(methodname);
 
@@ -178,45 +178,45 @@ public class DownloadServiceTest {
     }
 
     @Test
-    public void testDownloadRecordVONoStreams() throws Exception {
+    void testDownloadRecordVONoStreams() {
         final String methodname = "testDownloadRecordVONoStreams(): ";
         logger.info(methodname);
 
         final DownloadService dut = new DownloadService(
                 new FileHttpClientFactory("src/test/resources/broadcast/broadcast_20200107_no_streams.json"));
         final LocalDateTime scheduledStartLdt = DateParser.parseISO("2017-04-29T08:15:00+02:00");
-        final RecordVO record = new RecordVO("20170429", "Pasticcio", "Mit den Händen kann ich es auch",
+        final RecordVO recordVO = new RecordVO("20170429", "Pasticcio", "Mit den Händen kann ich es auch",
                 "<p>mit Irene Suchy. \"An die Künstler, Dichter und Musiker. Damit wir uns nicht vor dem Firmament zu schämen haben, müssen wir uns endlich aufmachen und mithelfen, dass eine gerechte Ordnung in Staat und Gesellschaft eingesetzt werde.\" <br/>(Ludwig Meidner, 1919).</p>",
                 scheduledStartLdt, "60", "mp3postfix",
                 "src/test/resources/broadcast/broadcast_20200107_no_streams.json");
 
-        final boolean result = dut.download(record);
+        final boolean result = dut.download(recordVO);
 
         Assertions.assertFalse(result);
 
     }
 
     @Test
-    public void testDownloadRecordVONoBroadcast() throws Exception {
+    void testDownloadRecordVONoBroadcast() {
         final String methodname = "testDownloadRecordVONoBroadcast(): ";
         logger.info(methodname);
 
         final DownloadService dut = new DownloadService(
                 new FileHttpClientFactory("src/test/resources/broadcast/broadcast_20200107_no_broadcast.json"));
         final LocalDateTime scheduledStartLdt = DateParser.parseISO("2017-04-29T08:15:00+02:00");
-        final RecordVO record = new RecordVO("20170429", "Pasticcio", "Mit den Händen kann ich es auch",
+        final RecordVO recordVO = new RecordVO("20170429", "Pasticcio", "Mit den Händen kann ich es auch",
                 "<p>mit Irene Suchy. \"An die Künstler, Dichter und Musiker. Damit wir uns nicht vor dem Firmament zu schämen haben, müssen wir uns endlich aufmachen und mithelfen, dass eine gerechte Ordnung in Staat und Gesellschaft eingesetzt werde.\" <br/>(Ludwig Meidner, 1919).</p>",
                 scheduledStartLdt, "60", "mp3postfix",
                 "src/test/resources/broadcast/broadcast_20200107_no_broadcast.json");
 
-        final boolean result = dut.download(record);
+        final boolean result = dut.download(recordVO);
 
         Assertions.assertFalse(result);
 
     }
 
     @Test
-    public void testPercentageForSuccessReached() throws Exception {
+    void testPercentageForSuccessReached() {
         final String methodname = "testPercentageForSuccessReached(): ";
         logger.info("{}start", methodname);
 
@@ -252,7 +252,7 @@ public class DownloadServiceTest {
     }
 
     @Test
-    public void testDebugHeaders() throws Exception {
+    void testDebugHeaders() {
         final String methodname = "testDebugHeaders(): ";
         logger.info("{}start", methodname);
 

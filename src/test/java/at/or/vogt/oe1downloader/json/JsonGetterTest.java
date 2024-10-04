@@ -21,7 +21,7 @@ import at.or.vogt.oe1downloader.json.bean.Program;
 /**
  * Test for {@link at.or.vogt.oe1downloader.json.JsonGetter}.
  */
-public class JsonGetterTest {
+class JsonGetterTest {
 
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(JsonGetterTest.class);
@@ -32,7 +32,7 @@ public class JsonGetterTest {
      * @throws Exception if an error occurs
      */
     @Test
-    public void testGetProgram() throws Exception {
+    void testGetProgram() throws Exception {
 
         final String methodname = "testGetProgram(): ";
         logger.info("{}start", methodname);
@@ -44,12 +44,12 @@ public class JsonGetterTest {
 
         logger.info("{}result = {}", methodname, result);
         Assertions.assertNotNull(result);
-        result.forEach(p -> p.getBroadcasts().forEach(b -> logger.info(" broadcast = " + b.toString())));
+        result.forEach(p -> p.getBroadcasts().forEach(b -> logger.info(" broadcast = {}", b.toString())));
         Assertions.assertEquals(1, result.size());
     }
 
     @Test
-    public void testGetBroadcast() throws Exception {
+    void testGetBroadcast() {
         final String methodname = "testGetBroadcast(): ";
         logger.info("{}start", methodname);
 
@@ -63,7 +63,7 @@ public class JsonGetterTest {
     }
 
     @Test
-    public void testDumpJson() throws Exception {
+    void testDumpJson() {
         final String methodname = "testDumpJson(): ";
         logger.info("{}start", methodname);
 
@@ -80,7 +80,7 @@ public class JsonGetterTest {
     }
 
     @Test
-    public void testDumpRealJson() throws Exception {
+    void testDumpRealJson() {
         final String methodname = "testDumpRealJson(): ";
         logger.info("{}start", methodname);
 
@@ -101,7 +101,7 @@ public class JsonGetterTest {
     }
 
     @Test
-    public void testEscapeFilename() throws Exception {
+    void testEscapeFilename() {
         final String methodname = "testEscapeFilename(): ";
         logger.info("{}start", methodname);
 

@@ -6,13 +6,13 @@ import org.slf4j.Logger;
 /**
  * Tests for {@link EventLogger}.
  */
-public class EventLoggerTest {
+class EventLoggerTest {
 
     /**
      * Test logging.
      */
     @Test
-    public void testLog() {
+    void testLog() {
 
         final Logger dut = EventLogger.getLogger();
         dut.error("error message");

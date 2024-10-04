@@ -15,7 +15,7 @@ import at.or.vogt.oe1downloader.TestParameters;
 /**
  * Tests for {@link Configuration}.
  */
-public class ConfigurationTest {
+class ConfigurationTest {
 
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(ConfigurationTest.class);
@@ -29,7 +29,7 @@ public class ConfigurationTest {
      * Tests the properties.
      */
     @Test
-    public void testProperties() {
+    void testProperties() {
 
         final String methodname = "testProperties(): ";
         logger.info("{}start", methodname);
@@ -50,7 +50,7 @@ public class ConfigurationTest {
      * Tests {@link Configuration#getProperty(ConfigurationParameter)}.
      */
     @Test
-    public void testGetProperty() {
+    void testGetProperty() {
 
         final Configuration dut = Configuration.getConfiguration();
         final String result = dut.getProperty(ConfigurationParameter.DUMP_JSON_LOCATION);
@@ -64,7 +64,7 @@ public class ConfigurationTest {
      * @throws Exception if an error occurs
      */
     @Test
-    public void testGetPropertyEmpty() throws Exception {
+    void testGetPropertyEmpty() throws Exception {
 
         final Configuration dut = new Configuration();
         dut.loadProperties("src/test/resources/configEmpty.properties");
@@ -77,19 +77,19 @@ public class ConfigurationTest {
      * Tests {@link Configuration#getPropertyMap(ConfigurationParameter)}.
      */
     @Test
-    public void testGetPropertyMap() {
+    void testGetPropertyMap() {
 
         final Configuration dut = Configuration.getConfiguration();
         final Map<String, String> result = dut.getPropertyMap(ConfigurationParameter.RULES);
         Assertions.assertNotNull(result);
-        Assertions.assertTrue(result.keySet().size() > 0);
+        Assertions.assertTrue(result.size() > 0);
     }
 
     /**
      * Tests property loading with an error.
      */
     @Test
-    public void testLoadPropertiesError() {
+    void testLoadPropertiesError() {
 
         final Configuration dut = new Configuration();
         final RuntimeException exception = Assertions.assertThrows(RuntimeException.class, () -> {
@@ -102,7 +102,7 @@ public class ConfigurationTest {
      * Tests the rules.
      */
     @Test
-    public void testRules() {
+    void testRules() {
 
         final String methodname = "testRules(): ";
         logger.info("{}start", methodname);
@@ -119,7 +119,7 @@ public class ConfigurationTest {
     }
 
     @Test
-    public void testLoadProperties() throws Exception {
+    void testLoadProperties() throws Exception {
         final String methodname = "testLoadProperties(): ";
         logger.info("{}start", methodname);
 
@@ -132,7 +132,7 @@ public class ConfigurationTest {
     }
 
     @Test
-    public void testGetPropertyConfigurationParameterStringArray() throws Exception {
+    void testGetPropertyConfigurationParameterStringArray() throws Exception {
 
         final String methodname = "testGetPropertyConfigurationParameterStringArray(): ";
         logger.info("{}start", methodname);

@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Test for {@link RuleVO}.
  */
-public class RuleVOTest {
+class RuleVOTest {
 
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(RuleVOTest.class);
@@ -17,12 +17,12 @@ public class RuleVOTest {
      * Tests the rule.
      */
     @Test
-    public void testRuleVO() {
+    void testRuleVO() {
 
         final String methodname = "testRuleVO(): ";
 
         final RuleVO dut = new RuleVO("name", "shortTitle", "time", 60, "mp3postfix");
-        logger.info(methodname + "dut = ", dut);
+        logger.info("{}dut = ", methodname, dut);
         Assertions.assertEquals("name", dut.getName());
         Assertions.assertEquals("shortTitle", dut.getTitle());
         Assertions.assertEquals("time", dut.getTime());

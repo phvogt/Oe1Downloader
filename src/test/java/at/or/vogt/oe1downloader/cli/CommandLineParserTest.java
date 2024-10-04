@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Test for {@link at.or.vogt.oe1downloader.cli.CommandLineParser}.
  */
-public class CommandLineParserTest {
+class CommandLineParserTest {
 
     /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(CommandLineParserTest.class);
@@ -19,16 +19,16 @@ public class CommandLineParserTest {
      * Tests {@link CommandLineParser#getCliOptions()}.
      */
     @Test
-    public void testGetCliOptions() {
+    void testGetCliOptions() {
 
         final String methodname = "testGetCliOptions(): ";
-        logger.info(methodname + "start");
+        logger.info("{}start", methodname);
 
         final CommandLineParser dut = new CommandLineParser();
 
         final Options cliOptions = dut.getCliOptions();
         Assertions.assertNotNull(cliOptions);
-        logger.info(methodname + "cliOptions = {}", cliOptions);
+        logger.info("{}cliOptions = {}", methodname, cliOptions);
 
         Assertions.assertTrue(cliOptions.hasOption(CliOption.HELP.getOptionName()));
     }
@@ -38,10 +38,10 @@ public class CommandLineParserTest {
      * @throws ParseException if an error occurs
      */
     @Test
-    public void testParseCommandLine() throws ParseException {
+    void testParseCommandLine() throws ParseException {
 
         final String methodname = "testParseCommandLine(): ";
-        logger.info(methodname + "start");
+        logger.info("{}start", methodname);
 
         final CommandLineParser dut = new CommandLineParser();
 
