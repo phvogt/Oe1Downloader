@@ -16,10 +16,12 @@ jobs:
     steps:
     - name: checkout
       uses: actions/checkout@v4
+
     - name: install java and maven
       run: |
         apt-get update -y && \
         apt-get install -y maven openjdk-17-jdk-headless
+
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
