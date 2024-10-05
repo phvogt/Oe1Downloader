@@ -6,7 +6,8 @@ on:
     types: [created]
 
 jobs:
-  build:
+
+  release:
 
     runs-on: Linux
     container:
@@ -34,6 +35,8 @@ jobs:
         settings-path: ${{ github.workspace }} # location for the settings.xml file
 
     - name: Build with Maven
+      env:
+        NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
       run: mvn -B package --file pom.xml
 
     - name: Publish to GitHub Packages Apache Maven

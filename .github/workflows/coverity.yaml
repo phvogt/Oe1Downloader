@@ -29,6 +29,8 @@ jobs:
         tar -xzf ${{ vars.COVERITY_TOOLTAR }} --strip 1 -C "${{ vars.COVERITY_TOOLDIR }}"
 
     - name: Coverity Scan run
+      env:
+        NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
       run: |
         ${{ vars.COVERITY_TOOLDIR }}/bin/cov-build \
           --dir "cov-int" \
