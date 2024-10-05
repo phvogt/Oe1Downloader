@@ -1,0 +1,49 @@
+name: Coverity
+
+on:
+  push:
+    branches: [ "coverity" ]
+
+jobs:
+
+  coverity:
+
+    runs-on: Linux
+    environment: default
+    container:
+      image: debian:stable
+
+    steps:
+    - name: checkout
+      uses: actions/checkout@v4
+
+    - name: install java and maven
+      run: |
+        apt-get update -y && \
+        apt-get install -y maven openjdk-17-jdk-headless wget curl git
+ 
+    - name: Coverity Scan download and install
+      run: |
+        wget -q "${{ vars.COVERITY_URL}}" --post-data "project=${{ secrets.COVERITY_PROJECT }}&token=${{ secrets.COVERITY_TOKEN }}" -O "${{ vars.COVERITY_TOOLTAR }}"
+        mkdir -p ${{ vars.COVERITY_TOOLDIR }}
+        tar -xzf ${{ vars.COVERITY_TOOLTAR }} --strip 1 -C "${{ vars.COVERITY_TOOLDIR }}"
+
+    - name: Coverity Scan run
+      run: |
+        ${{ vars.COVERITY_TOOLDIR }}/bin/cov-build \
+          --dir "cov-int" \
+          mvn -B package --file pom.xml
+        echo "tar.gz result"
+        tar czvf cov-int.tgz cov-int
+        ls -al cov-int.tgz
+        
+    - name: Coverity Scan upload
+      run: |
+        version_name=${{ github.ref_name }}-$(date +"%y%m%d%H%M%S")
+        
+        curl --form token=${{ secrets.COVERITY_TOKEN }} \
+             --form email=${{ secrets.COVERITY_EMAIL }} \
+              --form file=@cov-int.tgz \
+              --form version="${version_name}" \
+              --form description="$(git describe)" \
+              https://scan.coverity.com/builds?project=phvogt%2FOe1Downloader
