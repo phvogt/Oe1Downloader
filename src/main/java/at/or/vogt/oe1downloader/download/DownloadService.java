@@ -16,12 +16,12 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.core5.http.Header;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -262,9 +262,7 @@ public class DownloadService {
                 }
 
                 try (final CloseableHttpResponse response = httpclient.execute(httpGet)) {
-                    logger
-                            .info(methodname + "try {}: url = {} statuscode = {}", retries, url,
-                                    response.getStatusLine());
+                    logger.info(methodname + "try {}: url = {} statuscode = {}", retries, url, response.getCode());
                     final HttpEntity entity = response.getEntity();
                     if (logger.isDebugEnabled()) {
                         debugHeaders(response, entity);
@@ -341,7 +339,7 @@ public class DownloadService {
         final String methodname = "debugHeaders(): ";
         logger.info("{}start", methodname);
 
-        final Header[] headers = response.getAllHeaders();
+        final Header[] headers = response.getHeaders();
         for (final Header header : headers) {
             logger.debug("{}  header = {}: {}", methodname, header.getName(), header.getValue());
         }

@@ -9,9 +9,9 @@ import org.apache.commons.cli.Options;
 public enum CliOption {
 
     /** Option to show help. */
-    HELP("h", false, "help"),
+    HELP("h", false, "shows help"),
     /** Option with target directory. */
-    TARGET_DIR("d", true, "target directory to use");
+    TARGET_DIR("d", true, "target directory to store the downloaded files in");
 
     /** option name. */
     private final String optionName;
@@ -22,69 +22,66 @@ public enum CliOption {
 
     /**
      * Command line option.
-     * 
-     * @param optionName
-     *            option name
-     * @param hasArguments
-     *            flag if it has arguments
-     * @param description
-     *            description
+     *
+     * @param optionName   option name
+     * @param hasArguments flag if it has arguments
+     * @param description  description
      */
-    private CliOption(final String optionName, final boolean hasArguments, final String description) {
-	this.optionName = optionName;
-	this.hasArguments = hasArguments;
-	this.description = description;
+    CliOption(final String optionName, final boolean hasArguments, final String description) {
+        this.optionName = optionName;
+        this.hasArguments = hasArguments;
+        this.description = description;
     }
 
     /**
      * Get the optionName.
-     * 
+     *
      * @return the optionName
      */
     public String getOptionName() {
-	return optionName;
+        return optionName;
     }
 
     /**
      * Get the hasArguments.
-     * 
+     *
      * @return the hasArguments
      */
     public boolean isHasArguments() {
-	return hasArguments;
+        return hasArguments;
     }
 
     /**
      * Get the description.
-     * 
+     *
      * @return the description
      */
     public String getDescription() {
-	return description;
+        return description;
     }
 
     /**
      * Get the optionName.
-     * 
+     *
      * @return Option
      */
     public Option getOption() {
-	return new Option(optionName, hasArguments, description);
+        return new Option(optionName, hasArguments, description);
     }
 
     /**
      * Get all options.
-     * 
+     *
      * @return all options
      */
     public static Options getOptions() {
 
-	final Options result = new Options();
+        final Options result = new Options();
 
-	for (final CliOption option : values()) {
-	    result.addOption(option.getOption());
-	}
-	return result;
+        for (final CliOption option : values()) {
+            result.addOption(option.getOption());
+        }
+        return result;
     }
 
 }

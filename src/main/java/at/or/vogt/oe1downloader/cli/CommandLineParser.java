@@ -30,68 +30,66 @@ public class CommandLineParser {
 
     /**
      * Constructor.
-     * 
+     *
      */
     public CommandLineParser() {
 
-	this.cliOptions = new Options();
+        cliOptions = new Options();
 
-	for (final CliOption cliOption : CliOption.values()) {
-	    cliOptions.addOption(cliOption.getOption());
-	}
+        for (final CliOption cliOption : CliOption.values()) {
+            cliOptions.addOption(cliOption.getOption());
+        }
 
     }
 
     /**
      * parse the command line.
-     * 
-     * @param args
-     *            command line arguments
+     *
+     * @param args command line arguments
      * @return command line parser
-     * @throws ParseException
-     *             if the command line could not be parsed
+     * @throws ParseException if the command line could not be parsed
      */
     public CommandLineParser parseCommandLine(final String[] args) throws ParseException {
 
-	final org.apache.commons.cli.CommandLineParser parser = new DefaultParser();
+        final org.apache.commons.cli.CommandLineParser parser = new DefaultParser();
 
-	try {
-	    cmd = parser.parse(cliOptions, args);
-	} catch (final ParseException e) {
-	    final String message = "error parsing " + Arrays.toString(args);
-	    logger.error(message, e);
-	    EVENTLOGGER.error(message);
-	    throw e;
-	}
+        try {
+            cmd = parser.parse(cliOptions, args);
+        } catch (final ParseException e) {
+            final String message = "error parsing " + Arrays.toString(args);
+            logger.error(message, e);
+            EVENTLOGGER.error(message);
+            throw e;
+        }
 
-	return this;
+        return this;
     }
 
     /**
      * Checks if the help argument is present on command line.
-     * 
+     *
      * @return true if help argument is present
      */
     public boolean isHelp() {
-	return cmd.hasOption(CliOption.HELP.getOptionName());
+        return cmd.hasOption(CliOption.HELP.getOptionName());
     }
 
     /**
      * Gets the target directory on the command line or null
-     * 
+     *
      * @return target directory or null
      */
     public String getTargetDirectory() {
-	return cmd.getOptionValue(CliOption.TARGET_DIR.getOptionName());
+        return cmd.getOptionValue(CliOption.TARGET_DIR.getOptionName());
     }
 
     /**
      * Get the cliOptions.
-     * 
+     *
      * @return the cliOptions
      */
     Options getCliOptions() {
-	return cliOptions;
+        return cliOptions;
     }
 
 }
