@@ -20,7 +20,7 @@ jobs:
     - name: install java and maven
       run: |
         apt-get update -y && \
-        apt-get install -y maven openjdk-17-jdk-headless wget curl git
+        apt-get install -y maven openjdk-21-jdk-headless wget curl git
  
     - name: Coverity Scan download and install
       run: |
