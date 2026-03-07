@@ -9,9 +9,9 @@ import java.util.Arrays;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.core5.http.Header;
+import org.apache.hc.core5.http.HttpEntity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -262,7 +262,7 @@ class DownloadServiceTest {
 
         final Header[] headers = new Header[1];
         headers[0] = Mockito.mock(Header.class);
-        Mockito.when(response.getAllHeaders()).thenReturn(headers);
+        Mockito.when(response.getHeaders()).thenReturn(headers);
 
         dut.debugHeaders(response, entity);
 

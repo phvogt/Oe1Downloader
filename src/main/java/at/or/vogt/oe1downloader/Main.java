@@ -1,11 +1,10 @@
 package at.or.vogt.oe1downloader;
 
-import java.util.Comparator;
+import java.io.IOException;
 import java.util.List;
 
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.help.HelpFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,6 +48,9 @@ public class Main {
             final CommandLineParser cmd = main.processCommandline(args);
             main.doRun(cmd);
         } catch (final SystemExitException e) {
+            if (e.getExitCode() == 0) {
+                System.exit(e.getExitCode());
+            }
             LOGGER.error(e.getMessage(), e);
             System.exit(e.getExitCode());
         }
@@ -88,7 +90,7 @@ public class Main {
         if (cmd.isHelp()) {
             // show help
             showUsage(null);
-            throw new SystemExitException(1, null);
+            throw new SystemExitException(0, null);
         }
 
         return cmd;
@@ -101,23 +103,17 @@ public class Main {
      */
     void showUsage(final String message) {
 
-        final HelpFormatter formatter = new HelpFormatter();
-        // set the order
-        formatter.setOptionComparator(new Comparator<Option>() {
-
-            private static final String OPTS_ORDER = "hd";
-
-            @Override
-            public int compare(final Option o1, final Option o2) {
-                return OPTS_ORDER.indexOf(o1.getOpt()) - OPTS_ORDER.indexOf(o2.getOpt());
-            }
-        });
+        final HelpFormatter formatter = HelpFormatter.builder().setShowSince(false).get();
 
         if (message != null) {
             System.out.println(message);
         }
 
-        formatter.printHelp("Oe1Downloader", CliOption.getOptions());
+        try {
+            formatter.printHelp("Oe1Downloader", "", CliOption.getOptions(), "", true);
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

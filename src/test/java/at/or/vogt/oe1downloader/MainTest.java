@@ -185,7 +185,7 @@ class MainTest {
             logger.error("error");
             Assertions.fail();
         } catch (final SystemExitException e) {
-            Assertions.assertEquals(1, e.getExitCode());
+            Assertions.assertEquals(0, e.getExitCode());
         }
 
         try {
