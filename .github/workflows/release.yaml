@@ -24,7 +24,7 @@ jobs:
     - name: install java and maven
       run: |
         apt-get update -y && \
-        apt-get install -y maven openjdk-121-jdk-headless
+        apt-get install -y maven openjdk-21-jdk-headless
 
     - name: Set up JDK 21
       uses: actions/setup-java@v4
